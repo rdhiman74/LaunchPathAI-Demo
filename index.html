@@ -1,0 +1,976 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>LaunchPath AI – Home with FAQ</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <style>
+    :root {
+      --bg-main: #020617;
+      --bg-card: #0b1220;
+      --accent-blue: #38bdf8;
+      --accent-purple: #a855f7;
+      --accent-pink: #f973c9;
+      --accent-gold: #facc15;
+      --accent-cyan: #22d3ee;
+      --text-main: #f9fafb;
+      --text-muted: #9ca3af;
+      --border-subtle: #1f2937;
+      --font-sans: system-ui, -apple-system, BlinkMacSystemFont, "SF Pro Text",
+        "Segoe UI", sans-serif;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      font-family: var(--font-sans);
+      background: radial-gradient(circle at top left, #1d2342 0, #020617 55%, #000 100%);
+      color: var(--text-main);
+      min-height: 100vh;
+    }
+
+    .page {
+      max-width: 1180px;
+      margin: 0 auto;
+      padding: 24px 20px 40px;
+    }
+
+    /* HEADER */
+    header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 24px;
+      margin-bottom: 32px;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .brand-icon {
+      width: 36px;
+      height: 36px;
+      border-radius: 14px;
+      background: radial-gradient(circle at 30% 0, #38bdf8 0, #6366f1 40%, #020617 100%);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 700;
+      font-size: 0.9rem;
+      color: #e5e7eb;
+      box-shadow: 0 0 0 2px rgba(56,189,248,0.6), 0 14px 30px rgba(15,23,42,0.95);
+    }
+
+    .brand-text-main {
+      font-size: 1.06rem;
+      font-weight: 650;
+      letter-spacing: .06em;
+      text-transform: uppercase;
+    }
+
+    nav {
+      display: flex;
+      gap: 16px;
+      font-size: 0.86rem;
+      flex-wrap: wrap;
+    }
+
+    nav a {
+      color: var(--text-muted);
+      text-decoration: none;
+      padding: 6px 12px;
+      border-radius: 999px;
+      border: 1px solid transparent;
+      white-space: nowrap;
+    }
+
+    nav a:hover {
+      border-color: rgba(148,163,184,0.7);
+      background: rgba(15,23,42,0.9);
+      color: #e5e7eb;
+    }
+
+    nav a.active {
+      border-color: rgba(56,189,248,0.85);
+      background: rgba(15,23,42,0.98);
+      color: #e0f2fe;
+      box-shadow: 0 0 0 1px rgba(56,189,248,0.35);
+    }
+
+    /* HERO */
+    .hero {
+      display: grid;
+      grid-template-columns: minmax(0, 1.4fr) minmax(0, 1fr);
+      gap: 40px;
+      align-items: center;
+      margin-bottom: 40px;
+    }
+
+    .hero-eyebrow {
+      font-size: 0.8rem;
+      text-transform: uppercase;
+      letter-spacing: 0.18em;
+      color: var(--text-muted);
+      margin-bottom: 10px;
+    }
+
+    .hero-title {
+      font-size: clamp(2.0rem, 2.6vw + 1.2rem, 2.7rem);
+      line-height: 1.08;
+      margin: 0 0 12px;
+    }
+
+    .hero-title span.blue {
+      color: #60a5fa;
+    }
+
+    .hero-title span.purple {
+      color: #c4b5fd;
+    }
+
+    .hero-title span.pink {
+      color: #f9a8d4;
+    }
+
+    .hero-sub {
+      margin-top: 8px;
+      font-size: 0.98rem;
+      color: #9ca3af;
+      max-width: 560px;
+      line-height: 1.55;
+      text-align: justify;
+    }
+
+    .hero-tagline {
+      margin-top: 16px;
+      font-size: 0.98rem;
+      color: #ffffff;
+      font-weight: 600;
+      max-width: 560px;
+      line-height: 1.55;
+      text-align: justify;
+    }
+
+    /* RINGS & LOGIN */
+    .rings-label {
+      font-size: 0.76rem;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.16em;
+      margin-bottom: 10px;
+      text-align: center;
+      width: 100%;
+      display: flex;
+      justify-content: center;
+    }
+
+    .rings-row {
+      display: flex;
+      justify-content: flex-end;
+      gap: 18px;
+      flex-wrap: wrap;
+    }
+
+    .ring {
+      width: 124px;
+      height: 124px;
+      border-radius: 999px;
+      position: relative;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      font-size: 0.78rem;
+      color: #e5e7eb;
+    }
+
+    .ring-inner {
+      position: relative;
+      z-index: 2;
+      width: 92px;
+      height: 92px;
+      border-radius: 999px;
+      background: radial-gradient(circle at top, #0f172a 0, #020617 75%);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 10px;
+    }
+
+    .ring::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      border-radius: inherit;
+      padding: 3px;
+      background: conic-gradient(#38bdf8, #6366f1, #a855f7, #38bdf8);
+      -webkit-mask:
+        linear-gradient(#000 0 0) content-box,
+        linear-gradient(#000 0 0);
+      -webkit-mask-composite: xor;
+      mask-composite: exclude;
+      opacity: 0.95;
+    }
+
+    .ring--match::before {
+      background: conic-gradient(#facc15, #fb923c, #a855f7, #facc15);
+    }
+
+    .ring--social::before {
+      background: conic-gradient(#22d3ee, #0ea5e9, #38bdf8, #22d3ee);
+    }
+
+    .ring-label-main {
+      font-weight: 600;
+      font-size: 0.8rem;
+      margin-bottom: 4px;
+    }
+
+    .ring-label-sub {
+      font-size: 0.66rem;
+      color: #cbd5f5;
+    }
+
+    .login-buttons {
+      text-align: right;
+      margin-bottom: 18px;
+      margin-top: -28px;
+      padding-right: 10px;
+    }
+
+    .login-buttons button {
+      padding: 8px 16px;
+      border-radius: 20px;
+      border: 1px solid #38bdf8;
+      background: #0f172a;
+      color: #e0f2fe;
+      font-size: 0.85rem;
+      cursor: pointer;
+      margin-left: 8px;
+    }
+
+    .login-buttons button.school {
+      border-color: #a855f7;
+      color: #f3e8ff;
+    }
+
+    /* NAV login actions (uses same visual style as the old hero login buttons) */
+.nav-actions{display:flex; align-items:center; gap:8px; flex-wrap:wrap}
+.nav-actions a{
+  padding: 8px 16px;
+  border-radius: 20px;
+  border: 1px solid #38bdf8;
+  background: #0f172a;
+  color: #e0f2fe;
+  font-size: 0.85rem;
+  cursor: pointer;
+  text-decoration: none;
+  line-height: 1.2;
+  white-space: nowrap;
+}
+.nav-actions a.school{
+  border-color: #a855f7;
+  color: #f3e8ff;
+}
+/* Safety: hide any accidental duplicate nav rows */
+.secondary-nav,.subnav,.page-nav,.mini-nav,.nav-pills,.floating-nav,.top-right-links,.quick-links,.bottom-nav,.footer-nav,nav.bottom,nav.sticky{display:none !important;}
+
+/* HOW RINGS WORK */
+    .section-heading {
+      margin-top: 10px;
+      font-size: 1rem;
+      font-weight: 600;
+    }
+
+    .section-sub {
+      font-size: 0.86rem;
+      color: var(--text-muted);
+      margin-bottom: 16px;
+    }
+
+    .grid-cards {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 14px;
+    }
+
+    .card {
+      background: var(--bg-card);
+      border-radius: 18px;
+      padding: 14px 14px 16px;
+      border: 1px solid var(--border-subtle);
+      box-shadow: 0 16px 36px rgba(0,0,0,0.7);
+      font-size: 0.82rem;
+    }
+
+    .card-eyebrow {
+      font-size: 0.72rem;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.16em;
+      margin-bottom: 4px;
+    }
+
+    .card-title {
+      font-size: 0.9rem;
+      font-weight: 600;
+      margin-bottom: 6px;
+      color: #e5e7eb;
+    }
+
+    .card-body {
+      font-size: 0.8rem;
+      color: var(--text-muted);
+      line-height: 1.5;
+    }
+
+    /* PRICING */
+    .pricing-section{
+      margin-top:50px;
+    }
+    .pricing-heading{
+      font-size:1.15rem;
+      font-weight:600;
+      margin-bottom:6px;
+    }
+    .pricing-sub{
+      font-size:0.9rem;
+      color:#9ca3af;
+      margin-bottom:20px;
+    }
+    .pricing-grid{
+      display:grid;
+      grid-template-columns:repeat(2,minmax(0,1fr));
+      gap:18px;
+    }
+    .pricing-card{
+      background:#0b1220;
+      border-radius:20px;
+      padding:18px 18px 20px;
+      border:1px solid #1f2937;
+      box-shadow:0 18px 38px rgba(0,0,0,0.75);
+    }
+    .pricing-label{
+      font-size:0.8rem;
+      text-transform:uppercase;
+      letter-spacing:0.16em;
+      color:#9ca3af;
+      margin-bottom:6px;
+    }
+    .pricing-title{
+      font-size:1.02rem;
+      font-weight:600;
+      margin-bottom:4px;
+    }
+    .pricing-price{
+      font-size:1.6rem;
+      font-weight:650;
+      margin:6px 0 10px;
+    }
+    .pricing-price span{
+      font-size:0.9rem;
+      font-weight:400;
+      color:#9ca3af;
+      margin-left:4px;
+    }
+    .pricing-list{
+      list-style:none;
+      padding:0;
+      margin:0 0 14px;
+      font-size:0.86rem;
+      color:#cbd5f5;
+    }
+    .pricing-list li{
+      margin-bottom:4px;
+    }
+    .pricing-cta{
+      display:inline-block;
+      padding:8px 16px;
+      border-radius:999px;
+      border:1px solid #38bdf8;
+      background:#020617;
+      color:#e0f2fe;
+      font-size:0.86rem;
+      text-decoration:none;
+    }
+    .pricing-cta.school{
+      border-color:#a855f7;
+      color:#f3e8ff;
+    }
+
+    /* FAQ */
+    .faq-trigger-wrapper{
+      margin-top:32px;
+      text-align:center;
+    }
+    .faq-button{
+      display:inline-block;
+      padding:10px 18px;
+      border-radius:999px;
+      border:1px solid #38bdf8;
+      background:#020617;
+      color:#e0f2fe;
+      font-size:0.88rem;
+      cursor:pointer;
+    }
+    .faq-button:hover{
+      background:#0b1120;
+      box-shadow:0 0 0 1px rgba(56,189,248,0.5);
+    }
+
+    .faq-backdrop{
+      position:fixed;
+      inset:0;
+      background:rgba(15,23,42,0.8);
+      display:none;
+      z-index:40;
+    }
+    .faq-modal{
+      position:fixed;
+      inset:0;
+      display:none;
+      align-items:center;
+      justify-content:center;
+      z-index:50;
+      pointer-events:none;
+    }
+    .faq-modal-inner{
+      background:#020617;
+      border-radius:20px;
+      border:1px solid #1f2937;
+      max-width:640px;
+      width:90%;
+      padding:20px 22px 18px;
+      box-shadow:0 24px 60px rgba(0,0,0,0.85);
+      pointer-events:auto;
+    }
+    .faq-modal-header{
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      margin-bottom:10px;
+    }
+    .faq-modal-title{
+      font-size:1rem;
+      font-weight:600;
+    }
+    .faq-close{
+      background:none;
+      border:none;
+      color:#9ca3af;
+      font-size:1.2rem;
+      cursor:pointer;
+    }
+    .faq-modal-body{
+      font-size:0.86rem;
+      color:#e5e7eb;
+      max-height:360px;
+      overflow:auto;
+    }
+    .faq-q{
+      font-weight:600;
+      margin-top:8px;
+      margin-bottom:2px;
+    }
+    .faq-a{
+      margin:0 0 4px;
+      color:#cbd5f5;
+    }
+
+    @media (max-width: 960px) {
+      header {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+      nav {
+        flex-wrap: wrap;
+      }
+      .hero {
+        grid-template-columns: minmax(0, 1fr);
+      }
+      .login-buttons {
+        text-align: left;
+        margin-top: 8px;
+        padding-right: 0;
+      }
+      .rings-row {
+        justify-content: flex-start;
+      }
+      .pricing-grid{
+        grid-template-columns:minmax(0,1fr);
+      }
+      .grid-cards {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+    }
+
+    @media (max-width: 640px) {
+      .grid-cards {
+        grid-template-columns: minmax(0, 1fr);
+      }
+    }
+  
+
+/* Header alignment tweak: bring Home/Student Workplace closer to login buttons */
+header{
+  justify-content: flex-start !important;
+}
+header nav{
+  margin-left: auto !important;
+  flex: 0 0 auto !important;
+}
+header .nav-actions{
+  margin-left: 14px !important;
+}
+
+
+/* NAV4 consistency: make Home + Student Workplace match pill style and keep spacing uniform */
+header{
+  display:flex;
+  align-items:center;
+  gap: 14px !important;
+  justify-content:flex-start !important;
+}
+header nav{
+  margin-left: auto !important;
+  display:flex !important;
+  align-items:center !important;
+  gap: 10px !important;
+}
+header nav a{
+  padding: 10px 16px !important;
+  border-radius: 999px !important;
+  border: 1px solid rgba(56,189,248,.45) !important;
+  background: rgba(15,23,42,0.55) !important;
+  color: rgba(224,242,254,.86) !important;
+  text-decoration:none !important;
+  line-height:1.1 !important;
+  white-space:nowrap !important;
+}
+header nav a:hover{
+  border-color: rgba(56,189,248,.75) !important;
+  background: rgba(15,23,42,0.75) !important;
+}
+header nav a.active{
+  box-shadow: 0 0 0 3px rgba(56,189,248,.12) inset !important;
+  border-color: rgba(56,189,248,.90) !important;
+}
+header .nav-actions{ margin-left: 12px !important; }
+
+
+/* NAV4 global header styling (uniform across pages) */
+header{
+  display:flex;
+  align-items:center;
+  gap: 14px;
+  justify-content:flex-start;
+}
+header nav{
+  margin-left:auto;
+  display:flex;
+  align-items:center;
+  gap: 10px;
+}
+header nav a{
+  padding: 10px 16px;
+  border-radius: 999px;
+  border: 1px solid rgba(56,189,248,.45);
+  background: rgba(15,23,42,0.55);
+  color: rgba(224,242,254,.86);
+  text-decoration:none;
+  line-height:1.1;
+  white-space:nowrap;
+}
+header nav a:hover{
+  border-color: rgba(56,189,248,.75);
+  background: rgba(15,23,42,0.75);
+}
+header nav a.active{
+  box-shadow: 0 0 0 3px rgba(56,189,248,.12) inset;
+  border-color: rgba(56,189,248,.90);
+}
+header .nav-actions{
+  margin-left: 12px;
+  display:flex;
+  gap: 10px;
+  align-items:center;
+}
+header .nav-actions a{
+  padding: 10px 16px;
+  border-radius: 999px;
+  border: 1px solid rgba(148,163,184,0.55);
+  background: rgba(15,23,42,0.55);
+  color: rgba(224,242,254,.86);
+  text-decoration:none;
+  line-height:1.1;
+  white-space:nowrap;
+}
+header .nav-actions a:hover{
+  border-color: rgba(56,189,248,.75);
+}
+
+/* ===== LaunchPath unified header (scoped) ===== */
+.lp-header{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:16px;
+  margin-bottom:22px;
+}
+.lp-header-right{
+  display:flex;
+  align-items:center;
+  gap:12px;
+}
+.brand-lockup{display:flex;align-items:center;gap:12px;}
+.brand-mark{
+  width:40px;height:40px;border-radius:999px;
+  background:radial-gradient(circle at 30% 0,#22d3ee 0,#0ea5e9 40%,#111827 95%);
+  box-shadow:0 0 0 2px rgba(56,189,248,.6),0 14px 30px rgba(15,23,42,.9);
+}
+.brand-text-main{
+  font-size:1.05rem;
+  letter-spacing:.14em;
+  text-transform:uppercase;
+  font-weight:700;
+}
+.brand-text-sub{
+  font-size:.86rem;
+  color:#cbd5f5;
+}
+.lp-nav{display:flex;align-items:center;gap:12px;}
+.lp-nav-link{
+  padding:10px 16px;
+  border-radius:999px;
+  border:1px solid rgba(56,189,248,.45);
+  background:rgba(15,23,42,.55);
+  color:rgba(224,242,254,.86);
+  text-decoration:none;
+  font-size:.86rem;
+  line-height:1.1;
+  white-space:nowrap;
+}
+.lp-nav-link:hover{border-color:rgba(56,189,248,.75);background:rgba(15,23,42,.75);}
+.lp-actions{display:flex;align-items:center;gap:10px;}
+.lp-action{
+  padding:10px 16px;
+  border-radius:999px;
+  text-decoration:none;
+  font-size:.86rem;
+  white-space:nowrap;
+  border:1px solid rgba(56,189,248,.75);
+  background:rgba(15,23,42,.65);
+  color:rgba(224,242,254,.92);
+}
+.lp-action.lp-school{
+  border-color:rgba(168,85,247,.75);
+}
+.lp-action:hover{filter:brightness(1.05);}
+@media(max-width:840px){
+  .lp-header{flex-direction:column;align-items:flex-start;}
+  .lp-header-right{width:100%;justify-content:space-between;}
+}
+
+
+/* HOME header fix: keep nav+actions right-aligned */
+.lp-header-right{
+  margin-left:auto !important;
+  justify-content:flex-end !important;
+}
+.lp-header-right .lp-nav{justify-content:flex-end !important;}
+.lp-header-right .lp-actions{justify-content:flex-end !important;}
+
+/* ===== LaunchPath unified header (2 buttons) ===== */
+.lp-header{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:16px;
+  margin-bottom:22px;
+}
+.lp-header-right{display:flex;align-items:center;gap:12px;margin-left:auto;justify-content:flex-end;}
+.brand-lockup{display:flex;align-items:center;gap:12px;}
+.brand-mark{
+  width:40px;height:40px;border-radius:999px;
+  background:radial-gradient(circle at 30% 0,#22d3ee 0,#0ea5e9 40%,#111827 95%);
+  box-shadow:0 0 0 2px rgba(56,189,248,.6),0 14px 30px rgba(15,23,42,.9);
+}
+.brand-text-main{
+  font-size:1.05rem;
+  letter-spacing:.14em;
+  text-transform:uppercase;
+  font-weight:700;
+}
+.brand-text-sub{font-size:.86rem;color:#cbd5f5;}
+.lp-nav{display:flex;align-items:center;gap:12px;margin-left:auto;justify-content:flex-end;}
+.lp-nav-link{
+  padding:10px 16px;
+  border-radius:999px;
+  border:1px solid rgba(56,189,248,.45);
+  background:rgba(15,23,42,.55);
+  color:rgba(224,242,254,.86);
+  text-decoration:none;
+  font-size:.86rem;
+  line-height:1.1;
+  white-space:nowrap;
+}
+.lp-nav-link:hover{border-color:rgba(56,189,248,.75);background:rgba(15,23,42,.75);}
+.lp-actions{display:flex;align-items:center;gap:10px;}
+.lp-action{
+  padding:10px 16px;
+  border-radius:999px;
+  text-decoration:none;
+  font-size:.86rem;
+  white-space:nowrap;
+  border:1px solid rgba(56,189,248,.75);
+  background:rgba(15,23,42,.65);
+  color:rgba(224,242,254,.92);
+}
+.lp-action.lp-school{border-color:rgba(168,85,247,.75);}
+@media(max-width:840px){
+  .lp-header{flex-direction:column;align-items:flex-start;}
+  .lp-header-right{width:100%;justify-content:space-between;}
+}
+/* ===== End header ===== */
+</style>
+</head>
+<body>
+  <div class="page">
+<header class="lp-header">
+  <div class="brand-lockup">
+    <div class="brand-mark"></div>
+    <div class="brand-text">
+      <div class="brand-text-main">LAUNCHPATH AI</div>
+      <div class="brand-text-sub">College Match · Essays · ROI · Social Studio</div>
+    </div>
+  </div>
+  <div class="lp-header-right">
+    <nav class="lp-nav">
+      <a class="lp-nav-link" href="index.html">Home</a>
+      <a class="lp-nav-link" href="student-workplace.html">Student Workplace</a>
+    </nav>
+    <div class="lp-actions">
+      <a class="lp-action lp-student" href="student-profile.html">Student Log In</a>
+      <a class="lp-action lp-school" href="student-login.html">School Log In</a>
+    </div>
+  </div>
+</header>
+
+<section class="hero">
+      <div>
+        <div class="hero-eyebrow">Admissions workspace</div>
+        <h1 class="hero-title">
+          One workspace for <span class="blue">essays</span>,
+          <span class="purple">college match</span>, and
+          <span class="pink">student branding.</span>
+        </h1>
+        <p class="hero-sub">
+          LaunchPath AI is a next-generation college readiness and guidance platform that uses
+          artificial intelligence and financial modeling to help high school students make smarter
+          academic and career decisions. It combines college matching, ROI insights, AI essay support,
+          and modern engagement tools into a single, unified One-Stop Shop.
+        </p>
+        <p class="hero-tagline">
+          LaunchPath AI is the first comprehensive platform that integrates every major step of the student journey:
+        </p>
+      </div>
+
+      <div>
+        <div class="rings-label">ADMISSIONS THREE-RING SYSTEM</div>
+        <div class="rings-row">
+          <div class="ring">
+            <div class="ring-inner">
+              <div class="ring-label-main">Essays &amp; Narrative</div>
+              <div class="ring-label-sub">Outline → Draft → Polish</div>
+            </div>
+          </div>
+          <div class="ring ring--match">
+            <div class="ring-inner">
+              <div class="ring-label-main">College Match</div>
+              <div class="ring-label-sub">Scattergrams + Fit Score</div>
+            </div>
+          </div>
+          <div class="ring ring--social">
+            <div class="ring-inner">
+              <div class="ring-label-main">Social Media Studio</div>
+              <div class="ring-label-sub">Pitch · Bio · DM Tools</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section>
+      <h2 class="section-heading">How the three rings work together</h2>
+      <p class="section-sub">
+        A connected view—your story, academic fit, and digital presence all in one place.
+      </p>
+
+      <div class="grid-cards">
+        <article class="card">
+          <div class="card-eyebrow">Essay Studio</div>
+          <div class="card-title">Narrative ring</div>
+          <div class="card-body">
+            Structured tools that help students brainstorm, outline, draft, and polish essays with AI support—without losing their own voice.
+          </div>
+        </article>
+
+        <article class="card">
+          <div class="card-eyebrow">College Match &amp; Scattergrams</div>
+          <div class="card-title">Match ring</div>
+          <div class="card-body">
+            Intelligent matching, enhanced scattergrams, and fit scoring to help students build a balanced list of reach, target, and safety schools.
+          </div>
+        </article>
+
+        <article class="card">
+          <div class="card-eyebrow">Social Media Studio</div>
+          <div class="card-title">Branding ring</div>
+          <div class="card-body">
+            Simple templates for bios, outreach messages, and updates so students can present a polished, authentic digital presence.
+          </div>
+        </article>
+
+        <article class="card">
+          <div class="card-eyebrow">ROI &amp; Payoff Snapshot</div>
+          <div class="card-title">Affordability ring</div>
+          <div class="card-body">
+            Side-by-side comparisons of cost, 5-year earnings, Financial Fit Score, and breakeven time to make smarter financial decisions.
+          </div>
+        </article>
+      </div>
+    </section>
+
+    <section class="pricing-section">
+      <h2 class="pricing-heading">Pricing plans</h2>
+      <p class="pricing-sub">
+        Start simple and scale as you grow. Students can get started right away, and schools can onboard entire cohorts.
+      </p>
+
+      <div class="pricing-grid">
+        <div class="pricing-card">
+          <div class="pricing-label">For individual students</div>
+          <div class="pricing-title">Student Pricing Plan</div>
+          <div class="pricing-price">$15<span>/ month</span></div>
+          <ul class="pricing-list">
+            <li>Full access to Essay Studio</li>
+            <li>College Match &amp; Scattergrams</li>
+            <li>ROI &amp; payoff snapshots</li>
+            <li>Social Media Studio tools</li>
+          </ul>
+          <a href="#" class="pricing-cta">Get started as a student</a>
+        </div>
+
+        <div class="pricing-card">
+          <div class="pricing-label">For schools &amp; districts</div>
+          <div class="pricing-title">School Pricing Plan</div>
+          <div class="pricing-price">Contact us<span> for custom pricing</span></div>
+          <ul class="pricing-list">
+            <li>Unlimited student seats</li>
+            <li>Counselor &amp; admin dashboards</li>
+            <li>Bulk onboarding &amp; integrations</li>
+            <li>Training and priority support</li>
+          </ul>
+          <a href="#" class="pricing-cta school">Talk to our team</a>
+        </div>
+      </div>
+
+      <div class="faq-trigger-wrapper">
+        <button class="faq-button" type="button" onclick="openFaqModal()">
+          FAQ: How LaunchPath AI Uses AI Safely
+        </button>
+      </div>
+    </section>
+
+    <!-- FAQ Modal -->
+    <div id="faq-backdrop" class="faq-backdrop"></div>
+    <div id="faq-modal" class="faq-modal">
+      <div class="faq-modal-inner">
+        <div class="faq-modal-header">
+          <div class="faq-modal-title">Essay Studio &amp; AI Integrity FAQ</div>
+          <button class="faq-close" type="button" onclick="closeFaqModal()">×</button>
+        </div>
+        <div class="faq-modal-body">
+          <p class="faq-q">Does LaunchPath AI write essays for students?</p>
+          <p class="faq-a">
+            No. Students provide their own ideas, stories, and drafts. LaunchPath AI acts as a coach,
+            helping with structure, clarity, and grammar — not as a ghostwriter.
+          </p>
+
+          <p class="faq-q">What does the AI actually help with?</p>
+          <p class="faq-a">
+            It helps brainstorm topics, organize outlines, improve wording, and suggest edits while
+            keeping the student's voice at the center.
+          </p>
+
+          <p class="faq-q">How do you make sure the essay still sounds like the student?</p>
+          <p class="faq-a">
+            We encourage students to write multiple samples so the system can keep the tone consistent
+            and flag sections that feel overly advanced or off-voice.
+          </p>
+
+          <p class="faq-q">Is this allowed by colleges and AI policies?</p>
+          <p class="faq-a">
+            Yes. LaunchPath AI is designed as an assistive tool, similar to a writing tutor or tools
+            like Grammarly. Students remain the authors of their essays.
+          </p>
+
+<p class="faq-q">What happens to my child&apos;s data and essays?</p>
+<p class="faq-a">
+  Essays and student data stay private within LaunchPath AI. We do not share essays with colleges,
+  do not sell student data, and do not use individual essays to train public AI models.
+</p>
+
+<p class="faq-q">Is this fair, or does it give some students an unfair advantage?</p>
+<p class="faq-a">
+  LaunchPath AI helps level the playing field for students who may not have access to expensive private
+  counselors or essay coaches. Students remain the authors of their work, and the tool focuses on teaching
+  stronger writing skills rather than replacing effort.
+</p>
+
+          <p class="faq-q">Can counselors and parents feel confident about integrity?</p>
+          <p class="faq-a">
+            Yes. The platform is built to support honest storytelling, not to replace it. We focus on
+            teaching better writing, not generating generic essays.
+          </p>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <script>
+    function openFaqModal() {
+      document.getElementById('faq-backdrop').style.display = 'block';
+      document.getElementById('faq-modal').style.display = 'flex';
+    }
+    function closeFaqModal() {
+      document.getElementById('faq-backdrop').style.display = 'none';
+      document.getElementById('faq-modal').style.display = 'none';
+    }
+    document.addEventListener('keydown', function(e){
+      if(e.key === 'Escape'){ closeFaqModal(); }
+    });
+    document.addEventListener('click', function(e){
+      var backdrop = document.getElementById('faq-backdrop');
+      if(e.target === backdrop){ closeFaqModal(); }
+    });
+  </script>
+<script>
+(function(){
+  const p = (location.pathname.split('/').pop() || 'index.html').toLowerCase();
+  document.querySelectorAll('header nav a').forEach(a=>{
+    const href = (a.getAttribute('href')||'').toLowerCase();
+    a.classList.toggle('active', href === p);
+  });
+})();
+</script>
+</body>
+</html>

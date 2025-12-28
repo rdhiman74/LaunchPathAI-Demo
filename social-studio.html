@@ -1,0 +1,1096 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>LaunchPath AI — Social Studio</title>
+<style>
+:root {
+  --bg-main: #020617;
+  --panel: rgba(15,23,42,0.95);
+  --panel-soft: #0b1220;
+  --border-subtle: #1f2937;
+  --accent: #22d3ee;
+  --accent-soft: #38bdf8;
+  --accent-green: #34d399;
+  --text-main: #e5f0ff;
+  --text-muted: #94a3b8;
+}
+
+* { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  background: radial-gradient(circle at top, #1e293b 0, #020617 55%, #000 100%);
+  color: var(--text-main);
+}
+
+/* NAV BAR */
+.nav-shell {
+  max-width: 1180px;
+  margin: 20px auto 0;
+  padding: 0 20px;
+}
+.nav-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 16px;
+  border-radius: 999px;
+  background: var(--panel);
+  border: 1px solid rgba(148,163,184,0.35);
+  box-shadow: 0 18px 40px rgba(15,23,42,0.85);
+}
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 0.9rem;
+  letter-spacing: .16em;
+  text-transform: uppercase;
+}
+.logo-dot {
+  width: 28px;
+  height: 28px;
+  border-radius: 999px;
+  background: radial-gradient(circle at 30% 20%, #e0f2fe 0, #38bdf8 25%, #22c55e 55%, #020617 100%);
+  box-shadow: 0 0 16px rgba(56,189,248,0.75);
+}
+.nav-links {
+  display: flex;
+  gap: 16px;
+  font-size: 0.82rem;
+}
+.nav-link {
+  color: var(--text-muted);
+  text-decoration: none;
+  padding: 6px 12px;
+  border-radius: 999px;
+}
+.nav-link:hover {
+  color: var(--accent-soft);
+  background: rgba(15,23,42,0.9);
+}
+.nav-link.active {
+  color: var(--accent-soft);
+  background: rgba(34,211,238,0.12);
+  border: 1px solid rgba(34,211,238,0.6);
+}
+
+/* PAGE LAYOUT */
+.page-shell {
+  max-width: 1180px;
+  margin: 26px auto 40px;
+  padding: 0 20px 40px;
+}
+.layout {
+  display: grid;
+  grid-template-columns: minmax(260px, 330px) minmax(0, 1fr);
+  gap: 22px;
+}
+
+/* LEFT INFO PANEL */
+.info-card {
+  background: radial-gradient(circle at top left, #1e293b 0, #020617 55%);
+  border-radius: 22px;
+  border: 1px solid rgba(148,163,184,0.3);
+  box-shadow: 0 24px 60px rgba(15,23,42,0.95);
+  padding: 20px 22px 18px;
+}
+.info-title {
+  font-size: 1.05rem;
+  font-weight: 600;
+  margin-bottom: 6px;
+}
+.info-sub {
+  font-size: 0.85rem;
+  color: var(--text-muted);
+  margin-bottom: 14px;
+}
+.step-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  font-size: 0.82rem;
+}
+.step-list li {
+  display: flex;
+  gap: 8px;
+  align-items: flex-start;
+  margin-bottom: 10px;
+  color: var(--text-muted);
+}
+.step-badge {
+  width: 18px;
+  height: 18px;
+  border-radius: 999px;
+  border: 1px solid rgba(148,163,184,0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.7rem;
+  margin-top: 2px;
+  color: var(--accent-soft);
+}
+.step-text-strong {
+  color: var(--text-main);
+  font-weight: 500;
+}
+.info-footnote {
+  margin-top: 10px;
+  font-size: 0.78rem;
+  color: var(--text-muted);
+}
+
+/* TikTok branding note */
+.branding-card {
+  margin-top: 16px;
+  padding: 10px 12px;
+  border-radius: 14px;
+  border: 1px dashed rgba(148,163,184,0.5);
+  background: rgba(15,23,42,0.85);
+  font-size: 0.78rem;
+}
+.branding-title {
+  font-weight: 600;
+  margin-bottom: 4px;
+}
+.branding-note {
+  color: var(--text-muted);
+}
+
+/* RIGHT EDITOR PANEL */
+.editor-card {
+  background: radial-gradient(circle at top left, #1e293b 0, #020617 55%);
+  border-radius: 22px;
+  border: 1px solid rgba(148,163,184,0.3);
+  box-shadow: 0 24px 60px rgba(15,23,42,0.95);
+  padding: 20px 22px 18px;
+}
+.editor-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 12px;
+}
+.editor-title {
+  font-size: 1rem;
+  font-weight: 600;
+}
+.editor-sub {
+  font-size: 0.8rem;
+  color: var(--text-muted);
+}
+
+/* Controls row */
+.controls-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-bottom: 12px;
+}
+.control-group {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+.control-label {
+  font-size: 0.78rem;
+  color: var(--text-muted);
+}
+select {
+  background: rgba(15,23,42,0.95);
+  color: var(--text-main);
+  border-radius: 999px;
+  border: 1px solid var(--border-subtle);
+  font-size: 0.8rem;
+  padding: 6px 10px;
+}
+
+/* Draft textarea */
+.field-label {
+  font-size: 0.85rem;
+  margin-bottom: 6px;
+  font-weight: 600;
+}
+#post-draft {
+  width: 100%;
+  min-height: 140px;
+  padding: 12px 14px;
+  font-size: 0.9rem;
+  line-height: 1.5;
+  background: rgba(15,23,42,0.95);
+  color: var(--text-main);
+  border: 1px solid var(--border-subtle);
+  border-radius: 14px;
+  resize: vertical;
+  outline: none;
+}
+#post-draft::placeholder {
+  color: #64748b;
+}
+#post-draft:focus {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 1px rgba(34,211,238,0.45);
+}
+
+/* Panels row */
+.output-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 10px;
+  margin-top: 12px;
+}
+.output-card {
+  background: rgba(15,23,42,0.9);
+  border-radius: 14px;
+  border: 1px solid var(--border-subtle);
+  padding: 8px 10px;
+}
+.output-title {
+  font-size: 0.8rem;
+  font-weight: 600;
+  margin-bottom: 4px;
+}
+.output-body {
+  font-size: 0.78rem;
+  color: var(--text-muted);
+  max-height: 150px;
+  overflow-y: auto;
+  line-height: 1.45;
+}
+
+/* sample posts */
+.sample-post {
+  border-radius: 10px;
+  border: 1px solid rgba(148,163,184,0.4);
+  padding: 6px 8px;
+  margin-bottom: 6px;
+  cursor: pointer;
+  background: rgba(15,23,42,0.95);
+}
+.sample-post:hover {
+  border-color: var(--accent-soft);
+}
+
+/* footer row buttons */
+.footer-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  margin-top: 12px;
+  flex-wrap: wrap;
+}
+.btn-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+.btn {
+  padding: 7px 14px;
+  border-radius: 999px;
+  font-size: 0.8rem;
+  cursor: pointer;
+  border: 1px solid transparent;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  white-space: nowrap;
+}
+.btn-primary {
+  background: linear-gradient(135deg, var(--accent), var(--accent-soft));
+  color: #020617;
+  font-weight: 600;
+  box-shadow: 0 12px 30px rgba(56,189,248,0.5);
+}
+.btn-primary:hover {
+  background: linear-gradient(135deg, #5fe8ff, #38bdf8);
+}
+.btn-secondary {
+  background: rgba(15,23,42,0.9);
+  border: 1px solid var(--border-subtle);
+  color: var(--text-main);
+}
+.btn-secondary:hover {
+  border-color: var(--accent);
+  color: var(--accent-soft);
+}
+.status-text {
+  font-size: 0.78rem;
+  color: var(--text-muted);
+}
+
+@media (max-width: 880px) {
+  .layout {
+    grid-template-columns: 1fr;
+  }
+  .output-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* ===== LaunchPath unified header (scoped) ===== */
+.lp-header{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:16px;
+  margin-bottom:22px;
+}
+.lp-header-right{
+  display:flex;
+  align-items:center;
+  gap:12px;
+}
+.brand-lockup{display:flex;align-items:center;gap:12px;}
+.brand-mark{
+  width:40px;height:40px;border-radius:999px;
+  background:radial-gradient(circle at 30% 0,#22d3ee 0,#0ea5e9 40%,#111827 95%);
+  box-shadow:0 0 0 2px rgba(56,189,248,.6),0 14px 30px rgba(15,23,42,.9);
+}
+.brand-text-main{
+  font-size:1.05rem;
+  letter-spacing:.14em;
+  text-transform:uppercase;
+  font-weight:700;
+}
+.brand-text-sub{
+  font-size:.86rem;
+  color:#cbd5f5;
+}
+.lp-nav{display:flex;align-items:center;gap:12px;}
+.lp-nav-link{
+  padding:10px 16px;
+  border-radius:999px;
+  border:1px solid rgba(56,189,248,.45);
+  background:rgba(15,23,42,.55);
+  color:rgba(224,242,254,.86);
+  text-decoration:none;
+  font-size:.86rem;
+  line-height:1.1;
+  white-space:nowrap;
+}
+.lp-nav-link:hover{border-color:rgba(56,189,248,.75);background:rgba(15,23,42,.75);}
+.lp-actions{display:flex;align-items:center;gap:10px;}
+.lp-action{
+  padding:10px 16px;
+  border-radius:999px;
+  text-decoration:none;
+  font-size:.86rem;
+  white-space:nowrap;
+  border:1px solid rgba(56,189,248,.75);
+  background:rgba(15,23,42,.65);
+  color:rgba(224,242,254,.92);
+}
+.lp-action.lp-school{
+  border-color:rgba(168,85,247,.75);
+}
+.lp-action:hover{filter:brightness(1.05);}
+@media(max-width:840px){
+  .lp-header{flex-direction:column;align-items:flex-start;}
+  .lp-header-right{width:100%;justify-content:space-between;}
+}
+
+/* ===== LaunchPath unified header (2 buttons) ===== */
+.lp-header{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:16px;
+  margin-bottom:22px;
+}
+.lp-header-right{display:flex;align-items:center;gap:12px;margin-left:auto;justify-content:flex-end;}
+.brand-lockup{display:flex;align-items:center;gap:12px;}
+.brand-mark{
+  width:40px;height:40px;border-radius:999px;
+  background:radial-gradient(circle at 30% 0,#22d3ee 0,#0ea5e9 40%,#111827 95%);
+  box-shadow:0 0 0 2px rgba(56,189,248,.6),0 14px 30px rgba(15,23,42,.9);
+}
+.brand-text-main{
+  font-size:1.05rem;
+  letter-spacing:.14em;
+  text-transform:uppercase;
+  font-weight:700;
+}
+.brand-text-sub{font-size:.86rem;color:#cbd5f5;}
+.lp-nav{display:flex;align-items:center;gap:12px;margin-left:auto;justify-content:flex-end;}
+.lp-nav-link{
+  padding:10px 16px;
+  border-radius:999px;
+  border:1px solid rgba(56,189,248,.45);
+  background:rgba(15,23,42,.55);
+  color:rgba(224,242,254,.86);
+  text-decoration:none;
+  font-size:.86rem;
+  line-height:1.1;
+  white-space:nowrap;
+}
+.lp-nav-link:hover{border-color:rgba(56,189,248,.75);background:rgba(15,23,42,.75);}
+.lp-actions{display:flex;align-items:center;gap:10px;}
+.lp-action{
+  padding:10px 16px;
+  border-radius:999px;
+  text-decoration:none;
+  font-size:.86rem;
+  white-space:nowrap;
+  border:1px solid rgba(56,189,248,.75);
+  background:rgba(15,23,42,.65);
+  color:rgba(224,242,254,.92);
+}
+.lp-action.lp-school{border-color:rgba(168,85,247,.75);}
+@media(max-width:840px){
+  .lp-header{flex-direction:column;align-items:flex-start;}
+  .lp-header-right{width:100%;justify-content:space-between;}
+}
+/* ===== End header ===== */
+
+/* ===== Saved Items Modal ===== */
+.lp-modal.hidden{display:none;}
+.lp-modal{position:fixed;inset:0;z-index:9999;}
+.lp-modal-backdrop{position:absolute;inset:0;background:rgba(0,0,0,.55);backdrop-filter: blur(2px);}
+.lp-modal-card{
+  position:relative;
+  width:min(760px, calc(100% - 28px));
+  margin: 80px auto;
+  border-radius: 18px;
+  border: 1px solid rgba(255,255,255,.10);
+  background: linear-gradient(180deg, rgba(255,255,255,.06), rgba(255,255,255,.03));
+  box-shadow: 0 24px 70px rgba(0,0,0,.6);
+  padding: 14px 16px 12px;
+}
+.lp-modal-header{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:10px;}
+.lp-modal-header h3{margin:0;font-size:1.05rem;letter-spacing:.02em;}
+.lp-x{border:0;background:transparent;color:#e2e8f0;font-size:1.1rem;cursor:pointer;padding:6px 8px;border-radius:10px;}
+.lp-x:hover{background:rgba(255,255,255,.06);}
+.lp-modal-body{max-height: 55vh; overflow:auto; padding-right: 4px;}
+.saved-row{display:flex;align-items:flex-start;justify-content:space-between;gap:10px;padding:10px 10px;border-radius:14px;border:1px solid rgba(255,255,255,.08);background:rgba(2,6,23,.25);margin-bottom:10px;}
+.saved-name{font-weight:700;color:#e5e7eb;}
+.saved-meta{font-size:.86rem;color:#cbd5f5;margin-top:2px;}
+.remove-btn{border:1px solid rgba(255,255,255,.14);background:rgba(15,23,42,.55);color:#e2e8f0;border-radius:999px;padding:7px 10px;font-size:.82rem;cursor:pointer;white-space:nowrap;}
+.remove-btn:hover{border-color:rgba(34,211,238,.65);}
+.lp-modal-footer{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-top:10px;}
+.lp-secondary-link{color:#cbd5f5;text-decoration:none;font-size:.9rem;}
+.lp-secondary-link:hover{color:#22d3ee;}
+.lp-danger{border:1px solid rgba(248,113,113,.55);background:rgba(127,29,29,.35);color:#fecaca;border-radius:999px;padding:8px 12px;font-size:.86rem;cursor:pointer;}
+.lp-danger:hover{border-color:rgba(248,113,113,.85);}
+.empty{color:#cbd5f5;padding:12px 4px;}
+/* ===== End Modal ===== */
+</style>
+
+<style>
+/* Social Studio: align header spacing with other pages */
+.lp-header{ width:min(1240px, 92vw); margin: 18px auto 0; }
+</style>
+
+</head>
+<body>
+  <div class="page">
+</style>
+</head>
+<body>
+<div class="page-shell" style="max-width:1180px;margin:0 auto;">
+<header class="lp-header">
+  <div class="brand-lockup">
+    <div class="brand-mark"></div>
+    <div class="brand-text">
+      <div class="brand-text-sub">College Match · Essays · ROI · Social Studio</div>
+    </div>
+  </div>
+  <nav class="lp-nav">
+    <a class="lp-nav-link" href="index.html">Home</a>
+    <a class="lp-nav-link" href="student-workplace.html">Student Workplace</a>
+  </nav>
+</header>
+
+</div>
+    </div>
+    </div>
+</div>
+
+<div class="page-shell">
+  <div class="layout">
+    <!-- LEFT: How it works -->
+    <div class="info-card">
+      <div class="info-title">How Social Studio works</div>
+      <div class="info-sub">
+        Turn big moments — acceptances, scholarships, decisions — into short, on-brand posts for TikTok, Instagram, LinkedIn, and more.
+      </div>
+      <ul class="step-list">
+        <li>
+          <div class="step-badge">1</div>
+          <div>
+            <span class="step-text-strong">Choose platform, goal, and tone.</span><br/>
+            Tell LaunchPath AI where you’re posting and what you’re announcing so examples match the moment.
+          </div>
+        </li>
+        <li>
+          <div class="step-badge">2</div>
+          <div>
+            <span class="step-text-strong">Browse and tap sample posts.</span><br/>
+            Pick from LaunchPath AI examples tailored to your platform. Tap a sample to load it into your draft.
+          </div>
+        </li>
+        <li>
+          <div class="step-badge">3</div>
+          <div>
+            <span class="step-text-strong">Edit the draft to sound like you.</span><br/>
+            Adjust details, school names, majors, and emojis so the post feels genuine.
+          </div>
+        </li>
+        <li>
+          <div class="step-badge">4</div>
+          <div>
+            <span class="step-text-strong">Polish, copy, and share.</span><br/>
+            Use Smart Review and Polish Post to tighten the message, then copy and paste into your social app.
+          </div>
+        </li>
+      </ul>
+
+      <div class="branding-card">
+        <div class="branding-title">TikTok & video branding</div>
+        <div class="branding-note">
+          For TikTok or short-form video, LaunchPath AI can suggest on-screen text and a small watermark logo in the
+          top-left corner of the video (away from TikTok UI). In a full rollout, students could export templates with
+          the LaunchPath AI logo already applied.
+        </div>
+        <button class="btn btn-secondary" id="btn-download-logo" style="margin-top:8px;">
+          Download LaunchPath AI logo (demo)
+        </button>
+      </div>
+    </div>
+
+    <!-- RIGHT: Editor -->
+    <div class="editor-card">
+      <div class="editor-header">
+        <div>
+          <div class="editor-title">Social Studio</div>
+          <div class="editor-sub">Craft short, on-brand posts for the platforms that matter most.</div>
+        </div>
+      </div>
+
+      <div class="controls-row">
+        <div class="control-group">
+          <label class="control-label" for="platform-select">Platform</label>
+          <select id="platform-select">
+            <option value="instagram">Instagram</option>
+            <option value="tiktok">TikTok</option>
+            <option value="linkedin">LinkedIn</option>
+            <option value="x">X (Twitter)</option>
+          </select>
+        </div>
+        <div class="control-group">
+          <label class="control-label" for="goal-select">Goal</label>
+          <select id="goal-select">
+            <option value="acceptance">Announce acceptance</option>
+            <option value="scholarship">Share scholarship win</option>
+            <option value="update">College journey update</option>
+            <option value="ask-support">Ask for support / advice</option>
+            <option value="sports">Sport announcement</option>
+          </select>
+        </div>
+        <div class="control-group">
+          <label class="control-label" for="tone-select">Tone</label>
+          <select id="tone-select">
+            <option value="excited">Excited</option>
+            <option value="grateful">Grateful</option>
+            <option value="chill">Chill / casual</option>
+            <option value="professional">Professional</option>
+          </select>
+        </div>
+        <div class="control-group" style="margin-left:20px; align-self:flex-end;">
+          <label class="control-label">&nbsp;</label>
+          <button class="btn btn-secondary" id="btn-generate">Generate samples</button>
+        </div>
+      </div>
+
+      <div class="field-label">Your post draft</div>
+      <textarea id="post-draft" placeholder="Start with a sample from the left, or write your own short post here..."></textarea>
+
+      <div class="output-grid">
+        <div class="output-card">
+          <div class="output-title">Sample post ideas</div>
+          <div class="output-body" id="samples-body">
+            Click <strong>Generate samples</strong> to see multiple example posts for your platform and goal, then scroll to explore them.
+          </div>
+        </div>
+        <div class="output-card">
+          <div class="output-title">Platform-specific tips</div>
+          <div class="output-body" id="tips-body">
+            Tips will update when you choose a platform — for example: how many emojis, hashtags, or lines tend to work well.
+          </div>
+        </div>
+        <div class="output-card">
+          <div class="output-title">Polish status</div>
+          <div class="output-body" id="polish-status">
+            <strong>Status:</strong> No polish applied yet. Once you tap <strong>Polish Post</strong>, a summary of improvements will appear here.
+          </div>
+        </div>
+      </div>
+
+      <div class="footer-row">
+        <div class="status-text" id="char-count">0 / 280 characters</div>
+        <div class="btn-row">
+          <button class="btn btn-secondary" id="btn-review">Smart Review</button>
+          <button class="btn btn-primary" id="btn-polish">Polish Post</button>
+          <button class="btn btn-secondary" id="btn-save">Save to My List</button>
+          <button class="btn btn-secondary" id="btn-copy">Copy Post</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+// Elements
+const platformSelect = document.getElementById("platform-select");
+const goalSelect = document.getElementById("goal-select");
+const toneSelect = document.getElementById("tone-select");
+const draftEl = document.getElementById("post-draft");
+const samplesBody = document.getElementById("samples-body");
+const tipsBody = document.getElementById("tips-body");
+const polishStatus = document.getElementById("polish-status");
+const charCount = document.getElementById("char-count");
+
+// Character counter (280 as a nice reference)
+function updateCharCount() {
+  const text = draftEl.value || "";
+  charCount.textContent = text.length + " / 280 characters";
+}
+draftEl.addEventListener("input", updateCharCount);
+updateCharCount();
+
+// Platform tips
+function updateTips() {
+  const platform = platformSelect.value;
+  let tips = "";
+  if (platform === "instagram") {
+    tips = "Instagram: Lead with the big news in the first line, use 1–3 emojis, and keep hashtags focused (#ClassOf2029, #FirstGen, #CollegeBound).";
+  } else if (platform === "tiktok") {
+    tips = "TikTok: Use this as your caption and on-screen text. Keep it punchy, front-load the announcement, and consider 1–2 relevant hashtags.";
+  } else if (platform === "linkedin") {
+    tips = "LinkedIn: Keep the tone professional and grateful. Thank mentors, family, or teachers, and mention your program or major clearly.";
+  } else if (platform === "x") {
+    tips = "X (Twitter): Make one strong sentence with the announcement, then a second sentence with context or gratitude. Use 1–2 short hashtags.";
+  }
+  tipsBody.textContent = tips;
+}
+platformSelect.addEventListener("change", updateTips);
+updateTips();
+
+// Sample post generation
+function generateSamples() {
+  const platform = platformSelect.value;
+  const goal = goalSelect.value;
+  const tone = toneSelect.value;
+
+  const posts = [];
+
+  if (goal === "acceptance") {
+    if (tone === "excited") {
+      posts.push("🎉 Just got accepted to my dream school! Huge thank you to everyone who helped me get here. #CollegeBound");
+      posts.push("I’m beyond excited to share that I’ve been admitted to [College Name] for [Major]! This still doesn’t feel real.");
+      posts.push("Dream school: unlocked. I’ll be attending [College Name] this fall and I honestly can’t stop smiling.");
+      posts.push("It’s official — I’m headed to [College Name]! Could not be more excited for this next chapter.");
+      posts.push("Still in shock that I get to call [College Name] home for the next four years. Let’s go! 🎓");
+    } else if (tone === "grateful") {
+      posts.push("Grateful to share that I’ve been admitted to [College Name]. Thank you to my family, teachers, and friends who believed in me.");
+      posts.push("Honored to be accepted into [College Name]. Couldn’t have done this without the support of my community.");
+      posts.push("Thankful for every person who helped me reach this moment. I’ve been admitted to [College Name] to study [Major].");
+      posts.push("Today I got the news that I’ve been accepted to [College Name]. I’m so grateful for the encouragement and guidance I’ve received.");
+      posts.push("This acceptance to [College Name] is a team win. Thank you to everyone who pushed me to keep going.");
+    } else if (tone === "chill") {
+      posts.push("So… I got into [College Name]. 😅 Kinda wild.");
+      posts.push("Guess I’ll be spending the next four years at [College Name]. Not a bad plot twist.");
+      posts.push("College update: [College Name] said yes. I’m still pretending to act normal about it.");
+      posts.push("Checked my portal and… looks like [College Name] is happening.");
+      posts.push("Apparently I’m going to [College Name]. Future [Mascot] over here.");
+    } else {
+      // professional
+      posts.push("I’m pleased to announce my admission to [College Name], where I’ll be studying [Major]. Excited for this next chapter.");
+      posts.push("It’s official: I’ll be joining the Class of [Year] at [College Name]. Looking forward to growing in [field/interest].");
+      posts.push("I’m honored to have been admitted to [College Name] to pursue [Major]. Grateful for this opportunity.");
+      posts.push("Happy to share that I’ve been accepted to [College Name]. I’m eager to contribute to the campus community this fall.");
+      posts.push("I’m excited to continue my academic journey at [College Name] as part of the Class of [Year].");
+    }
+  } else if (goal === "scholarship") {
+    if (tone === "excited") {
+      posts.push("Just found out I received a [Name] scholarship! This support brings me one step closer to my college goals. 🎓");
+      posts.push("So excited (and relieved!) to share that I’ve been awarded a scholarship that helps cover my tuition at [College Name].");
+      posts.push("Scholarship news: I’ve been selected for the [Name] scholarship and I can’t stop smiling.");
+      posts.push("That moment when your hard work turns into a scholarship email. Feeling incredibly excited and thankful.");
+      posts.push("Huge news: I received a scholarship to help me attend [College Name]. This changes everything.");
+    } else if (tone === "grateful") {
+      posts.push("I’m deeply grateful to have received the [Name] scholarship. Thank you to everyone who encouraged me to apply.");
+      posts.push("Honored to be selected for a scholarship that will help me attend [College Name]. Thank you to the donors and my supporters.");
+      posts.push("I’m thankful to share that I’ve been awarded a scholarship that makes college more affordable for my family.");
+      posts.push("This scholarship means more than just money—it means opportunity. Thank you to everyone who believed in me.");
+      posts.push("Receiving this scholarship reminds me how many people have supported my journey. I’m truly grateful.");
+    } else if (tone === "chill") {
+      posts.push("Scholarship news just dropped and I’m still processing. 🤯 Super thankful.");
+      posts.push("Turns out those late-night applications paid off. Just got a scholarship for [College Name].");
+      posts.push("Scholarship secured. Feeling a little lighter about tuition right now.");
+      posts.push("That feeling when the scholarship hits and you realize it’s actually happening.");
+      posts.push("Big shoutout to whoever created scholarships. You’re the real MVP.");
+    } else {
+      posts.push("I’m pleased to announce that I’ve been awarded a scholarship to support my studies at [College Name]. I’m incredibly thankful for this opportunity.");
+      posts.push("Proud to share that I’ve received financial support toward my degree at [College Name], allowing me to focus more on learning and less on cost.");
+      posts.push("I’m grateful to be a recipient of the [Name] scholarship, which will help fund my education at [College Name].");
+      posts.push("Honored to receive a scholarship that recognizes both academic effort and community involvement.");
+      posts.push("This scholarship support will make a meaningful difference in my college experience at [College Name].");
+    }
+  } else if (goal === "update") {
+    posts.push("College update: I’m finalizing my list, polishing essays, and getting closer to a decision. Trying to enjoy the process, not just the outcome.");
+    posts.push("Application season has been intense, but I’m learning a lot about what I value in a school and in myself.");
+    posts.push("Right now I’m in the middle of essays, deadlines, and decisions—but also small moments of excitement about what’s next.");
+    posts.push("Quick check-in: still applying, still editing, still dreaming about move-in day somewhere next fall.");
+  } else if (goal === "ask-support") {
+    posts.push("I’m in the middle of college apps and would love advice from anyone who’s been through this—especially on choosing between schools and majors.");
+    posts.push("If you’ve gone to [College Name] or studied [Major], I’d really appreciate any tips or things you wish you knew before starting.");
+    posts.push("For those who’ve already gone through this, what helped you decide where to go and what to study?");
+    posts.push("Trying to make some big decisions about college—if you’re open to sharing your experience, I’d love to hear it.");
+  } else if (goal === "sports") {
+    if (tone === "excited") {
+      posts.push("Proud to announce that I’ve committed to continue my sport at [College Name]! Can’t wait to get to work. 🏅");
+      posts.push("Dream come true: I’ll be playing [Sport] for [College Name] next year. So excited for this next chapter.");
+      posts.push("Officially committed to [College Name] [Team Name]! Ready to give everything on and off the field.");
+      posts.push("Next season, I’ll be wearing [School Colors] for [College Name]. Let’s go!");
+      posts.push("Couldn’t be more excited to become part of the [College Name] [Mascot] family as a student-athlete.");
+    } else if (tone === "grateful") {
+      posts.push("Grateful to announce my commitment to play [Sport] at [College Name]. Thank you to my family, coaches, and teammates for believing in me.");
+      posts.push("Honored to continue my athletic and academic journey at [College Name]. Thank you to everyone who helped me reach this moment.");
+      posts.push("I’m thankful for the opportunity to compete for [College Name] while earning my degree. Couldn’t have done it without my support system.");
+      posts.push("Today I get to share that I’ve committed to [College Name] for [Sport]. I’m so grateful for everyone who’s been in my corner.");
+    } else if (tone === "chill") {
+      posts.push("Looks like I’ll be spending the next few years playing [Sport] at [College Name]. Not a bad setup at all.");
+      posts.push("New chapter loading: [Sport] at [College Name].");
+      posts.push("College decision: books + [Sport] at [College Name]. I’m in.");
+      posts.push("Apparently I’m going to be wearing [College Name] gear for a while. Athletes, let’s do this.");
+    } else {
+      posts.push("I’m pleased to announce that I’ve committed to play [Sport] at [College Name] while pursuing my degree in [Major].");
+      posts.push("Proud to continue my athletic career at [College Name] as part of the [Team Name], and equally excited to grow as a student.");
+      posts.push("I’m honored to join [College Name] as a student-athlete in [Sport], and I’m looking forward to representing this program.");
+      posts.push("Formal announcement: I have committed to [College Name] to compete in [Sport] and further my education in [Major].");
+    }
+  }
+
+  let extra = "";
+  if (goal === "acceptance") {
+    extra = " I’m grateful for everyone who helped me reach this point and I’m excited to see what the next few years look like.";
+  } else if (goal === "scholarship") {
+    extra = " This support makes a real difference for my family and lets me focus more on learning and less on stress about cost.";
+  } else if (goal === "update") {
+    extra = " Even though it’s a lot, I’m reminding myself that every draft and application is moving me closer to the right fit.";
+  } else if (goal === "ask-support") {
+    extra = " Any stories, advice, or honest perspective is appreciated—hearing from others really helps me picture what’s possible.";
+  } else if (goal === "sports") {
+    extra = " I’m ready to work hard, represent my team well, and balance what I do in the classroom with what I do on the field.";
+  }
+  if (extra) {
+    for (let i = 0; i < posts.length; i++) {
+      posts[i] = posts[i] + " " + extra;
+    }
+  }
+
+  if (!posts.length) {
+    samplesBody.innerHTML = "No samples found for this combination yet. Try a different goal or tone.";
+    return;
+  }
+
+  samplesBody.innerHTML = "";
+  posts.forEach(text => {
+    const div = document.createElement("div");
+    div.className = "sample-post";
+    div.textContent = enforceSampleLength(text);
+    div.addEventListener("click", () => {
+      draftEl.value = text;
+      updateCharCount();
+    });
+    samplesBody.appendChild(div);
+  });
+
+  // Short bio suggestion for this goal
+  let bio = "";
+  if (goal === "acceptance") {
+    bio = "Future [Major] @ [College Name] | Class of [Year] | Passionate about [interest].";
+  } else if (goal === "scholarship") {
+    bio = "[College Name] bound | [Major] | Scholarship-supported first-gen student focused on [interest/impact].";
+  } else if (goal === "update") {
+    bio = "College applicant | Exploring [Major/field] | Working toward the right fit for my next chapter.";
+  } else if (goal === "ask-support") {
+    bio = "Student exploring colleges & majors | Open to advice from people who’ve been there.";
+  } else if (goal === "sports") {
+    bio = "Student-athlete | [Sport] | Committed to [College Name] [Team Name] | Class of [Year].";
+  }
+
+  if (bio) {
+    const bioDiv = document.createElement("div");
+    bioDiv.style.marginTop = "8px";
+    bioDiv.style.paddingTop = "6px";
+    bioDiv.style.borderTop = "1px solid rgba(148,163,184,0.35)";
+    bioDiv.style.fontSize = "0.76rem";
+    bioDiv.innerHTML = "<strong>Short bio idea:</strong> " + bio;
+    samplesBody.appendChild(bioDiv);
+  }
+}
+
+document.getElementById("btn-generate").addEventListener("click", generateSamples);
+
+// Smart Review
+document.getElementById("btn-review").addEventListener("click", () => {
+  const text = (draftEl.value || "").trim();
+  const platform = platformSelect.value;
+  let note = "";
+
+  if (!text) {
+    note = "Add or select a draft first, then Smart Review will provide quick feedback on clarity and tone.";
+  } else {
+    note = "Overall: Clear message, but you can move the main announcement closer to the first few words so it doesn’t get cut off in previews. ";
+    if (platform === "instagram" || platform === "tiktok") {
+      note += "Consider breaking long sentences into shorter lines and using 1–3 emojis that match your tone.";
+    } else if (platform === "linkedin") {
+      note += "Keep emojis minimal, and make sure you name your program and school clearly.";
+    } else {
+      note += "Watch your character count so the full message appears without being truncated.";
+    }
+  }
+
+  tipsBody.textContent = note;
+});
+
+// Simple polish
+function polishPost(text) {
+  let result = text;
+  result = result.replace(/\breally\b/gi, "");
+  result = result.replace(/\bvery\b/gi, "");
+  result = result.replace(/\bso excited to\b/gi, "excited to");
+  result = result.replace(/\sa lot\b/gi, " a ton");
+  result = result.replace(/\s+/g, " ").trim();
+  return result;
+}
+
+document.getElementById("btn-polish").addEventListener("click", () => {
+  const original = (draftEl.value || "").trim();
+  if (!original) {
+    alert("Add or select a draft first so LaunchPath AI can polish it.");
+    return;
+  }
+  const polished = polishPost(original);
+  draftEl.value = polished;
+  updateCharCount();
+
+  const origWords = original.split(/\s+/);
+  const newWords = polished.split(/\s+/);
+  let changed = 0;
+  origWords.forEach((w, i) => {
+    if (newWords[i] && newWords[i] !== w) changed++;
+  });
+
+  polishStatus.innerHTML =
+    "<strong>Polish applied.</strong><br/>" +
+    "Tightened wording and removed a few filler phrases so the announcement is clearer and easier to read. " +
+    (changed ? "Adjusted roughly " + changed + " word(s) for tone and clarity." : "");
+});
+
+// Save + Copy actions
+document.getElementById("btn-save").addEventListener("click", () => {
+  alert("In the full LaunchPath AI experience, this post would be saved to 'My Saved List' so you can reuse or export it later.");
+});
+
+document.getElementById("btn-copy").addEventListener("click", async () => {
+  const text = (draftEl.value || "").trim();
+  if (!text) {
+    alert("There is no post to copy yet. Try generating a sample or writing your post.");
+    return;
+  }
+  try {
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      await navigator.clipboard.writeText(text);
+      alert("Post copied. Paste into your social app to share.");
+    } else {
+      draftEl.select();
+      document.execCommand("copy");
+      alert("Post copied. Paste into your social app to share.");
+    }
+  } catch (e) {
+    alert("Could not copy automatically. You can still select the text and copy it manually.");
+  }
+});
+
+document.getElementById("btn-download-logo").addEventListener("click", () => {
+  alert("Demo only: In a full version, this would download a PNG LaunchPath AI logo for use as a video watermark.");
+});
+</script>
+
+
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+  const btn = document.getElementById("btn-generate");
+  if (btn) {
+    btn.onclick = function () {
+      if (typeof generateSamples === "function") {
+        generateSamples();
+      }
+    };
+  }
+});
+</script>
+
+
+<script>
+function estimateSecondsFromWords(words) {
+  return Math.round((words / 150) * 60);
+}
+
+function enforceSampleLength(text) {
+  const cleaned = (text || "").replace(/\s+/g, " ").trim();
+  if (!cleaned) return cleaned;
+
+  const words = cleaned.split(" ").filter(Boolean);
+  const maxWords = 50;
+  const minWords = 35;
+
+  if (words.length > maxWords) {
+    return words.slice(0, maxWords).join(" ") + ".";
+  }
+
+  if (words.length < minWords) {
+    return cleaned + " More updates soon—thanks for following.";
+  }
+
+  return cleaned;
+}
+</script>
+<!-- Saved Items Modal -->
+<div id="lpModal" class="lp-modal hidden" aria-hidden="true">
+  <div class="lp-modal-backdrop" data-close="1"></div>
+  <div class="lp-modal-card" role="dialog" aria-modal="true" aria-labelledby="lpModalTitle">
+    <div class="lp-modal-header">
+      <h3 id="lpModalTitle">Saved</h3>
+      <button id="lpModalClose" class="lp-x" aria-label="Close">✕</button>
+    </div>
+    <div id="lpModalBody" class="lp-modal-body"></div>
+    <div class="lp-modal-footer">
+  <div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap;">
+    <a href="saved-list.html" class="lp-secondary-link">View full list</a>
+    <button id="lpExportExcel" class="remove-btn" type="button">Export Excel</button>
+    <button id="lpExportWord" class="remove-btn" type="button">Export Word</button>
+  </div>
+  <button id="lpClearType" class="lp-danger" type="button">Clear</button>
+</div>
+  </div>
+</div>
+<script>
+(() => {
+  const KEY = "lp_saved_items_v1";
+  const $ = (id) => document.getElementById(id);
+  const getSaved = () => { try { return JSON.parse(localStorage.getItem(KEY) || "[]"); } catch(e) { return []; } };
+  const setSaved = (items) => localStorage.setItem(KEY, JSON.stringify(items));
+
+  function openModal(title, items, type) {
+    $("lpModalTitle").textContent = title;
+    const body = $("lpModalBody");
+    body.innerHTML = items.length ? items.map(i => `
+      <div class="saved-row">
+        <div>
+          <div class="saved-name">${i.name}</div>
+          <div class="saved-meta">${i.note || i.meta || ""}</div>
+        </div>
+        <button class="remove-btn" data-type="${i.type}" data-id="${i.id}">Remove</button>
+      </div>
+    `).join("") : `<div class="empty">No saved items yet.</div>`;
+
+    $("lpClearType").onclick = () => {
+      const remaining = getSaved().filter(x => x.type !== type);
+      setSaved(remaining);
+      openModal(title, remaining.filter(x => x.type === type), type);
+      document.dispatchEvent(new CustomEvent("lp:saved-updated"));
+    };
+
+    $("lpModal").classList.remove("hidden");
+    $("lpModal").setAttribute("aria-hidden", "false");
+  }
+
+  function closeModal() {
+    $("lpModal").classList.add("hidden");
+    $("lpModal").setAttribute("aria-hidden", "true");
+  }
+
+  document.addEventListener("click", (e) => {
+    const remove = e.target.closest(".remove-btn");
+    if (remove) {
+      const type = remove.dataset.type;
+      const id = remove.dataset.id;
+      const remaining = getSaved().filter(x => !(x.type === type && x.id === id));
+      setSaved(remaining);
+      remove.closest(".saved-row")?.remove();
+      document.dispatchEvent(new CustomEvent("lp:saved-updated"));
+      return;
+    }
+    if (e.target?.id === "lpModalClose" || e.target?.dataset?.close === "1") closeModal();
+  });
+
+  document.addEventListener("keydown", (e) => { if (e.key === "Escape") closeModal(); });
+
+  window.LP_SAVED = {
+    getSaved,
+    setSaved,
+    openModal,
+    closeModal,
+    saveItem: (item) => {
+      const items = getSaved();
+      const exists = items.some(x => x.type === item.type && x.id === item.id);
+      if (!exists) {
+        items.push({ ...item, savedAt: new Date().toISOString() });
+        setSaved(items);
+        document.dispatchEvent(new CustomEvent("lp:saved-updated"));
+      }
+      return !exists;
+    }
+  };
+})();
+</script>
+
+<script id="lpSave_social">
+(() => {
+  if(!window.LP_SAVED) return;
+  let btn = document.getElementById("lpSaveSocialBtn");
+  if(!btn){
+    btn=document.createElement("button");
+    btn.id="lpSaveSocialBtn";
+    btn.type="button";
+    btn.style.padding="10px 14px";
+    btn.style.borderRadius="999px";
+    btn.style.border="1px solid rgba(56,189,248,.55)";
+    btn.style.background="rgba(15,23,42,.55)";
+    btn.style.color="rgba(224,242,254,.92)";
+    btn.style.cursor="pointer";
+    const mount=document.querySelector(".page-shell, .page, main") || document.body;
+    mount.insertBefore(btn, mount.firstChild);
+  }
+
+  function pickPlatform(){
+    const sel=document.querySelector('select[name="platform"], select#platform');
+    if(sel && sel.value) return sel.value;
+    return "TikTok";
+  }
+
+  function pickPostType(){
+    const sel=document.querySelector('select[name="template"], select#template');
+    if(sel && sel.value) return sel.value;
+    const h=document.querySelector("h1,h2")?.textContent || "";
+    return h.trim() ? h.trim() : "Application Journey";
+  }
+
+  btn.addEventListener("click", () => {
+    const id="s_"+Date.now();
+    const platform=pickPlatform();
+    const postType=pickPostType();
+    const saved=window.LP_SAVED.saveItem({type:"social", id, name:postType, platform, postType, savedOn:(new Date()).toLocaleDateString("en-US")});
+    btn.textContent = saved ? "Saved ✓" : "Saved";
+  });
+})();
+</script>
+</body>
+</html>

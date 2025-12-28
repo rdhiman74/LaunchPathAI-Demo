@@ -1,0 +1,1298 @@
+<!DOCTYPE html>
+
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width,initial-scale=1" name="viewport"/>
+<title>LaunchPath AI — Essay Studio</title>
+<style>
+    html{font-size:13px;}
+    :root{
+      --bg0:#020617;
+      --bg1:#0b1120;
+      --bg2:#16202f;
+      --cardA: rgba(255,255,255,.05);
+      --cardB: rgba(255,255,255,.03);
+      --stroke: rgba(255,255,255,.10);
+      --stroke2: rgba(255,255,255,.14);
+      --text:#f3f4f6;
+      --muted: rgba(243,244,246,.72);
+      --muted2: rgba(243,244,246,.55);
+      --accent:#22d3ee;
+      --accent2: rgba(34,211,238,.35);
+      --shadow: 0 22px 70px rgba(0,0,0,.55);
+      --r1: 28px;
+      --r2: 18px;
+    }
+    *{box-sizing:border-box}
+    body{
+      margin:0;
+      font-family: system-ui,-apple-system,Segoe UI,Roboto,Helvetica,Arial,sans-serif;
+      color:var(--text);
+      background:
+        radial-gradient(1200px 700px at 50% -120px, rgba(34,211,238,.22), transparent 65%),
+        radial-gradient(1000px 600px at 50% 0px, #16202f 0, #0b1120 55%, #020617 100%);
+    }
+    .wrap{max-width: 1320px; margin: 0 auto; padding: 12px;}
+    header{
+      display:flex; align-items:center; justify-content:space-between;
+      padding: 10px 2px 16px 2px;
+    }
+    .brand{font-weight:600; font-size:30px; letter-spacing:-0.02em;}
+    .subhead{margin-top:6px; color:var(--muted); font-size:14px;}
+    .grid{
+      display:grid;
+      grid-template-columns: 1fr;
+      gap: 14px;
+      align-items:start;
+      margin-top: 12px;
+    }
+    .card{
+      background: linear-gradient(180deg, var(--cardA), var(--cardB));
+      border: 1px solid var(--stroke);
+      border-radius: var(--r1);
+      box-shadow: var(--shadow);
+      padding: 12px;
+      position:relative;
+      overflow:hidden;
+    }
+    .card:after{
+      content:"";
+      position:absolute; inset:-1px;
+      border-radius: var(--r1);
+      pointer-events:none;
+      background: linear-gradient(135deg, rgba(34,211,238,.14), transparent 40%, rgba(34,211,238,.10));
+      opacity:.8;
+      mix-blend-mode: screen;
+    }
+    .card > *{position:relative}
+    .h{font-size:16.5px; font-weight:600; margin:0 0 7px 0;}
+    .p{color:var(--muted); margin:0 0 12px 0; line-height:1.55; font-size:12px;}
+    .steps{margin-top: 10px; display:grid; gap: 14px;}
+    .step{
+      display:grid; grid-template-columns: 22px 1fr; gap: 10px;
+      align-items:start;
+    }
+    .num{
+      width: 22px; height: 22px; border-radius: 9px;
+      border: 1px solid var(--accent2);
+      color: var(--accent);
+      display:flex; align-items:center; justify-content:center;
+      font-weight:600; font-size: 12px;
+      margin-top: 2px;
+    }
+    .step b{display:block; margin-bottom: 3px;}
+    .step span{color: var(--muted2); line-height: 1.5;}
+    .rightTop{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap: 10px;
+      flex-wrap:wrap;
+    }
+    .titleBlock{
+      display:flex; flex-direction:column; gap:6px;
+    }
+    .titleBlock .h{margin:0}
+    .meta{color:var(--muted2); font-size:12px;}
+    .meta b{color: var(--text);}
+    .toolbar{
+      display:flex; gap: 10px; flex-wrap:nowrap; align-items:center; justify-content:flex-end;
+      overflow-x:auto; padding-bottom: 2px;
+      scrollbar-width: thin;
+    }
+    .toolbar::-webkit-scrollbar{height:8px;}
+    .toolbar::-webkit-scrollbar-thumb{background: rgba(255,255,255,.12); border-radius:999px;}
+    .toolbar::-webkit-scrollbar-track{background: rgba(0,0,0,.12); border-radius:999px;}
+    .btn{
+      border-radius: 999px;
+      border: 1px solid var(--stroke2);
+      background: rgba(255,255,255,.05);
+      color: var(--text);
+      padding: 7px 9px;
+      font-weight:600;
+      cursor:pointer;
+      transition: transform .08s ease, background .12s ease, border-color .12s ease;
+      user-select:none;
+      white-space:nowrap;
+    }
+    .btn:hover{transform: translateY(-1px); background: rgba(255,255,255,.08);}
+    .btn.primary{
+      background: linear-gradient(135deg, rgba(34,211,238,1), rgba(34,211,238,.35));
+      border-color: rgba(34,211,238,.45);
+      color: #06101a;
+      box-shadow: 0 18px 48px rgba(34,211,238,.16);
+    }
+    .btn.ghost{
+      background: rgba(0,0,0,.15);
+    }
+    .link{
+      color: var(--accent);
+      text-decoration: underline;
+      text-underline-offset: 4px;
+      cursor:pointer;
+      font-weight: 800;
+    }
+    .tipRow{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap: 14px;
+      margin: 14px 0 12px 0;
+      color: var(--muted);
+      font-size: 12.5px;
+    }
+    .editor{border-radius:var(--r1); border:1px solid var(--stroke); background:rgba(0,0,0,.18); padding:12px; height:380px;}
+    textarea{
+      width:100%;
+      height: 100%;
+      resize:none;
+      border:none;
+      outline:none;
+      background: transparent;
+      color: var(--text);
+      font-size: 12.5px;
+      line-height: 1.6;
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+    }
+    .bottomRow{display:grid; grid-template-columns: 1fr 360px; gap: 10px;
+      margin-top: 14px;
+    }
+    .mini{background:rgba(0,0,0,.15); border:1px solid var(--stroke); border-radius:22px; padding:12px; min-height:110px;}
+    .mini h4{margin:0 0 6px 0; font-size: 16px; font-weight:600;}
+    .mini p{margin:0; color: var(--muted); line-height: 1.5;}
+    .scoreBox{
+      display:flex; flex-direction:column; gap: 10px;
+    }
+    .scoreTop{
+      display:flex; align-items:baseline; justify-content:space-between; gap: 10px;
+      margin-bottom: 2px;
+    }
+    .scoreTop .label{
+      letter-spacing:.18em; font-weight:600; font-size: 14px; opacity:.9;
+    }
+    .scoreTop .val{
+      font-size: 16px; font-weight:600;
+    }
+    .pillRow{color: var(--muted); font-size: 14px;}
+    .bar{
+      height: 12px; border-radius: 999px;
+      background: rgba(255,255,255,.08);
+      overflow:hidden;
+      border: 1px solid rgba(255,255,255,.10);
+    }
+    .bar > div{
+      height:100%;
+      width:0%;
+      background: linear-gradient(90deg, rgba(34,211,238,1), rgba(34,211,238,.35));
+    }
+    .goal{color: var(--muted); font-size: 14px; line-height: 1.4;}
+    .goal b{color: var(--accent);}
+    .hidden{display:none !important;}
+    .toast{
+      margin-top: 10px;
+      color: var(--muted);
+      font-size: 14px;
+    }
+    .toast.error{color: #fca5a5;}
+    .toast.ok{color: #86efac;}
+    .toast.warn{color: #fde68a;}
+    .bottomRow{grid-template-columns: 1fr; }
+      .editor{height: 420px;}
+    }
+  
+    .howStrip{
+      background: linear-gradient(180deg, var(--cardA), var(--cardB));
+      border: 1px solid var(--stroke);
+      border-radius: var(--r1);
+      box-shadow: var(--shadow);
+      padding: 14px 16px;
+      position:relative;
+      overflow:hidden;
+      margin-bottom: 14px;
+    }
+    .howStrip:after{
+      content:"";
+      position:absolute; inset:-1px;
+      border-radius: var(--r1);
+      pointer-events:none;
+      background: linear-gradient(135deg, rgba(34,211,238,.14), transparent 40%, rgba(34,211,238,.10));
+      opacity:.8;
+      mix-blend-mode: screen;
+    }
+    .howStrip > *{position:relative}
+    .howTop{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap: 10px;
+      flex-wrap:wrap;
+      margin-bottom: 10px;
+    }
+    .howTitle{
+      font-weight: 900;
+      font-size: 16.5px;
+    }
+    .howSub{
+      color: var(--muted2);
+      font-size: 12px;
+    }
+    .howRow{
+      display:grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 10px;
+    }
+    .howStep{
+      border: 1px solid var(--stroke);
+      background: rgba(0,0,0,.16);
+      border-radius: 18px;
+      padding: 10px 12px;
+      display:flex;
+      gap: 10px;
+      align-items:flex-start;
+      min-height: 64px;
+    }
+    .howBadge{
+      width: 24px; height: 24px;
+      border-radius: 10px;
+      border: 1px solid var(--accent2);
+      color: var(--accent);
+      display:flex; align-items:center; justify-content:center;
+      font-weight: 900;
+      font-size: 12px;
+      flex: 0 0 auto;
+      margin-top: 1px;
+    }
+    .howStep b{
+      display:block;
+      font-size: 12.5px;
+      margin-bottom: 2px;
+    }
+    .howStep span{
+      color: var(--muted2);
+      font-size: 11.5px;
+      line-height: 1.35;
+    }
+    @media (max-width: 980px){
+      .howRow{grid-template-columns: 1fr;}
+    }
+
+    .cols{
+      display:grid;
+      grid-template-columns: 1.35fr .85fr;
+      gap: 14px;
+      align-items:start;
+    }
+    }
+    .coachCard .hRow{
+      display:flex; align-items:flex-start; justify-content:space-between; gap: 10px;
+      margin-bottom: 10px;
+    }
+    .coachCard .hRow .h{
+      font-weight: 900;
+      font-size: 16px;
+      margin-bottom: 2px;
+    }
+    .coachCard .hRow .sub{
+      color: var(--muted2);
+      font-size: 12px;
+      line-height: 1.35;
+    }
+    .scorePill{
+      border: 1px solid var(--accent2);
+      color: var(--text);
+      background: rgba(34,211,238,.10);
+      border-radius: 999px;
+      padding: 8px 12px;
+      font-weight: 900;
+      min-width: 88px;
+      text-align:center;
+      box-shadow: 0 10px 30px rgba(0,0,0,.35);
+    }
+    .miniBar{
+      height: 10px;
+      border-radius: 999px;
+      background: rgba(255,255,255,.08);
+      border: 1px solid rgba(255,255,255,.12);
+      overflow:hidden;
+      margin: 8px 0 2px;
+    }
+    .miniBar > div{
+      height: 100%;
+      width: 0%;
+      background: var(--accent);
+      border-radius: 999px;
+      transition: width .25s ease;
+    }
+    .coachBlocks{
+      display:grid;
+      grid-template-columns: 1fr;
+      gap: 12px;
+      margin-top: 12px;
+    }
+    .coachBlock{
+      border: 1px solid var(--stroke);
+      background: rgba(0,0,0,.16);
+      border-radius: var(--r2);
+      padding: 12px;
+    }
+    .coachBlock .t{
+      font-weight: 900;
+      margin-bottom: 6px;
+      font-size: 13px;
+    }
+    .coachBlock .body{
+      color: var(--muted2);
+      font-size: 12px;
+      line-height: 1.45;
+    }
+
+
+/* --- Layout fix: force two-column editor + coaching panel side-by-side --- */
+.grid{
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 18px;
+}
+.cols{
+  display: grid;
+  grid-template-columns: minmax(560px, 1.6fr) minmax(360px, 1fr);
+  gap: 18px;
+  align-items: start;
+}
+/* keep both columns even on smaller screens; allow horizontal scroll instead of stacking */
+html, body{
+  min-width: 1024px;
+}
+
+/* ===== LP Step 1 Highlights + Issue Map (demo wiring) ===== */
+.draftView{
+  width:100%;
+  min-height:260px;
+  padding:14px 14px 14px;
+  border-radius:16px;
+  border:1px solid rgba(255,255,255,.10);
+  background:rgba(255,255,255,.03);
+  color:rgba(255,255,255,.92);
+  line-height:1.55;
+  white-space:pre-wrap;
+}
+mark[data-issue]{
+  background:rgba(250,204,21,.22); /* highlight */
+  border:1px solid rgba(250,204,21,.34);
+  border-radius:10px;
+  padding:2px 4px;
+  margin:0 1px;
+  position:relative;
+  box-shadow:0 0 0 1px rgba(250,204,21,.10), 0 10px 30px rgba(0,0,0,.20);
+}
+mark[data-issue].w{ background:rgba(250,204,21,.20); border-color:rgba(250,204,21,.32);} /* highlight */
+mark[data-issue].c{ background:rgba(250,204,21,.16); border-color:rgba(250,204,21,.22); }
+mark[data-issue].p{ background:rgba(52,211,153,.14); border-color:rgba(52,211,153,.20); }
+mark[data-issue].r{ background:rgba(251,113,133,.14); border-color:rgba(251,113,133,.20); }
+
+.rewriteTip{
+  position:fixed;
+  left:0;
+  top:0;
+  width:300px;
+  max-width:calc(100vw - 32px);
+  z-index:9999;
+  background:#0f172a;
+  border:1px solid rgba(255,255,255,.15);
+  border-radius:12px;
+  padding:10px;
+  color:#fff;
+  font-size:12px;
+  display:none;
+  box-shadow:0 20px 40px rgba(0,0,0,.45);
+  max-height:240px;
+  overflow:auto;
+}
+.rewriteTip::-webkit-scrollbar{ width:10px; }
+.rewriteTip::-webkit-scrollbar-thumb{ background:rgba(255,255,255,.12); border-radius:10px; }
+
+mark[data-issue].tip-open .rewriteTip{ display:block; }
+.tipTitle{ font-weight:900; letter-spacing:.06em; text-transform:uppercase; font-size:11px; color:#38bdf8; margin-bottom:6px; }
+.tipBody{ line-height:1.35; margin-bottom:8px; color:rgba(255,255,255,.92); }
+.copyBtn{
+  background:rgba(56,189,248,.14);
+  border:1px solid rgba(56,189,248,.40);
+  color:#e0f2fe;
+  border-radius:999px;
+  padding:5px 10px;
+  font-size:11px;
+  font-weight:850;
+  cursor:pointer;
+}
+.copyBtn:hover{ background:rgba(56,189,248,.22); }
+
+.issueList{ display:flex; flex-direction:column; gap:10px; margin-top:8px; }
+.issueItem{
+  border:1px solid rgba(255,255,255,.12);
+  background:rgba(255,255,255,.04);
+  border-radius:14px;
+  padding:10px;
+}
+.issueHead{ display:flex; justify-content:space-between; gap:10px; align-items:flex-start; }
+.issueTag{ font-size:11px; font-weight:900; letter-spacing:.08em; text-transform:uppercase; color:#38bdf8; }
+.issueLoc{ font-size:11px; color:rgba(255,255,255,.62); font-weight:750; margin-top:2px; }
+.issueWhy{ margin-top:6px; color:rgba(255,255,255,.82); font-size:12px; line-height:1.35; font-weight:650; }
+.issueRewrite{
+  margin-top:8px;
+  border:1px solid rgba(56,189,248,.30);
+  background:rgba(56,189,248,.10);
+  border-radius:12px;
+  padding:8px;
+  font-size:12px;
+  color:rgba(255,255,255,.92);
+  line-height:1.35;
+}
+.issueActions{ display:flex; gap:8px; margin-top:8px; flex-wrap:wrap; }
+.miniBtn{
+  border-radius:999px;
+  border:1px solid rgba(255,255,255,.14);
+  background:rgba(0,0,0,.18);
+  color:rgba(255,255,255,.92);
+  font-size:11px;
+  font-weight:850;
+  padding:5px 10px;
+  cursor:pointer;
+}
+.miniBtn.primary{ border-color:rgba(56,189,248,.45); background:rgba(56,189,248,.14); }
+.miniBtn:hover{ background:rgba(255,255,255,.08); }
+.miniBtn.primary:hover{ background:rgba(56,189,248,.22); }
+
+
+/* --- Patch v3: improve highlight readability + smaller hover popover --- */
+mark[data-issue]{
+  position: relative;
+  color: #ffffff !important;
+  font-weight: 600;
+}
+mark[data-issue]::selection{ background: rgba(255,255,255,.18); }
+mark[data-issue].hl-yellow,
+mark[data-issue].hl-warn{
+  background: rgba(245, 208, 66, .28) !important;
+  box-shadow: inset 0 -2px 0 rgba(245, 208, 66, .55);
+}
+mark[data-issue].hl-green,
+mark[data-issue].hl-good{
+  background: rgba(45, 212, 191, .18) !important;
+  box-shadow: inset 0 -2px 0 rgba(45, 212, 191, .35);
+}
+mark[data-issue].hl-red,
+mark[data-issue].hl-risk{
+  background: rgba(244, 63, 94, .16) !important;
+  box-shadow: inset 0 -2px 0 rgba(244, 63, 94, .32);
+}
+
+/* Hover rewrite popover */
+mark[data-issue] .rewriteTip{
+  width: min(320px, calc(100vw - 24px)) !important;
+  max-height: min(260px, calc(100vh - 24px)) !important;
+  overflow: auto !important;
+  left: 50% !important;
+  right: auto !important;
+  transform: translateX(-50%) translateY(10px) !important;
+  top: 100% !important;
+  bottom: auto !important;
+}
+mark[data-issue]:hover .rewriteTip,
+mark[data-issue]:focus-within .rewriteTip{
+  display: block !important;
+}
+.rewriteTip{
+  display: none;
+  position: absolute;
+  z-index: 9999;
+  padding: 14px 14px 12px;
+  border-radius: 18px;
+  background: rgba(9, 18, 32, .96);
+  border: 1px solid rgba(255,255,255,.10);
+  box-shadow: 0 18px 60px rgba(0,0,0,.55);
+  backdrop-filter: blur(14px);
+}
+.rewriteTip .tipTitle{
+  font-size: 12px;
+  letter-spacing: .12em;
+  text-transform: uppercase;
+  color: rgba(34,211,238,.95);
+  margin: 0 0 10px 0;
+}
+.rewriteTip .tipBody{
+  font-size: 14px;
+  line-height: 1.45;
+  color: rgba(255,255,255,.92);
+  margin: 0 0 12px 0;
+  white-space: normal;
+}
+.rewriteTip .copyBtn{
+  font-size: 13px;
+  padding: 9px 12px;
+  border-radius: 999px;
+}
+@media (max-width: 820px){
+  mark[data-issue] .rewriteTip{
+    left: 12px !important;
+    transform: translateY(10px) !important;
+  }
+}
+
+
+/* ===== Step 2: Before/After modal ===== */
+.baModal{
+  position:fixed; inset:0;
+  background:rgba(0,0,0,.55);
+  display:none;
+  align-items:center; justify-content:center;
+  padding:18px;
+  z-index:9999;
+}
+.baModal.show{ display:flex; }
+.baCard{
+  width:min(1000px, 96vw);
+  max-height:88vh;
+  overflow:auto;
+  background:rgba(10,18,34,.96);
+  border:1px solid rgba(255,255,255,.14);
+  border-radius:18px;
+  box-shadow:0 30px 80px rgba(0,0,0,.55);
+  padding:14px;
+}
+.baTop{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:10px}
+.baTitle{font-weight:900;color:rgba(255,255,255,.92);letter-spacing:.06em;text-transform:uppercase;font-size:12px}
+.baGrid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.baLabel{font-size:11px;font-weight:850;color:rgba(255,255,255,.70);margin:2px 0 6px}
+.baBox{
+  border:1px solid rgba(255,255,255,.12);
+  background:rgba(255,255,255,.04);
+  border-radius:14px;
+  padding:10px;
+  color:rgba(255,255,255,.90);
+  white-space:pre-wrap;
+  line-height:1.5;
+  font-size:13px;
+}
+.baActions{display:flex;justify-content:flex-end;margin-top:10px}
+@media (max-width:820px){ .baGrid{grid-template-columns:1fr} }
+
+</style>
+
+<style>
+/* Injected to match College Match header exactly */
+LaunchPath unified header (scoped) ===== */
+.lp-header{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:16px;
+  margin-bottom:22px;
+}
+.lp-header-right{
+  display:flex;
+  align-items:center;
+  gap:12px;
+}
+.brand-lockup{display:flex;align-items:center;gap:12px;}
+.brand-mark{
+  width:40px;height:40px;border-radius:999px;
+  background:radial-gradient(circle at 30% 0,#22d3ee 0,#0ea5e9 40%,#111827 95%);
+  box-shadow:0 0 0 2px rgba(56,189,248,.6),0 14px 30px rgba(15,23,42,.9);
+}
+.brand-text-main{
+  font-size:1.05rem;
+  letter-spacing:.14em;
+  text-transform:uppercase;
+  font-weight:700;
+}
+.brand-text-sub{
+  font-size:.86rem;
+  color:#cbd5f5;
+}
+.lp-nav{display:flex;align-items:center;gap:12px;}
+.lp-nav-link{
+  padding:10px 16px;
+  border-radius:999px;
+  border:1px solid rgba(56,189,248,.45);
+  background:rgba(15,23,42,.55);
+  color:rgba(224,242,254,.86);
+  text-decoration:none;
+  font-size:.86rem;
+  line-height:1.1;
+  white-space:nowrap;
+}
+.lp-nav-link:hover{border-color:rgba(56,189,248,.75);background:rgba(15,23,42,.75);}
+.lp-actions{display:flex;align-items:center;gap:10px;}
+.lp-action{
+  padding:10px 16px;
+  border-radius:999px;
+  text-decoration:none;
+  font-size:.86rem;
+  white-space:nowrap;
+  border:1px solid rgba(56,189,248,.75);
+  background:rgba(15,23,42,.65);
+  color:rgba(224,242,254,.92);
+}
+.lp-action.lp-school{
+  border-color:rgba(168,85,247,.75);
+}
+.lp-action:hover{filter:brightness(1.05);}
+@media(max-width:840px){
+  .lp-header{flex-direction:column;align-items:flex-start;}
+  .lp-header-right{width:100%;justify-content:space-between;}
+}
+
+/* ===== LaunchPath unified header (2 buttons) ===== */
+.lp-header{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:16px;
+  margin-bottom:22px;
+}
+.lp-header-right{display:flex;align-items:center;gap:12px;margin-left:auto;justify-content:flex-end;}
+.brand-lockup{display:flex;align-items:center;gap:12px;}
+.brand-mark{
+  width:40px;height:40px;border-radius:999px;
+  background:radial-gradient(circle at 30% 0,#22d3ee 0,#0ea5e9 40%,#111827 95%);
+  box-shadow:0 0 0 2px rgba(56,189,248,.6),0 14px 30px rgba(15,23,42,.9);
+}
+.brand-text-main{
+  font-size:1.05rem;
+  letter-spacing:.14em;
+  text-transform:uppercase;
+  font-weight:700;
+}
+.brand-text-sub{font-size:.86rem;color:#cbd5f5;}
+.lp-nav{display:flex;align-items:center;gap:12px;margin-left:auto;justify-content:flex-end;}
+.lp-nav-link{
+  padding:10px 16px;
+  border-radius:999px;
+  border:1px solid rgba(56,189,248,.45);
+  background:rgba(15,23,42,.55);
+  color:rgba(224,242,254,.86);
+  text-decoration:none;
+  font-size:.86rem;
+  line-height:1.1;
+  white-space:nowrap;
+}
+.lp-nav-link:hover{border-color:rgba(56,189,248,.75);background:rgba(15,23,42,.75);}
+.lp-actions{display:flex;align-items:center;gap:10px;}
+.lp-action{
+  padding:10px 16px;
+  border-radius:999px;
+  text-decoration:none;
+  font-size:.86rem;
+  white-space:nowrap;
+  border:1px solid rgba(56,189,248,.75);
+  background:rgba(15,23,42,.65);
+  color:rgba(224,242,254,.92);
+}
+.lp-action.lp-school{border-color:rgba(168,85,247,.75);}
+@media(max-width:840px){
+  .lp-header{flex-direction:column;align-items:flex-start;}
+  .lp-header-right{width:100%;justify-content:space-between;}
+}
+/* ===== End header ===== */
+
+</style>
+</head>
+<body>
+<div class="wrap">
+<header class="lp-header">
+  <div class="brand-lockup">
+    <div class="brand-mark"></div>
+    <div class="brand-text">
+      <div class="brand-text-main">LAUNCHPATH AI</div>
+      <div class="brand-text-sub">College Match · Essays · ROI · Social Studio</div>
+    </div>
+  </div>
+  <nav class="lp-nav">
+    <a class="lp-nav-link" href="index.html">Home</a>
+    <a class="lp-nav-link" href="student-workplace.html">Student Workplace</a>
+  </nav>
+</header>
+<div class="grid">
+<!-- LEFT: How it works -->
+<div aria-label="How Essay Studio works (horizontal)" class="howStrip">
+<div class="howTop">
+<div>
+<div class="howTitle">How Essay Studio works</div>
+<div class="howSub">A simple 3-step workflow students can finish in minutes.</div>
+</div>
+</div>
+<div class="howRow">
+<div class="howStep">
+<div class="howBadge">1</div>
+<div>
+<b>Strategy Review</b>
+<span>Coaching on structure, story, voice, and clarity + prioritized fixes.</span>
+</div>
+</div>
+<div class="howStep">
+<div class="howBadge">2</div>
+<div>
+<b>Highlighted Corrections</b>
+<span>Up to 20 key improvements highlighted directly in the draft.</span>
+</div>
+</div>
+<div class="howStep">
+<div class="howBadge">3</div>
+<div>
+<b>Final Polish</b>
+<span>Submission-ready cleanup while preserving student voice.</span>
+</div>
+</div>
+</div>
+</div>
+<div class="cols">
+<section aria-label="Essay Studio editor" class="card">
+<div class="rightTop">
+<div class="titleBlock">
+<div class="h">Essay Studio</div>
+<div class="meta">Write, review, and polish your college essay draft with AI support.</div>
+</div>
+<div class="meta" id="wordMeta">Words: <b id="wordCount">0</b> / 650</div>
+<div class="toolbar">
+<button class="btn primary" id="btnStep1" title="Step 1: Coaching + Outline + Smart Review">Step 1: Strategy Review</button>
+<button class="btn ghost" id="btnStep2" title="Step 2: Final Polish draft (after Step 1)">Step 2: Final Polish</button>
+<button class="btn ghost" id="btnBeforeAfter" title="Toggle before/after view">Before / After</button>
+<button class="btn ghost" id="btnSave" title="Save this draft to your list">Save to My List</button>
+</div>
+</div>
+<div class="tipRow">
+<div><b>Draft</b>   <span class="link" id="viewSamples">View 5 sample essays</span></div>
+<div>Tip: Use samples for ideas, then rewrite in your own words and voice.</div>
+</div>
+<div class="editor">
+<textarea id="draft" placeholder="Start writing here, or paste a paragraph you want LaunchPath AI to review..."></textarea>
+<div id="draftView" class="draftView hidden" aria-label="Highlighted Draft Preview"></div>
+</div>
+<div class="bottomRow">
+<div class="pillRow">Structure · Story · Voice · Polish</div>
+<div aria-label="Draft strength bar" class="bar"><div id="barFill"></div></div>
+<div class="goal">Goal: <b>80+</b> before submit · Admissions lens</div>
+</div>
+</section><section aria-label="LP Coaching Panel" class="card coachCard">
+<div class="hRow">
+<div>
+<div class="h">LP Coaching Panel</div>
+<div class="sub">Target readiness: <b>80+</b>. Run <b>Step 1</b> to generate coaching + highlights.</div>
+</div>
+<div class="scorePill"><span id="scoreVal">—</span>/100</div>
+</div>
+<div aria-label="Readiness score bar" class="miniBar">
+<div id="coachBarFill"></div>
+</div>
+<div style="display:flex; justify-content:space-between; color: var(--muted2); font-size: 11.5px;">
+<span>0</span><span>Target: 80</span><span>100</span>
+</div>
+<div class="coachBlocks">
+<div aria-label="Strategy review summary" class="coachBlock">
+<div class="t">Strategy Review Summary</div>
+<div class="body" id="feedbackText">Click <b>Step 1: Strategy Review</b> to see strengths, fix‑next items, and next steps.</div>
+</div>
+<div aria-label="Suggested outline" class="coachBlock">
+<div class="t">Suggested outline</div>
+<div class="body" id="outlineText">Click <b>Step 1: Strategy Review</b> to generate a suggested outline for this essay.</div>
+</div>
+<div aria-label="LP Issue Map" class="coachBlock">
+  <div class="t">LP Issue Map (Top Fixes)</div>
+  <div class="body">
+    <div id="issueList" class="issueList"></div>
+  </div>
+</div>
+
+<div aria-label="Final Polish Preview" class="coachBlock" id="polishBlock" style="display:none">
+  <div class="t">Final Polish (Step 2)</div>
+  <div class="body">
+    <div id="polishPreview" style="white-space:pre-wrap;line-height:1.5;color:rgba(255,255,255,.92)"></div>
+    <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:10px">
+      <button class="miniBtn primary" id="copyPolished" type="button">Copy Final</button>
+      <button class="miniBtn" id="openBeforeAfter2" type="button">Before / After</button>
+    </div>
+  </div>
+</div>
+
+<div aria-label="Highlights note" class="coachBlock">
+<div class="t">Highlighted corrections</div>
+<div class="body">Up to <b>20</b> key improvements will be highlighted directly in the draft after Step 1.</div>
+</div>
+</div>
+</section></div>
+<div class="toast" id="toast"></div>
+
+
+</div></div>
+
+
+
+
+
+<script>
+/* ===== LP Step 1: highlight up to 20 + map to right pane (demo) ===== */
+(function(){
+  const MAX = 20;
+  const FILLERS = ["very","really","just","kind of","sort of","basically","literally","actually","maybe","a lot"];
+  const VAGUE = ["good","bad","nice","great","amazing","awesome","interesting","important","thing","things","stuff"];
+  const PASSIVE = /\b(was|were|is|are|been|being)\b\s+\b\w+(ed|en)\b/i;
+  const WEAK_START = /^(there is|there are|i think|i feel|in conclusion|overall)\b/i;
+
+  const $ = (id)=>document.getElementById(id);
+
+  function sentenceSplit(text){
+    return text.replace(/\s+/g,' ')
+      .split(/(?<=[\.\!\?])\s+(?=[A-Z0-9“"'])/)
+      .map(s=>s.trim())
+      .filter(Boolean);
+  }
+  function esc(s){
+    return (s||"").replace(/[&<>"']/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));
+  }
+
+  function score(sentence, idx){
+    const issues = [];
+    const lower = sentence.toLowerCase();
+    const wc = sentence.split(/\s+/).filter(Boolean).length;
+
+    if(wc >= 28) issues.push({type:"Clarity", cls:"c", sev:3, why:"This sentence is long. Split it into two and lead with the key point."});
+    if(PASSIVE.test(sentence)) issues.push({type:"Voice", cls:"p", sev:2, why:"Passive voice reduces impact. Rewrite in active voice (who did what?)."});
+    if(WEAK_START.test(lower)) issues.push({type:"Hook", cls:"r", sev:3, why:"Weak opener. Start with a specific moment or action to hook the reader."});
+
+    const fillerHits = FILLERS.filter(w=>lower.includes(w));
+    if(fillerHits.length) issues.push({type:"Wording", cls:"w", sev:1, why:`Remove filler (${fillerHits.slice(0,3).join(", ")}). Be more direct.`});
+
+    const vagueHits = VAGUE.filter(w=>new RegExp(`\\b${w}\\b`,'i').test(sentence));
+    if(vagueHits.length) issues.push({type:"Specificity", cls:"w", sev:2, why:`Replace vague words (${vagueHits.slice(0,3).join(", ")}). Add details, numbers, or outcomes.`});
+
+    if(/\b(i learned|i realized|i understood)\b/i.test(sentence) && wc < 22){
+      issues.push({type:"Depth", cls:"p", sev:2, why:"Insight is stated but not proven. Add a short example or what changed in your behavior."});
+    }
+
+    issues.forEach(it=>{
+      it.sidx = idx;
+      it.sentence = sentence;
+    });
+    return issues;
+  }
+
+  function generateRewrite(sentence, type){
+    const s = sentence.trim().replace(/\s+/g,' ');
+    if(type==="Clarity"){
+      const parts = s.split(/,\s+| and /);
+      if(parts.length>=2) return parts[0].trim()+". "+parts.slice(1).join(" ").trim();
+      return "Rewrite shorter: Start with the main action, then add one supporting detail.";
+    }
+    if(type==="Hook"){
+      return "Start with a specific moment: “In [place/time], I [did action], and it changed how I [think/act].”";
+    }
+    if(type==="Voice"){
+      return s.replace(/\bwas\b|\bwere\b|\bbeen\b|\bbeing\b/gi,"")
+              .replace(/\s{2,}/g,' ')
+              .trim();
+    }
+    if(type==="Specificity"){
+      return s.replace(/\b(good|great|nice|amazing|awesome|interesting|important)\b/gi,"meaningful")
+              .replace(/\bthings\b|\bstuff\b/gi,"specific outcomes")
+              .trim();
+    }
+    if(type==="Depth"){
+      return s + " For example, I [specific action] and the result was [measurable outcome].";
+    }
+    // Wording
+    return s.replace(/\bvery\b|\breally\b|\bjust\b|\bkind of\b|\bsort of\b|\bbasically\b|\bliterally\b|\bactually\b/gi,"")
+            .replace(/\s{2,}/g,' ')
+            .trim();
+  }
+
+  function renderIssueList(chosen){
+    const list = $("issueList");
+    if(!list) return;
+    list.innerHTML = "";
+    if(!chosen.length){
+      list.innerHTML = '<div style="color:rgba(255,255,255,.65);font-size:12px">No issues detected yet. Paste an essay and run Step 1.</div>';
+      return;
+    }
+    chosen.slice(0,10).forEach((it,i)=>{
+      const rw = generateRewrite(it.sentence, it.type);
+      const el = document.createElement("div");
+      el.className = "issueItem";
+      el.innerHTML = `
+        <div class="issueHead">
+          <div>
+            <div class="issueTag">#${i+1} ${esc(it.type)}</div>
+            <div class="issueLoc">Sentence ${it.sidx+1}</div>
+          </div>
+          <button class="miniBtn" data-jump="${it.sidx}">Jump</button>
+        </div>
+        <div class="issueWhy">${esc(it.why)}</div>
+        <div class="issueRewrite" id="rw_${i}">${esc(rw)}</div>
+        <div class="issueActions">
+          <button class="miniBtn primary" data-copy="${i}">Copy rewrite</button>
+        </div>
+      `;
+      list.appendChild(el);
+    });
+
+    list.querySelectorAll("[data-copy]").forEach(btn=>{
+      btn.addEventListener("click", ()=>{
+        const i = btn.getAttribute("data-copy");
+        const txt = document.getElementById("rw_"+i)?.innerText || "";
+        navigator.clipboard.writeText(txt);
+        btn.textContent = "Copied";
+        setTimeout(()=>btn.textContent="Copy rewrite",1200);
+      });
+    });
+    list.querySelectorAll("[data-jump]").forEach(btn=>{
+      btn.addEventListener("click", ()=>{
+        const idx = parseInt(btn.getAttribute("data-jump"),10);
+        const mark = document.querySelector(`mark[data-sidx="${idx}"]`);
+        if(mark){
+          mark.scrollIntoView({behavior:"smooth", block:"center"});
+          mark.style.outline="2px solid rgba(56,189,248,.60)";
+          setTimeout(()=>mark.style.outline="",1100);
+        }
+      });
+    });
+  }
+
+  function apply(text){
+    const draft = $("draft");
+    const view = $("draftView");
+    if(!draft || !view) return;
+
+    const sents = sentenceSplit(text);
+    let issues = [];
+    sents.forEach((s,i)=> issues = issues.concat(score(s,i)));
+    issues.sort((a,b)=> (b.sev-a.sev) || (a.sidx-b.sidx));
+
+    const chosenAll = issues.slice(0, MAX);
+    // pick one issue per sentence (highest severity)
+    const bySent = new Map();
+    chosenAll.forEach(it=>{
+      const cur = bySent.get(it.sidx);
+      if(!cur || it.sev > cur.sev) bySent.set(it.sidx, it);
+    });
+
+    // Build highlighted HTML
+    let out = "";
+    sents.forEach((s,i)=>{
+      const it = bySent.get(i);
+      if(it){
+        const rw = generateRewrite(s, it.type);
+        out += `<mark data-issue="${esc(it.type)}" data-sidx="${i}" class="${it.cls}">${esc(s)}
+          <span class="rewriteTip">
+            <div class="tipTitle">LP Suggested Rewrite</div>
+            <div class="tipBody">${esc(rw)}</div>
+            <button class="copyBtn" data-copy-inline="${i}">Copy suggestion</button>
+          </span>
+        </mark> `;
+      } else {
+        out += esc(s) + " ";
+      }
+    });
+
+    view.innerHTML = out.trim();
+    view.classList.remove("hidden");
+    draft.classList.add("hidden");
+
+    // wire inline copy
+    view.querySelectorAll("[data-copy-inline]").forEach(btn=>{
+      btn.addEventListener("click", (e)=>{
+        e.preventDefault(); e.stopPropagation();
+        const idx = parseInt(btn.getAttribute("data-copy-inline"),10);
+        const sent = sents[idx] || "";
+        const it = bySent.get(idx);
+        const rw = generateRewrite(sent, it?.type || "Wording");
+        navigator.clipboard.writeText(rw);
+        btn.textContent = "Copied";
+        setTimeout(()=>btn.textContent="Copy suggestion",1200);
+      });
+    });
+
+    // Update coaching text
+    const fb = $("feedbackText");
+    if(fb){
+      fb.innerHTML = `Found <b>${Math.min(MAX, chosenAll.length)}</b> priority improvements. Use the Issue Map to jump to exact lines.`;
+    }
+    const ot = $("outlineText");
+    if(ot){
+      ot.innerHTML = `Suggested flow: <b>Hook → Context → Challenge → Action → Result → Reflection</b>. Make each section specific with concrete moments and outcomes.`;
+    }
+
+    // Update score (simple)
+    const scoreVal = $("scoreVal");
+    const fill = $("coachBarFill");
+    if(scoreVal){
+      const base = 90;
+      const penalty = Math.min(50, chosenAll.length * 2);
+      const score = Math.max(35, base - penalty);
+      scoreVal.textContent = String(score);
+      if(fill) fill.style.width = score + "%";
+    }
+
+    // Build right pane issue list
+    renderIssueList(chosenAll);
+  }
+
+  function runStep1(){
+    const draft = $("draft");
+    if(!draft) return;
+    const text = (draft.value||"").trim();
+    const words = text.split(/\s+/).filter(Boolean).length;
+    if(words < 20){
+      alert("Paste a longer essay (20+ words) to run Strategy Review.");
+      return;
+    }
+    apply(text);
+  }
+
+  // Wire Step 1 button
+  const btn = $("btnStep1");
+  if(btn){
+    btn.addEventListener("click", (e)=>{ e.preventDefault(); runStep1(); });
+  }
+
+  // Keep Before/After toggle working
+  const ba = $("btnBeforeAfter");
+  if(ba){
+    ba.addEventListener("click", (e)=>{
+      e.preventDefault();
+      const draft = $("draft");
+      const view = $("draftView");
+      if(!draft || !view) return;
+      const showing = !view.classList.contains("hidden");
+      if(showing){
+        view.classList.add("hidden");
+        draft.classList.remove("hidden");
+      } else {
+        // If view is empty, run Step 1; else show view
+        if(!view.innerHTML.trim()) runStep1();
+        else { draft.classList.add("hidden"); view.classList.remove("hidden"); }
+      }
+    });
+  }
+})();
+</script>
+<script>
+/* ===== Step 2 modal-first + Apply fixes from Issue Map (stable override) ===== */
+(function(){
+  const $ = (id)=>document.getElementById(id);
+  let beforeText = "";
+  let afterText = "";
+  let lastIssues = [];   // store issues with sentence index + rewrite
+
+  function getDraftText(){
+    const ta = $("draft");
+    return (ta?.value || "").trim();
+  }
+  function setDraftText(t){
+    const ta = $("draft");
+    if(ta) ta.value = t;
+  }
+
+  function polish(text){
+    // deterministic demo polish (still)
+    let t = (text||"").trim();
+    t = t.replace(/\s+/g, " ");
+    t = t.replace(/\bvery\b|\breally\b|\bjust\b|\bbasically\b|\bliterally\b|\bactually\b/gi, "");
+    t = t.replace(/\s{2,}/g, " ").trim();
+    t = t.replace(/\bi think\b/gi, "I believe");
+    t = t.replace(/\bthings\b/gi, "factors");
+    // basic sentence capitalization
+    t = t.split(/(?<=[\.\!\?])\s+/).map(s=>{
+      s = s.trim();
+      if(!s) return s;
+      return s.charAt(0).toUpperCase() + s.slice(1);
+    }).join(" ");
+    return t;
+  }
+
+  function sentenceSplit(text){
+    return text.replace(/\s+/g,' ')
+      .split(/(?<=[\.\!\?])\s+(?=[A-Z0-9“"'])/)
+      .map(s=>s.trim()).filter(Boolean);
+  }
+
+  function openModal(mode){
+    // mode: "after" or "split"
+    const m = $("baModal");
+    if(!m) return;
+    const grid = m.querySelector(".baGrid");
+    const beforeCol = grid?.children?.[0];
+    const afterCol = grid?.children?.[1];
+
+    if(mode === "after"){
+      $("baModeLabel").textContent = "Final Polish";
+      $("baSubLabel").textContent = "Polished version preview";
+      if(beforeCol) beforeCol.style.display = "none";
+      if(afterCol){
+        afterCol.style.display = "";
+        afterCol.querySelector(".baLabel").textContent = "After (Final Polish)";
+      }
+    } else {
+      $("baModeLabel").textContent = "Before / After";
+      $("baSubLabel").textContent = "Compare your original draft to the polished version";
+      if(beforeCol) beforeCol.style.display = "";
+      if(afterCol){
+        afterCol.style.display = "";
+        afterCol.querySelector(".baLabel").textContent = "After (Final Polish)";
+      }
+    }
+
+    $("baBefore").textContent = beforeText;
+    $("baAfter").textContent = afterText;
+
+    m.classList.add("show");
+    m.setAttribute("aria-hidden","false");
+  }
+  function closeModal(){
+    const m = $("baModal");
+    m?.classList.remove("show");
+    m?.setAttribute("aria-hidden","true");
+  }
+
+  function runStep2(){
+    const text = getDraftText();
+    if(text.split(/\s+/).filter(Boolean).length < 20){
+      alert("Paste a longer essay (20+ words) to run Final Polish.");
+      return;
+    }
+    beforeText = text;
+    afterText = polish(text);
+    openModal("after"); // immediate popup as requested
+  }
+
+  // Wire Step2 button (force)
+  const b2 = $("btnStep2");
+  if(b2){
+    b2.addEventListener("click", (e)=>{ e.preventDefault(); runStep2(); }, true);
+  }
+
+  // Wire top Before/After button to split mode (if Step2 ran, otherwise run Step2 then split)
+  const topBA = $("btnBeforeAfter");
+  if(topBA){
+    topBA.addEventListener("click", (e)=>{
+      e.preventDefault();
+      const text = getDraftText();
+      if(!afterText){
+        beforeText = text;
+        afterText = polish(text);
+      }
+      openModal("split");
+    }, true);
+  }
+
+  // Wire right-pane Before/After button (if exists)
+  const oba = $("openBeforeAfter2");
+  if(oba){
+    oba.addEventListener("click", (e)=>{
+      e.preventDefault();
+      const text = getDraftText();
+      if(!afterText){
+        beforeText = text;
+        afterText = polish(text);
+      }
+      openModal("split");
+    }, true);
+  }
+
+  // Modal buttons
+  $("closeBAModal")?.addEventListener("click", closeModal);
+  $("baModal")?.addEventListener("click", (e)=>{ if(e.target === $("baModal")) closeModal(); });
+
+  $("copyAfter")?.addEventListener("click", ()=>{
+    if(!afterText) return;
+    navigator.clipboard.writeText(afterText);
+    const b = $("copyAfter");
+    b.textContent = "Copied";
+    setTimeout(()=>b.textContent="Copy After", 1200);
+  });
+
+  $("replaceDraft")?.addEventListener("click", ()=>{
+    if(!afterText) return;
+    setDraftText(afterText);
+    closeModal();
+    // Show textarea again (student can keep editing)
+    const dv = $("draftView");
+    const ta = $("draft");
+    if(dv && ta){
+      dv.classList.add("hidden");
+      ta.classList.remove("hidden");
+    }
+  });
+
+  /* ===== Apply rewrite from Issue Map (if Issue Map exists) =====
+     We attach event delegation to #issueList and support buttons with data-apply + data-copy.
+  */
+  function applySentenceRewrite(sidx, rewrite){
+    const text = getDraftText();
+    const sents = sentenceSplit(text);
+    if(sidx < 0 || sidx >= sents.length) return;
+    sents[sidx] = rewrite;
+    const updated = sents.join(" ");
+    setDraftText(updated);
+
+    // Rerun Step1 if runSmartReview exists to refresh highlights/map
+    if(typeof window.runSmartReview === "function"){
+      try{ window.runSmartReview(); } catch(e){ /* ignore */ }
+    }
+  }
+
+  const issueList = $("issueList");
+  if(issueList){
+    issueList.addEventListener("click", (e)=>{
+      const btn = e.target.closest("button");
+      if(!btn) return;
+      const applyIdx = btn.getAttribute("data-apply");
+      if(applyIdx !== null){
+        const i = parseInt(applyIdx,10);
+        const rw = document.getElementById("rw_"+i)?.innerText || "";
+        const sidx = parseInt(btn.getAttribute("data-sidx"),10);
+        if(rw && Number.isFinite(sidx)) applySentenceRewrite(sidx, rw);
+      }
+    });
+  }
+
+  // Patch existing Issue Map rendering: add Apply buttons if missing
+  function patchIssueMapApplyButtons(){
+    const list = $("issueList");
+    if(!list) return;
+    list.querySelectorAll(".issueItem").forEach((item, i)=>{
+      const headLoc = item.querySelector(".issueLoc");
+      const sMatch = headLoc?.textContent?.match(/Sentence\s+(\d+)/i);
+      const sidx = sMatch ? (parseInt(sMatch[1],10)-1) : null;
+
+      const actions = item.querySelector(".issueActions");
+      if(actions && !actions.querySelector("[data-apply]")){
+        const b = document.createElement("button");
+        b.className = "miniBtn";
+        b.type = "button";
+        b.textContent = "Apply";
+        if(sidx !== null){
+          b.setAttribute("data-apply", String(i));
+          b.setAttribute("data-sidx", String(sidx));
+        }
+        actions.appendChild(b);
+      }
+    });
+  }
+
+  // run after any Step1 execution
+  const oldSmart = window.runSmartReview;
+  if(typeof oldSmart === "function"){
+    window.runSmartReview = function(){
+      const r = oldSmart.apply(this, arguments);
+      setTimeout(patchIssueMapApplyButtons, 50);
+      return r;
+    };
+  } else {
+    // if step1 not present, still patch
+    setTimeout(patchIssueMapApplyButtons, 300);
+  }
+})();
+</script>
+
+</body>
+</html>

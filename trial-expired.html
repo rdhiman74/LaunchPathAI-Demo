@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+  <meta charset="UTF-8" />
+  <title>LaunchPath AI – Trial Ended</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <style>
+:root {
+  --bg-main: #020617;
+  --bg-card: #0b1220;
+  --accent-blue: #38bdf8;
+  --accent-purple: #a855f7;
+  --accent-pink: #f973c9;
+  --text-main: #f9fafb;
+  --text-muted: #9ca3af;
+  --border-subtle: #1f2937;
+  --font-sans: system-ui, -apple-system, BlinkMacSystemFont, "SF Pro Text", "Segoe UI", sans-serif;
+}
+*{box-sizing:border-box;}
+body{
+  margin:0;
+  font-family:var(--font-sans);
+  background: radial-gradient(circle at top left, #1d2342 0, #020617 55%, #000 100%);
+  color:var(--text-main);
+  min-height:100vh;
+}
+.page{max-width:980px;margin:0 auto;padding:24px 20px 48px;}
+header{display:flex;justify-content:space-between;align-items:center;gap:16px;margin-bottom:24px;}
+.brand{display:flex;align-items:center;gap:10px;}
+.brand-icon{
+  width:36px;height:36px;border-radius:14px;
+  background: radial-gradient(circle at 30% 0, #38bdf8 0, #6366f1 40%, #020617 100%);
+  display:flex;align-items:center;justify-content:center;
+  font-weight:700;font-size:.9rem;color:#e5e7eb;
+  box-shadow:0 0 0 2px rgba(56,189,248,.6), 0 14px 30px rgba(15,23,42,.95);
+}
+.brand-text-main{font-size:1.06rem;font-weight:650;letter-spacing:.06em;text-transform:uppercase;}
+nav{display:flex;gap:10px;flex-wrap:wrap;font-size:.86rem;}
+nav a{
+  color:var(--text-muted);text-decoration:none;padding:6px 12px;border-radius:999px;border:1px solid transparent;white-space:nowrap;
+}
+nav a:hover{border-color:rgba(148,163,184,.7);background:rgba(15,23,42,.9);color:#e5e7eb;}
+nav a.active{border-color:rgba(56,189,248,.85);background:rgba(15,23,42,.98);color:#e0f2fe;box-shadow:0 0 0 1px rgba(56,189,248,.35);}
+
+.card{
+  background:var(--bg-card);
+  border:1px solid var(--border-subtle);
+  border-radius:20px;
+  padding:18px 18px 16px;
+  box-shadow:0 18px 38px rgba(0,0,0,.75);
+}
+.h1{font-size:clamp(1.6rem,2vw + 1rem,2.1rem);line-height:1.15;margin:0 0 10px;}
+.p{color:#cbd5f5;line-height:1.55;margin:0 0 14px;font-size:.95rem;}
+.muted{color:var(--text-muted);font-size:.88rem;line-height:1.45;}
+.row{display:grid;grid-template-columns:1fr 1fr;gap:14px;}
+@media (max-width:720px){.row{grid-template-columns:1fr;}}
+
+label{display:block;font-size:.82rem;color:#cbd5f5;margin:10px 0 6px;}
+input{
+  width:100%;
+  padding:12px 12px;
+  border-radius:14px;
+  border:1px solid #1f2937;
+  background:#020617;
+  color:#e5e7eb;
+  outline:none;
+}
+input:focus{border-color:rgba(56,189,248,.8);box-shadow:0 0 0 3px rgba(56,189,248,.12);}
+.btn{
+  display:inline-flex;align-items:center;justify-content:center;
+  padding:10px 16px;border-radius:999px;
+  border:1px solid #38bdf8;background:#0f172a;color:#e0f2fe;
+  font-size:.9rem;cursor:pointer;text-decoration:none;
+}
+.btn.secondary{border-color:#334155;color:#e5e7eb;}
+.btn.purple{border-color:#a855f7;color:#f3e8ff;}
+.btn:disabled{opacity:.55;cursor:not-allowed;}
+.banner{
+  display:none;
+  border:1px solid rgba(56,189,248,.35);
+  background:rgba(15,23,42,.75);
+  border-radius:16px;
+  padding:10px 12px;
+  margin:0 0 14px;
+  color:#e0f2fe;
+  font-size:.88rem;
+}
+.badge{
+  display:inline-block;
+  padding:2px 10px;
+  border-radius:999px;
+  border:1px solid rgba(56,189,248,.5);
+  margin-left:8px;
+  font-size:.78rem;
+  color:#e0f2fe;
+}
+hr{border:0;border-top:1px solid #1f2937;margin:14px 0;}
+.small{font-size:.8rem;color:var(--text-muted);}
+</style>
+</head>
+<body>
+  <div class="page">
+    <header>
+      <div class="brand"><div class="brand-icon">LP</div><div class="brand-text-main">LaunchPath AI</div></div>
+      <nav><a href="index.html">Home</a><a href="student-login.html">Student Log In</a></nav>
+    </header>
+
+    <div class="card">
+      <div class="h1">Your 30-day trial has ended</div>
+      <p class="p">This is a demo paywall screen. In production, this is where you’d connect checkout (Stripe, etc.).</p>
+
+      <div class="row">
+        <div class="card" style="box-shadow:none;">
+          <div style="font-weight:650;margin-bottom:6px;">Continue for $15/month</div>
+          <div class="muted">Keep access to College Match, Essay Studio, ROI tools, and more.</div>
+          <button class="btn" type="button" style="margin-top:12px;" onclick="alert('Demo only: connect to real checkout later.');">Subscribe (Demo)</button>
+        </div>
+        <div class="card" style="box-shadow:none;">
+          <div style="font-weight:650;margin-bottom:6px;">Reset demo trial</div>
+          <div class="muted">Clears profile + trial dates for testing.</div>
+          <button class="btn secondary" type="button" style="margin-top:12px;" onclick="lpResetTrial()">Reset Trial (Demo)</button>
+        </div>
+      </div>
+
+      <div style="margin-top:14px;">
+        <a class="btn secondary" href="index.html">Back to Home</a>
+      </div>
+    </div>
+  </div>
+
+  <script>
+
+const LP_KEYS = {
+  user: "lp_student_user",
+  trialStart: "lp_trial_start",
+  trialEnd: "lp_trial_end"
+};
+
+function lpNowMs(){ return Date.now(); }
+function lpDaysLeft(){
+  const end = Number(localStorage.getItem(LP_KEYS.trialEnd) || 0);
+  if(!end) return null;
+  const ms = end - lpNowMs();
+  return Math.ceil(ms / (1000*60*60*24));
+}
+function lpHasUser(){ return !!localStorage.getItem(LP_KEYS.user); }
+function lpGetUser(){
+  try { return JSON.parse(localStorage.getItem(LP_KEYS.user) || "null"); } catch { return null; }
+}
+function lpSetUser(userObj){ localStorage.setItem(LP_KEYS.user, JSON.stringify(userObj)); }
+function lpStartTrialIfNeeded(){
+  if(localStorage.getItem(LP_KEYS.trialStart) && localStorage.getItem(LP_KEYS.trialEnd)) return;
+  const start = lpNowMs();
+  const end = start + (30 * 24 * 60 * 60 * 1000);
+  localStorage.setItem(LP_KEYS.trialStart, String(start));
+  localStorage.setItem(LP_KEYS.trialEnd, String(end));
+}
+function lpIsTrialActive(){
+  const end = Number(localStorage.getItem(LP_KEYS.trialEnd) || 0);
+  if(!end) return false;
+  return lpNowMs() <= end;
+}
+function lpRequireActiveTrialOrRedirect(){
+  if(!lpHasUser()){ window.location.href = "student-login.html"; return; }
+  if(!lpIsTrialActive()){ window.location.href = "trial-expired.html"; return; }
+}
+function lpRenderTrialBanner(){
+  const el = document.getElementById("trialBanner");
+  if(!el) return;
+  if(!lpHasUser()){ el.style.display = "none"; return; }
+  const days = lpDaysLeft();
+  if(days === null){ el.style.display = "none"; return; }
+  const user = lpGetUser();
+  const name = (user && user.firstName) ? user.firstName : "Student";
+  const status = lpIsTrialActive() ? "Active" : "Expired";
+  el.style.display = "block";
+  el.innerHTML = "Welcome, <b>" + name + "</b>. Your 30-day trial: <b>" + status + "</b><span class=\"badge\">" + Math.max(days,0) + " days left</span>";
+}
+function lpLogout(){
+  localStorage.removeItem(LP_KEYS.user);
+  window.location.href = "index.html";
+}
+
+    function lpResetTrial(){
+      localStorage.removeItem(LP_KEYS.user);
+      localStorage.removeItem(LP_KEYS.trialStart);
+      localStorage.removeItem(LP_KEYS.trialEnd);
+      window.location.href = "student-profile.html";
+    }
+  </script>
+</body></html>

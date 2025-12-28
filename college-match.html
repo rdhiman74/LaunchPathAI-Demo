@@ -1,0 +1,2669 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<title>LaunchPath AI – College Match · Dark Theme C++ (What‑If & Save)</title>
+<style>
+  :root {
+    --bg-body: #16202f;
+    --bg-shell: #1f2a3d;
+    --bg-card: #2c3a52;
+    --bg-subcard: #32425a;
+    --border-subtle: #3a4b65;
+    --accent: #22d3ee;
+    --accent-soft: rgba(34, 211, 238, 0.16);
+    --text-main: #f3f4f6;
+    --text-muted: #c2c7d1;
+  }
+  .whatif-delta-text {
+    margin-top: 6px;
+    font-size: 0.78rem;
+    color: #a5b4fc;
+  }
+
+  .whatif-reset-btn {
+    font-size: 0.78rem;
+    padding: 6px 10px;
+    border-radius: 999px;
+    border: 1px solid var(--border-subtle);
+    background: rgba(15,23,42,0.9);
+    color: var(--text-muted);
+    cursor: pointer;
+    margin-right: 6px;
+  }
+
+  .whatif-reset-btn:hover {
+    border-color: var(--accent);
+    color: var(--accent);
+  }
+
+
+  * { box-sizing: border-box; }
+
+  body {
+    margin: 0;
+    padding: 28px;
+    font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    background: radial-gradient(circle at top, #16202f 0, #0b1120 60%, #020617 100%);
+    color: var(--text-main);
+  }
+
+  .page-shell { max-width: 1200px; margin: 0 auto; }
+
+  header.page-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 18px;
+  }
+
+  .brand-lockup {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .brand-mark {
+    width: 34px; height: 34px;
+    border-radius: 999px;
+    background: radial-gradient(circle at 30% 0, #22d3ee 0, #0ea5e9 30%, #111827 85%);
+    box-shadow: 0 0 0 2px rgba(34,211,238,0.5), 0 8px 24px rgba(0,0,0,0.7);
+  }
+
+  .brand-text-main {
+    font-size: 1.02rem;
+    letter-spacing: .08em;
+    text-transform: uppercase;
+    font-weight: 650;
+  }
+
+  .brand-text-sub {
+    font-size: .78rem;
+    color: var(--text-muted);
+  }
+
+  .mode-pill {
+    padding: 5px 11px;
+    border-radius: 999px;
+    border: 1px solid rgba(148,163,184,0.6);
+    background: rgba(15,23,42,0.9);
+    font-size: .76rem;
+    color: var(--text-muted);
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+  }
+
+  .mode-dot {
+    width: 7px; height: 7px;
+    border-radius: 999px;
+    background: #22c55e;
+    box-shadow: 0 0 0 4px rgba(34,197,94,0.25);
+  }
+
+  .shell {
+    background: var(--bg-shell);
+    border-radius: 24px;
+    padding: 18px 20px 20px;
+    border: 1px solid var(--border-subtle);
+    box-shadow: 0 20px 56px rgba(0,0,0,0.65);
+  }
+
+  .shell-header-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 14px;
+    margin-bottom: 16px;
+  }
+
+  .shell-title {
+    margin: 0 0 4px;
+    font-size: 1.52rem;
+  }
+
+  .shell-subtitle {
+    margin: 0;
+    font-size: .9rem;
+    color: var(--text-muted);
+    max-width: 460px;
+  }
+
+  .tags-row {
+    display: flex;
+    gap: 6px;
+    flex-wrap: wrap;
+  }
+
+  .chip {
+    padding: 5px 9px;
+    border-radius: 999px;
+    border: 1px solid rgba(148,163,184,0.7);
+    font-size: .76rem;
+    color: #e5e7eb;
+    background: rgba(15,23,42,0.85);
+  }
+
+  .results-shell {
+    display: grid;
+    grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.6fr);
+    gap: 14px;
+    align-items: flex-start;
+  }
+
+  /* Filters left panel */
+  .filters-panel {
+    background: var(--bg-card);
+    border-radius: 20px;
+    padding: 14px 14px 16px;
+    border: 1px solid var(--border-subtle);
+    box-shadow: 0 16px 44px rgba(0,0,0,0.6);
+  }
+
+  .filters-title {
+    font-size: 1.02rem;
+    margin: 0 0 3px;
+  }
+
+  .filters-subtitle {
+    margin: 0 0 10px;
+    font-size: .82rem;
+    color: var(--text-muted);
+  }
+
+  .field-group {
+    margin-bottom: 10px;
+  }
+
+  .field-label {
+    font-size: .75rem;
+    text-transform: uppercase;
+    letter-spacing: .16em;
+    color: var(--text-muted);
+    margin-bottom: 3px;
+  }
+
+  select, input {
+    width: 100%;
+    padding: 8px 10px;
+    border-radius: 999px;
+    border: 1px solid #3a4b65;
+    background: #111827;
+    color: var(--text-main);
+    font-size: .84rem;
+    outline: none;
+  }
+
+  select:focus, input:focus {
+    border-color: var(--accent);
+    box-shadow: 0 0 0 1px rgba(34,211,238,0.4);
+  }
+
+  .input-row {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0,1fr));
+    gap: 6px;
+  }
+
+  .helper-text {
+    font-size: .73rem;
+    color: var(--text-muted);
+    margin-top: 3px;
+  }
+
+  .btn-primary {
+    margin-top: 11px;
+    width: 100%;
+    border-radius: 999px;
+    padding: 9px 0;
+    border: none;
+    background: linear-gradient(135deg, #22d3ee, #3b82f6);
+    color: #020617;
+    font-size: .84rem;
+    font-weight: 600;
+    cursor: pointer;
+    box-shadow: 0 16px 38px rgba(37,99,235,0.5);
+  }
+
+  /* Tiles right panel */
+  .results-panel {
+    background: var(--bg-card);
+    border-radius: 20px;
+    padding: 14px 14px 16px;
+    border: 1px solid var(--border-subtle);
+    box-shadow: 0 16px 44px rgba(0,0,0,0.6);
+    max-height: 580px;
+    overflow-y: auto;
+  }
+
+  /* What-if band */
+  .whatif-band {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 10px;
+    padding: 8px 10px;
+    border-radius: 14px;
+    background: rgba(15,23,42,0.95);
+    border: 1px dashed rgba(148,163,184,0.6);
+    margin-bottom: 10px;
+  }
+
+  .whatif-text {
+    font-size: .78rem;
+    color: var(--text-muted);
+    max-width: 260px;
+  }
+
+  .whatif-controls {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+    flex-wrap: wrap;
+  }
+  .whatif-text strong { font-size: .9rem; color: var(--text-main); }
+
+
+  .whatif-field {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    font-size: .76rem;
+  }
+
+  .whatif-input {
+    width: 70px;
+    padding: 4px 8px;
+    border-radius: 999px;
+    border: 1px solid #3a4b65;
+    background: #020617;
+    color: var(--text-main);
+    font-size: .76rem;
+  }
+
+  .whatif-chip {
+    padding: 4px 8px;
+    border-radius: 999px;
+    border: 1px solid rgba(148,163,184,0.7);
+    font-size: .72rem;
+    background: rgba(15,23,42,0.85);
+    color: var(--text-muted);
+    cursor: pointer;
+  }
+
+  
+  
+.whatif-run-btn {
+    margin-left: auto;
+    font-size: .74rem;
+    padding: 4px 12px;
+    border-radius: 999px;
+    border: 1px solid var(--accent);
+    background: rgba(15,23,42,0.9);
+    color: var(--accent);
+    cursor: pointer;
+    white-space: nowrap;
+  }
+
+.panel-header-line {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 8px;
+  }
+
+  .panel-title {
+    font-size: .88rem;
+    text-transform: uppercase;
+    letter-spacing: .18em;
+    color: var(--text-muted);
+  }
+
+  .panel-header-actions {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+
+  .panel-tag {
+    font-size: .75rem;
+    padding: 3px 8px;
+    border-radius: 999px;
+    border: 1px solid rgba(148,163,184,0.6);
+    background: rgba(15,23,42,0.85);
+    color: var(--text-muted);
+  }
+
+  .btn-export {
+    font-size: .74rem;
+    padding: 4px 10px;
+    border-radius: 999px;
+    border: 1px solid var(--accent);
+    background: rgba(15,23,42,0.9);
+    color: var(--accent);
+    cursor: pointer;
+  }
+
+  /* Summary rings row */
+  .summary-rings {
+    display: flex;
+    gap: 10px;
+    margin: 4px 0 10px;
+  }
+
+  .summary-pill {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 6px 8px;
+    border-radius: 999px;
+    background: rgba(15,23,42,0.85);
+    border: 1px solid rgba(148,163,184,0.5);
+    font-size: .75rem;
+  }
+
+  .mini-ring {
+    width: 26px;
+    height: 26px;
+    border-radius: 999px;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.6);
+    position: relative;
+  }
+
+  .mini-ring::after {
+    content: "";
+    position: absolute;
+    inset: 4px;
+    border-radius: inherit;
+    background: #020617;
+  }
+
+  .mini-ring.reach {
+    background: conic-gradient(from 220deg, #f97373, #fca5a5, #7f1d1d, #f97373);
+  }
+
+  .mini-ring.target {
+    background: conic-gradient(from 220deg, #facc15, #fbbf24, #854d0e, #facc15);
+  }
+
+  .mini-ring.safety {
+    background: conic-gradient(from 220deg, #4ade80, #22c55e, #15803d, #4ade80);
+  }
+
+  .summary-label {
+    font-weight: 600;
+  }
+
+  .summary-sub {
+    display: block;
+    font-size: .72rem;
+    color: var(--text-muted);
+  }
+
+  .college-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0,1fr));
+    gap: 10px 12px;
+  }
+
+  .college-card {
+    background: #111827;
+    border-radius: 16px;
+    padding: 11px 11px 10px;
+    border: 1px solid #3a4b65;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.55);
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+  }
+
+  .college-header-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 6px;
+    margin-bottom: 0px;
+    flex-wrap: wrap;
+  }
+
+  .college-name {
+    margin: 0;
+    font-size: .95rem;
+    font-weight: 580;
+  }
+
+  .college-tag {
+    padding: 1px 8px;
+    border-radius: 999px;
+    font-size: .7rem;
+    border: 1px solid rgba(248,113,113,0.85);
+    color: #fecaca;
+    background: rgba(248,113,113,0.16);
+    white-space: nowrap;
+  }
+
+  .college-tag.target {
+    border-color: #eab308;
+    color: #facc15;
+    background: rgba(234,179,8,0.16);
+  }
+
+  .college-tag.safety {
+    border-color: #22c55e;
+    color: #bbf7d0;
+    background: rgba(34,197,94,0.16);
+  }
+
+  .college-ranking {
+    font-size: .78rem;
+    color: var(--text-muted);
+    margin-bottom: 5px;
+  }
+
+  .college-meta-top {
+    font-size: .79rem;
+    color: #e5e7eb;
+    margin-bottom: 4px;
+  }
+
+  .college-stat-line {
+    font-size: .76rem;
+    margin-bottom: 1px;
+  }
+
+  .college-stat-line strong {
+    color: var(--text-muted);
+  }
+
+  .card-actions {
+    margin-top: 6px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 6px;
+  }
+
+  .btn-save {
+    padding: 4px 10px;
+    border-radius: 999px;
+    border: 1px solid rgba(148,163,184,0.8);
+    background: rgba(15,23,42,0.95);
+    color: #e5e7eb;
+    font-size: .74rem;
+    cursor: pointer;
+  }
+
+  .cta-link {
+    font-size: .72rem;
+    color: var(--accent);
+    text-decoration: none;
+  }
+
+  .note-line {
+    margin-top: 8px;
+    font-size: .72rem;
+    color: var(--text-muted);
+  }
+
+
+  .fit-score-row {
+    width: 100%;
+    margin-top: 2px;
+  }
+
+  .fit-score-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    padding: 2px 8px;
+    border-radius: 999px;
+    border: 1px solid rgba(56,189,248,0.9);
+    background: rgba(8,47,73,0.85);
+    color: #e0f2fe;
+    font-size: .7rem;
+    text-transform: none;
+    letter-spacing: .02em;
+  }
+
+  .fit-score-pill-dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 999px;
+    background: #22c55e;
+  }
+
+  @media (max-width: 1040px) {
+    body { padding: 20px; }
+    .results-shell { grid-template-columns: minmax(0,1.05fr) minmax(0,1.45fr); }
+  }
+
+  @media (max-width: 880px) {
+    .results-shell { grid-template-columns: minmax(0,1fr); }
+    .results-panel { max-height: none; }
+  }
+
+  .fit-legend {
+    margin-top: 10px;
+    font-size: .7rem;
+    color: var(--text-muted);
+    text-align: right;
+  }
+
+  .fit-legend-label {
+    text-transform: uppercase;
+    letter-spacing: .14em;
+    font-size: .68rem;
+    color: #a5b4fc;
+    margin-right: 6px;
+  }
+
+  .fit-legend-text {
+    opacity: 0.9;
+  }
+
+
+  .summary-pill {
+    cursor: pointer;
+    transition: box-shadow 0.16s ease, border-color 0.16s ease, background 0.16s ease;
+  }
+  .summary-pill.active {
+    border-color: rgba(56,189,248,0.9);
+    box-shadow: 0 0 0 1px rgba(56,189,248,0.45);
+    background: rgba(15,23,42,0.95);
+  }
+
+.match-disclaimer{margin-top:8px;font-size:12px;color:#94a3b8;text-align:left;max-width:760px;}
+
+/* ===== LaunchPath unified header (scoped) ===== */
+.lp-header{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:16px;
+  margin-bottom:22px;
+}
+.lp-header-right{
+  display:flex;
+  align-items:center;
+  gap:12px;
+}
+.brand-lockup{display:flex;align-items:center;gap:12px;}
+.brand-mark{
+  width:40px;height:40px;border-radius:999px;
+  background:radial-gradient(circle at 30% 0,#22d3ee 0,#0ea5e9 40%,#111827 95%);
+  box-shadow:0 0 0 2px rgba(56,189,248,.6),0 14px 30px rgba(15,23,42,.9);
+}
+.brand-text-main{
+  font-size:1.05rem;
+  letter-spacing:.14em;
+  text-transform:uppercase;
+  font-weight:700;
+}
+.brand-text-sub{
+  font-size:.86rem;
+  color:#cbd5f5;
+}
+.lp-nav{display:flex;align-items:center;gap:12px;}
+.lp-nav-link{
+  padding:10px 16px;
+  border-radius:999px;
+  border:1px solid rgba(56,189,248,.45);
+  background:rgba(15,23,42,.55);
+  color:rgba(224,242,254,.86);
+  text-decoration:none;
+  font-size:.86rem;
+  line-height:1.1;
+  white-space:nowrap;
+}
+.lp-nav-link:hover{border-color:rgba(56,189,248,.75);background:rgba(15,23,42,.75);}
+.lp-actions{display:flex;align-items:center;gap:10px;}
+.lp-action{
+  padding:10px 16px;
+  border-radius:999px;
+  text-decoration:none;
+  font-size:.86rem;
+  white-space:nowrap;
+  border:1px solid rgba(56,189,248,.75);
+  background:rgba(15,23,42,.65);
+  color:rgba(224,242,254,.92);
+}
+.lp-action.lp-school{
+  border-color:rgba(168,85,247,.75);
+}
+.lp-action:hover{filter:brightness(1.05);}
+@media(max-width:840px){
+  .lp-header{flex-direction:column;align-items:flex-start;}
+  .lp-header-right{width:100%;justify-content:space-between;}
+}
+
+/* ===== LaunchPath unified header (2 buttons) ===== */
+.lp-header{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:16px;
+  margin-bottom:22px;
+}
+.lp-header-right{display:flex;align-items:center;gap:12px;margin-left:auto;justify-content:flex-end;}
+.brand-lockup{display:flex;align-items:center;gap:12px;}
+.brand-mark{
+  width:40px;height:40px;border-radius:999px;
+  background:radial-gradient(circle at 30% 0,#22d3ee 0,#0ea5e9 40%,#111827 95%);
+  box-shadow:0 0 0 2px rgba(56,189,248,.6),0 14px 30px rgba(15,23,42,.9);
+}
+.brand-text-main{
+  font-size:1.05rem;
+  letter-spacing:.14em;
+  text-transform:uppercase;
+  font-weight:700;
+}
+.brand-text-sub{font-size:.86rem;color:#cbd5f5;}
+.lp-nav{display:flex;align-items:center;gap:12px;margin-left:auto;justify-content:flex-end;}
+.lp-nav-link{
+  padding:10px 16px;
+  border-radius:999px;
+  border:1px solid rgba(56,189,248,.45);
+  background:rgba(15,23,42,.55);
+  color:rgba(224,242,254,.86);
+  text-decoration:none;
+  font-size:.86rem;
+  line-height:1.1;
+  white-space:nowrap;
+}
+.lp-nav-link:hover{border-color:rgba(56,189,248,.75);background:rgba(15,23,42,.75);}
+.lp-actions{display:flex;align-items:center;gap:10px;}
+.lp-action{
+  padding:10px 16px;
+  border-radius:999px;
+  text-decoration:none;
+  font-size:.86rem;
+  white-space:nowrap;
+  border:1px solid rgba(56,189,248,.75);
+  background:rgba(15,23,42,.65);
+  color:rgba(224,242,254,.92);
+}
+.lp-action.lp-school{border-color:rgba(168,85,247,.75);}
+@media(max-width:840px){
+  .lp-header{flex-direction:column;align-items:flex-start;}
+  .lp-header-right{width:100%;justify-content:space-between;}
+}
+/* ===== End header ===== */
+</style>
+</head>
+<body>
+  <div class="page-shell">
+<header class="lp-header">
+  <div class="brand-lockup">
+    <div class="brand-mark"></div>
+    <div class="brand-text">
+      <div class="brand-text-main">LAUNCHPATH AI</div>
+      <div class="brand-text-sub">College Match · Essays · ROI · Social Studio</div>
+    </div>
+  </div>
+  <nav class="lp-nav">
+    <a class="lp-nav-link" href="index.html">Home</a>
+    <a class="lp-nav-link" href="student-workplace.html">Student Workplace</a>
+  </nav>
+</header>
+
+<main class="shell">
+      <div class="shell-header-row">
+        <div>
+          <h1 class="shell-title">College Match</h1>
+          <p class="shell-subtitle">
+            Adjust your filters on the left and see updated safety, target, and reach tiles on the right,
+            based on GPA, test scores, and regions of interest.
+          </p>
+          <p class="match-disclaimer">Results are based on GPA and SAT ranges — not admissions guarantees.</p>
+        </div>
+      </div>
+
+      <section class="results-shell">
+        <!-- LEFT: Filters panel (vertical) -->
+        <aside class="filters-panel">
+          <h2 class="filters-title">Filters</h2>
+          <p class="filters-subtitle">Tune the model to your profile and regions of interest.</p>
+
+          <div class="field-group">
+            <div class="field-label">Region focus</div>
+            <select>
+              <option value="" disabled selected>Select region</option>
+              <option>US</option>
+              <option>UK</option>
+              <option>Canada</option>
+              <option>Europe</option>
+            </select>
+          </div>
+
+          <div class="field-group">
+            <div class="field-label">GPA (unweighted)</div>
+            <input type="text" value="" />
+          </div>
+
+          <div class="field-group">
+            <div class="field-label">Test profile</div>
+            <div class="input-row">
+              <div>
+                <input type="text" value="" placeholder="SAT" />
+              </div>
+              <div>
+                <input type="text" placeholder="e.g. 30" />
+              </div>
+            </div>
+            <div class="helper-text">
+              Enter your latest SAT and/or ACT score. Leave both blank if you’re applying test-optional.
+            </div>
+          </div>
+
+          <div class="field-group">
+            <div class="field-label">Preferred size</div>
+            <select>
+              <option>Mid–large campuses</option>
+              <option>Large public only</option>
+              <option>Smaller colleges</option>
+              <option>No preference</option>
+            </select>
+          </div>
+
+          <div class="field-group">
+            <div class="field-label">Financial focus</div>
+            <select>
+              <option>Balance of cost & ranking</option>
+              <option>Lowest cost first</option>
+              <option>Highest ranking first</option>
+            </select>
+          </div>
+
+          <div class="field-group">
+            <div class="field-label">Geographic location</div>
+            <select id="lp-geo-select">
+              <option value="all">All</option>
+              <option value="east">East Coast</option>
+              <option value="midwest">Midwest</option>
+              <option value="west">West Coast</option>
+              <option value="south">South</option>
+            </select>
+          </div>
+
+          <button class="btn-primary" type="button" onclick="lpRunSearch()">Update matches</button>
+        </aside>
+
+        <!-- RIGHT: Tiles panel -->
+        <section class="results-panel">
+          <!-- What-if band -->
+          <div class="whatif-band">
+            <div class="whatif-text">
+              <strong>What‑If Analysis</strong><br />
+              Nudge your GPA or SAT up/down to preview how your mix of safety, target, and reach schools could shift.
+            </div>
+            <div class="whatif-controls">
+              <div class="whatif-field">
+                GPA
+                <input id="lp-gpa-input" class="whatif-input" type="text" value="" />
+                <span class="whatif-chip">+0.1</span>
+                <span class="whatif-chip">‑0.1</span>
+              </div>
+              <div class="whatif-field">
+                SAT
+                <input id="lp-sat-input" class="whatif-input" type="text" value="" />
+                <span class="whatif-chip">+50</span>
+                <span class="whatif-chip">‑50</span>
+              </div>
+              <button class="whatif-reset-btn" type="button" onclick="lpResetWhatIf()">Reset</button>
+              <button class="whatif-run-btn" type="button" onclick="lpRunSearch()">Run What‑If Scenario</button>
+            </div>
+          </div>
+
+          <div class="panel-header-line">
+            <div class="panel-title">Top Match Set (sample)</div>
+            <div class="panel-header-actions">
+              <button class="btn-export">Export to Excel</button>
+            </div>
+          </div>
+
+          <!-- Summary rings row -->
+          <div class="summary-rings">
+            <div class="summary-pill">
+              <div class="mini-ring safety"></div>
+              <div>
+                <span class="summary-label">1 Safety</span>
+                <span class="summary-sub">Solid likelihood</span>
+              </div>
+            </div>
+            <div class="summary-pill">
+              <div class="mini-ring target"></div>
+              <div>
+                <span class="summary-label">3 Target</span>
+                <span class="summary-sub">Balanced fit</span>
+              </div>
+            </div>
+            <div class="summary-pill">
+              <div class="mini-ring reach"></div>
+              <div>
+                <span class="summary-label">2 Reach</span>
+                <span class="summary-sub">Ambitious stretch</span>
+              </div>
+            </div>
+          </div>
+          <p id="lp-whatif-delta" class="whatif-delta-text">Run a What‑If scenario to see how your Safety, Target, and Reach mix shifts.</p>
+
+          <div class="college-grid">
+            <!-- Safety first: ASU -->
+            <article class="college-card">
+              <div class="college-header-row">
+                <h3 class="college-name">Arizona State University – Tempe</h3>
+                <div class="fit-score-row"><span class="fit-score-pill"><span class="fit-score-pill-dot"></span>Fit score: 94%</span></div>
+                <span class="college-tag safety">Safety</span>
+              </div>
+              <div class="college-ranking">
+                Ranking: #57 public · #117 national (U.S. News & World Report)
+              </div>
+              <div class="college-meta-top">
+                Computer Science · Very large public · Southwest U.S.
+              </div>
+              <div class="college-stat-line"><strong>Admit band:</strong> 3.2–3.7 GPA</div>
+              <div class="college-stat-line"><strong>Middle 50%:</strong> 1130–1360 SAT (22–28 ACT)</div>
+              <div class="college-stat-line"><strong>Acceptance rate:</strong> ~80–90%</div>
+              <div class="college-stat-line"><strong>Total cost:</strong> ≈ $30K–$35K / year (out-of-state)</div>
+              <div class="college-stat-line"><strong>Deadline:</strong> Rolling (earlier is better)</div>
+              <div class="card-actions">
+                <button class="btn-save">Save to list</button>
+                <a href="#" class="cta-link">View details</a>
+              </div>
+            </article>
+
+            <!-- Targets next: Rutgers, Florida, Penn State -->
+            <article class="college-card">
+              <div class="college-header-row">
+                <h3 class="college-name">Rutgers University – New Brunswick</h3>
+                <div class="fit-score-row"><span class="fit-score-pill"><span class="fit-score-pill-dot"></span>Fit score: 89%</span></div>
+                <span class="college-tag target">Target</span>
+              </div>
+              <div class="college-ranking">
+                Ranking: #16 public · #42 national (U.S. News & World Report)
+              </div>
+              <div class="college-meta-top">
+                Computer Science · Large flagship public · Northeast U.S.
+              </div>
+              <div class="college-stat-line"><strong>Admit band:</strong> 3.5–3.8 GPA</div>
+              <div class="college-stat-line"><strong>Middle 50%:</strong> 1250–1450 SAT (27–32 ACT)</div>
+              <div class="college-stat-line"><strong>Acceptance rate:</strong> ~55–65%</div>
+              <div class="college-stat-line"><strong>In-state cost:</strong> ≈ $30K–$33K / year</div>
+              <div class="college-stat-line"><strong>Out-of-state cost:</strong> ≈ $45K+ / year</div>
+              <div class="college-stat-line"><strong>Deadline:</strong> Priority · Dec 1</div>
+              <div class="card-actions">
+                <button class="btn-save">Save to list</button>
+                <a href="#" class="cta-link">View details</a>
+              </div>
+            </article>
+
+            <article class="college-card">
+              <div class="college-header-row">
+                <h3 class="college-name">University of Florida – Gainesville</h3>
+                <div class="fit-score-row"><span class="fit-score-pill"><span class="fit-score-pill-dot"></span>Fit score: 84%</span></div>
+                <span class="college-tag target">Target</span>
+              </div>
+              <div class="college-ranking">
+                Ranking: #7 public · ~#30 national (U.S. News & World Report)
+              </div>
+              <div class="college-meta-top">
+                Computer Science · Flagship public · Southeast U.S.
+              </div>
+              <div class="college-stat-line"><strong>Admit band:</strong> 3.7–4.0 GPA</div>
+              <div class="college-stat-line"><strong>Middle 50%:</strong> 1350–1490 SAT (30–34 ACT)</div>
+              <div class="college-stat-line"><strong>Acceptance rate:</strong> ~23–30%</div>
+              <div class="college-stat-line"><strong>In-state cost:</strong> ≈ $23K–$26K / year</div>
+              <div class="college-stat-line"><strong>Out-of-state cost:</strong> ≈ $45K+ / year</div>
+              <div class="college-stat-line"><strong>Deadline:</strong> Nov 1 (priority)</div>
+              <div class="card-actions">
+                <button class="btn-save">Save to list</button>
+                <a href="#" class="cta-link">View details</a>
+              </div>
+            </article>
+
+            <article class="college-card">
+              <div class="college-header-row">
+                <h3 class="college-name">Penn State – University Park</h3>
+                <div class="fit-score-row"><span class="fit-score-pill"><span class="fit-score-pill-dot"></span>Fit score: 87%</span></div>
+                <span class="college-tag target">Target</span>
+              </div>
+              <div class="college-ranking">
+                Ranking: #26 public · #59 national (U.S. News & World Report)
+              </div>
+              <div class="college-meta-top">
+                Computer Science · Large public · College town
+              </div>
+              <div class="college-stat-line"><strong>Admit band:</strong> 3.4–3.8 GPA</div>
+              <div class="college-stat-line"><strong>Middle 50%:</strong> 1160–1360 SAT (24–30 ACT)</div>
+              <div class="college-stat-line"><strong>Acceptance rate:</strong> ~45–55%</div>
+              <div class="college-stat-line"><strong>Total cost:</strong> ≈ $34K–$38K / year (in-state)</div>
+              <div class="college-stat-line"><strong>Deadline:</strong> Rolling / priority recommended</div>
+              <div class="card-actions">
+                <button class="btn-save">Save to list</button>
+                <a href="#" class="cta-link">View details</a>
+              </div>
+            </article>
+
+            <!-- Reach last: Michigan, Maryland -->
+            <article class="college-card">
+              <div class="college-header-row">
+                <h3 class="college-name">University of Michigan – Ann Arbor</h3>
+                <div class="fit-score-row"><span class="fit-score-pill"><span class="fit-score-pill-dot"></span>Fit score: 78%</span></div>
+                <span class="college-tag">Reach</span>
+              </div>
+              <div class="college-ranking">
+                Ranking: #3 public · #21 national (U.S. News & World Report)
+              </div>
+              <div class="college-meta-top">
+                Computer Science · Large public · Midwest U.S.
+              </div>
+              <div class="college-stat-line"><strong>Admit band:</strong> 3.8–4.0 GPA</div>
+              <div class="college-stat-line"><strong>Middle 50%:</strong> 1380–1530 SAT (31–34 ACT)</div>
+              <div class="college-stat-line"><strong>Acceptance rate:</strong> ~18–22%</div>
+              <div class="college-stat-line"><strong>In-state cost:</strong> ≈ $32K / year</div>
+              <div class="college-stat-line"><strong>Out-of-state cost:</strong> ≈ $55K+ / year</div>
+              <div class="college-stat-line"><strong>Deadline:</strong> Early Action · Nov 1</div>
+              <div class="card-actions">
+                <button class="btn-save">Save to list</button>
+                <a href="#" class="cta-link">View details</a>
+              </div>
+            </article>
+
+            <article class="college-card">
+              <div class="college-header-row">
+                <h3 class="college-name">University of Maryland – College Park</h3>
+                <div class="fit-score-row"><span class="fit-score-pill"><span class="fit-score-pill-dot"></span>Fit score: 82%</span></div>
+                <span class="college-tag">Reach</span>
+              </div>
+              <div class="college-ranking">
+                Ranking: #16 public · ~#42 national (U.S. News & World Report)
+              </div>
+              <div class="college-meta-top">
+                Computer Science · Large public · Near Washington, D.C.
+              </div>
+              <div class="college-stat-line"><strong>Admit band:</strong> 3.6–3.9 GPA</div>
+              <div class="college-stat-line"><strong>Middle 50%:</strong> 1340–1490 SAT (30–34 ACT)</div>
+              <div class="college-stat-line"><strong>Acceptance rate:</strong> ~40–45%</div>
+              <div class="college-stat-line"><strong>In-state cost:</strong> ≈ $28K–$32K / year</div>
+              <div class="college-stat-line"><strong>Deadline:</strong> Early Action · Nov 1</div>
+              <div class="card-actions">
+                <button class="btn-save">Save to list</button>
+                <a href="#" class="cta-link">View details</a>
+              </div>
+            </article>
+          
+<!-- Additional East Coast matches -->
+<article class="college-card">
+  <div class="college-header-row">
+    <h3 class="college-name">Boston University</h3>
+    <div class="fit-score-row">
+      <span class="fit-score-pill"><span class="fit-score-pill-dot"></span>Fit score: 81%</span>
+    </div>
+    <span class="college-tag target">Target</span>
+  </div>
+  <div class="college-ranking">
+    Ranking: Top 40–50 national university.
+  </div>
+  <div class="college-meta-top">
+    Computer Science · Urban campus · Boston, MA (East Coast).
+  </div>
+  <div class="college-stat-line"><strong>Admit band:</strong> 3.6–3.9 GPA</div>
+  <div class="college-stat-line"><strong>Middle 50%:</strong> 1350–1490 SAT</div>
+  <div class="college-stat-line"><strong>Acceptance rate:</strong> ~20–25%</div>
+  <div class="college-stat-line"><strong>Total cost:</strong> ≈ $70K+ / year</div>
+  <div class="college-stat-line"><strong>Deadline:</strong> Regular · Jan 4</div>
+  <div class="card-actions">
+    <button class="btn-save">Save to list</button>
+    <a href="#" class="cta-link">View details</a>
+  </div>
+</article>
+
+<article class="college-card">
+  <div class="college-header-row">
+    <h3 class="college-name">University of Connecticut – Storrs</h3>
+    <div class="fit-score-row">
+      <span class="fit-score-pill"><span class="fit-score-pill-dot"></span>Fit score: 87%</span>
+    </div>
+    <span class="college-tag target">Target</span>
+  </div>
+  <div class="college-ranking">
+    Ranking: Top 30 public · Top 80 national.
+  </div>
+  <div class="college-meta-top">
+    Computer Science · Flagship public · Storrs, CT (East Coast).
+  </div>
+  <div class="college-stat-line"><strong>Admit band:</strong> 3.5–3.8 GPA</div>
+  <div class="college-stat-line"><strong>Middle 50%:</strong> 1240–1400 SAT</div>
+  <div class="college-stat-line"><strong>Acceptance rate:</strong> ~45–55%</div>
+  <div class="college-stat-line"><strong>In-state cost:</strong> ≈ $32K–$36K / year</div>
+  <div class="college-stat-line"><strong>Out-of-state cost:</strong> ≈ $55K+ / year</div>
+  <div class="college-stat-line"><strong>Deadline:</strong> Jan 15</div>
+  <div class="card-actions">
+    <button class="btn-save">Save to list</button>
+    <a href="#" class="cta-link">View details</a>
+  </div>
+</article>
+
+<article class="college-card">
+  <div class="college-header-row">
+    <h3 class="college-name">Northeastern University</h3>
+    <div class="fit-score-row">
+      <span class="fit-score-pill"><span class="fit-score-pill-dot"></span>Fit score: 78%</span>
+    </div>
+    <span class="college-tag">Reach</span>
+  </div>
+  <div class="college-ranking">
+    Ranking: Top 60 national research university.
+  </div>
+  <div class="college-meta-top">
+    Computer Science · Co-op focused · Boston, MA (East Coast).
+  </div>
+  <div class="college-stat-line"><strong>Admit band:</strong> 3.7–4.0 GPA</div>
+  <div class="college-stat-line"><strong>Middle 50%:</strong> 1410–1520 SAT</div>
+  <div class="college-stat-line"><strong>Acceptance rate:</strong> ~18–25%</div>
+  <div class="college-stat-line"><strong>Total cost:</strong> ≈ $70K+ / year</div>
+  <div class="college-stat-line"><strong>Deadline:</strong> Early Action · Nov 1</div>
+  <div class="card-actions">
+    <button class="btn-save">Save to list</button>
+    <a href="#" class="cta-link">View details</a>
+  </div>
+</article>
+
+<article class="college-card">
+  <div class="college-header-row">
+    <h3 class="college-name">Villanova University</h3>
+    <div class="fit-score-row">
+      <span class="fit-score-pill"><span class="fit-score-pill-dot"></span>Fit score: 76%</span>
+    </div>
+    <span class="college-tag">Reach</span>
+  </div>
+  <div class="college-ranking">
+    Ranking: Top 50 national university.
+  </div>
+  <div class="college-meta-top">
+    Business &amp; Engineering · Suburban · Villanova, PA (East Coast).
+  </div>
+  <div class="college-stat-line"><strong>Admit band:</strong> 3.7–4.0 GPA</div>
+  <div class="college-stat-line"><strong>Middle 50%:</strong> 1380–1490 SAT</div>
+  <div class="college-stat-line"><strong>Acceptance rate:</strong> ~23–28%</div>
+  <div class="college-stat-line"><strong>Total cost:</strong> ≈ $70K+ / year</div>
+  <div class="college-stat-line"><strong>Deadline:</strong> Early Action · Nov 1</div>
+  <div class="card-actions">
+    <button class="btn-save">Save to list</button>
+    <a href="#" class="cta-link">View details</a>
+  </div>
+</article>
+
+<article class="college-card">
+  <div class="college-header-row">
+    <h3 class="college-name">Penn State University – University Park</h3>
+    <div class="fit-score-row">
+      <span class="fit-score-pill"><span class="fit-score-pill-dot"></span>Fit score: 90%</span>
+    </div>
+    <span class="college-tag target">Target</span>
+  </div>
+  <div class="college-ranking">
+    Ranking: Top 25 public · Top 80 national.
+  </div>
+  <div class="college-meta-top">
+    Computer Science · Large public · State College, PA (East Coast).
+  </div>
+  <div class="college-stat-line"><strong>Admit band:</strong> 3.4–3.8 GPA</div>
+  <div class="college-stat-line"><strong>Middle 50%:</strong> 1200–1380 SAT</div>
+  <div class="college-stat-line"><strong>Acceptance rate:</strong> ~50–60%</div>
+  <div class="college-stat-line"><strong>Total cost:</strong> ≈ $34K–$38K / year (in-state)</div>
+  <div class="college-stat-line"><strong>Deadline:</strong> Priority · Nov 30</div>
+  <div class="card-actions">
+    <button class="btn-save">Save to list</button>
+    <a href="#" class="cta-link">View details</a>
+  </div>
+</article>
+
+<!-- Midwest matches -->
+<article class="college-card">
+  <div class="college-header-row">
+    <h3 class="college-name">University of Illinois – Urbana-Champaign</h3>
+    <div class="fit-score-row">
+      <span class="fit-score-pill"><span class="fit-score-pill-dot"></span>Fit score: 83%</span>
+    </div>
+    <span class="college-tag target">Target</span>
+  </div>
+  <div class="college-ranking">
+    Ranking: Top 15 public · Top 50 national.
+  </div>
+  <div class="college-meta-top">
+    Computer Science · Strong engineering · Urbana-Champaign, IL (Midwest).
+  </div>
+  <div class="college-stat-line"><strong>Admit band:</strong> 3.6–3.9 GPA</div>
+  <div class="college-stat-line"><strong>Middle 50%:</strong> 1340–1500 SAT</div>
+  <div class="college-stat-line"><strong>Acceptance rate:</strong> ~30–45%</div>
+  <div class="college-stat-line"><strong>Total cost:</strong> ≈ $33K–$37K / year (in-state)</div>
+  <div class="college-stat-line"><strong>Deadline:</strong> Early Action · Nov 1</div>
+  <div class="card-actions">
+    <button class="btn-save">Save to list</button>
+    <a href="#" class="cta-link">View details</a>
+  </div>
+</article>
+
+<article class="college-card">
+  <div class="college-header-row">
+    <h3 class="college-name">University of Wisconsin – Madison</h3>
+    <div class="fit-score-row">
+      <span class="fit-score-pill"><span class="fit-score-pill-dot"></span>Fit score: 86%</span>
+    </div>
+    <span class="college-tag target">Target</span>
+  </div>
+  <div class="college-ranking">
+    Ranking: Top 20 public · Top 60 national.
+  </div>
+  <div class="college-meta-top">
+    Computer Science · Research powerhouse · Madison, WI (Midwest).
+  </div>
+  <div class="college-stat-line"><strong>Admit band:</strong> 3.5–3.8 GPA</div>
+  <div class="college-stat-line"><strong>Middle 50%:</strong> 1300–1440 SAT</div>
+  <div class="college-stat-line"><strong>Acceptance rate:</strong> ~45–55%</div>
+  <div class="college-stat-line"><strong>Total cost:</strong> ≈ $28K–$32K / year (in-state)</div>
+  <div class="college-stat-line"><strong>Deadline:</strong> Early Action · Nov 1</div>
+  <div class="card-actions">
+    <button class="btn-save">Save to list</button>
+    <a href="#" class="cta-link">View details</a>
+  </div>
+</article>
+
+<article class="college-card">
+  <div class="college-header-row">
+    <h3 class="college-name">Ohio State University – Columbus</h3>
+    <div class="fit-score-row">
+      <span class="fit-score-pill"><span class="fit-score-pill-dot"></span>Fit score: 88%</span>
+    </div>
+    <span class="college-tag target">Target</span>
+  </div>
+  <div class="college-ranking">
+    Ranking: Top 20 public · Top 60 national.
+  </div>
+  <div class="college-meta-top">
+    Computer Science · Large public · Columbus, OH (Midwest).
+  </div>
+  <div class="college-stat-line"><strong>Admit band:</strong> 3.4–3.8 GPA</div>
+  <div class="college-stat-line"><strong>Middle 50%:</strong> 1250–1400 SAT</div>
+  <div class="college-stat-line"><strong>Acceptance rate:</strong> ~50–60%</div>
+  <div class="college-stat-line"><strong>Total cost:</strong> ≈ $32K–$36K / year (in-state)</div>
+  <div class="college-stat-line"><strong>Deadline:</strong> Nov 1 (scholarship priority)</div>
+  <div class="card-actions">
+    <button class="btn-save">Save to list</button>
+    <a href="#" class="cta-link">View details</a>
+  </div>
+</article>
+
+<article class="college-card">
+  <div class="college-header-row">
+    <h3 class="college-name">Purdue University – West Lafayette</h3>
+    <div class="fit-score-row">
+      <span class="fit-score-pill"><span class="fit-score-pill-dot"></span>Fit score: 85%</span>
+    </div>
+    <span class="college-tag target">Target</span>
+  </div>
+  <div class="college-ranking">
+    Ranking: Top 20 public · Top 60 national.
+  </div>
+  <div class="college-meta-top">
+    Computer Science &amp; Engineering · STEM focus · West Lafayette, IN (Midwest).
+  </div>
+  <div class="college-stat-line"><strong>Admit band:</strong> 3.5–3.9 GPA</div>
+  <div class="college-stat-line"><strong>Middle 50%:</strong> 1320–1480 SAT</div>
+  <div class="college-stat-line"><strong>Acceptance rate:</strong> ~35–50%</div>
+  <div class="college-stat-line"><strong>Total cost:</strong> ≈ $28K–$33K / year (in-state)</div>
+  <div class="college-stat-line"><strong>Deadline:</strong> Nov 1 (priority)</div>
+  <div class="card-actions">
+    <button class="btn-save">Save to list</button>
+    <a href="#" class="cta-link">View details</a>
+  </div>
+</article>
+
+<article class="college-card">
+  <div class="college-header-row">
+    <h3 class="college-name">University of Minnesota – Twin Cities</h3>
+    <div class="fit-score-row">
+      <span class="fit-score-pill"><span class="fit-score-pill-dot"></span>Fit score: 89%</span>
+    </div>
+    <span class="college-tag safety">Safety</span>
+  </div>
+  <div class="college-ranking">
+    Ranking: Top 25 public · Top 70 national.
+  </div>
+  <div class="college-meta-top">
+    Computer Science · Large public · Minneapolis/St. Paul, MN (Midwest).
+  </div>
+  <div class="college-stat-line"><strong>Admit band:</strong> 3.3–3.7 GPA</div>
+  <div class="college-stat-line"><strong>Middle 50%:</strong> 1200–1400 SAT</div>
+  <div class="college-stat-line"><strong>Acceptance rate:</strong> ~65–70%</div>
+  <div class="college-stat-line"><strong>Total cost:</strong> ≈ $28K–$32K / year (in-state)</div>
+  <div class="college-stat-line"><strong>Deadline:</strong> Nov 1 (priority)</div>
+  <div class="card-actions">
+    <button class="btn-save">Save to list</button>
+    <a href="#" class="cta-link">View details</a>
+  </div>
+</article>
+
+<!-- West Coast matches -->
+<article class="college-card">
+  <div class="college-header-row">
+    <h3 class="college-name">University of California – Los Angeles (UCLA)</h3>
+    <div class="fit-score-row">
+      <span class="fit-score-pill"><span class="fit-score-pill-dot"></span>Fit score: 72%</span>
+    </div>
+    <span class="college-tag">Reach</span>
+  </div>
+  <div class="college-ranking">
+    Ranking: Top 1–2 public · Top 20 national.
+  </div>
+  <div class="college-meta-top">
+    Computer Science · Highly selective · Los Angeles, CA (West Coast).
+  </div>
+  <div class="college-stat-line"><strong>Admit band:</strong> 3.9–4.0 GPA</div>
+  <div class="college-stat-line"><strong>Middle 50%:</strong> 1440–1550 SAT</div>
+  <div class="college-stat-line"><strong>Acceptance rate:</strong> ~10–12%</div>
+  <div class="college-stat-line"><strong>In-state cost:</strong> ≈ $36K–$40K / year</div>
+  <div class="college-stat-line"><strong>Out-of-state cost:</strong> ≈ $65K+ / year</div>
+  <div class="college-stat-line"><strong>Deadline:</strong> UC deadline · Nov 30</div>
+  <div class="card-actions">
+    <button class="btn-save">Save to list</button>
+    <a href="#" class="cta-link">View details</a>
+  </div>
+</article>
+
+<article class="college-card">
+  <div class="college-header-row">
+    <h3 class="college-name">University of California – San Diego</h3>
+    <div class="fit-score-row">
+      <span class="fit-score-pill"><span class="fit-score-pill-dot"></span>Fit score: 80%</span>
+    </div>
+    <span class="college-tag target">Target</span>
+  </div>
+  <div class="college-ranking">
+    Ranking: Top 10 public · Top 40 national.
+  </div>
+  <div class="college-meta-top">
+    Computer Science · Coastal campus · La Jolla, CA (West Coast).
+  </div>
+  <div class="college-stat-line"><strong>Admit band:</strong> 3.7–4.0 GPA</div>
+  <div class="college-stat-line"><strong>Middle 50%:</strong> 1350–1490 SAT</div>
+  <div class="college-stat-line"><strong>Acceptance rate:</strong> ~25–35%</div>
+  <div class="college-stat-line"><strong>In-state cost:</strong> ≈ $34K–$38K / year</div>
+  <div class="college-stat-line"><strong>Out-of-state cost:</strong> ≈ $63K+ / year</div>
+  <div class="college-stat-line"><strong>Deadline:</strong> UC deadline · Nov 30</div>
+  <div class="card-actions">
+    <button class="btn-save">Save to list</button>
+    <a href="#" class="cta-link">View details</a>
+  </div>
+</article>
+
+<article class="college-card">
+  <div class="college-header-row">
+    <h3 class="college-name">University of Washington – Seattle</h3>
+    <div class="fit-score-row">
+      <span class="fit-score-pill"><span class="fit-score-pill-dot"></span>Fit score: 82%</span>
+    </div>
+    <span class="college-tag target">Target</span>
+  </div>
+  <div class="college-ranking">
+    Ranking: Top 20 public · Top 70 national.
+  </div>
+  <div class="college-meta-top">
+    Computer Science · Strong tech hub ties · Seattle, WA (West Coast).
+  </div>
+  <div class="college-stat-line"><strong>Admit band:</strong> 3.6–3.9 GPA</div>
+  <div class="college-stat-line"><strong>Middle 50%:</strong> 1320–1460 SAT</div>
+  <div class="college-stat-line"><strong>Acceptance rate:</strong> ~45–55%</div>
+  <div class="college-stat-line"><strong>In-state cost:</strong> ≈ $30K–$34K / year</div>
+  <div class="college-stat-line"><strong>Out-of-state cost:</strong> ≈ $55K+ / year</div>
+  <div class="college-stat-line"><strong>Deadline:</strong> Nov 15</div>
+  <div class="card-actions">
+    <button class="btn-save">Save to list</button>
+    <a href="#" class="cta-link">View details</a>
+  </div>
+</article>
+
+<article class="college-card">
+  <div class="college-header-row">
+    <h3 class="college-name">University of Colorado – Boulder</h3>
+    <div class="fit-score-row">
+      <span class="fit-score-pill"><span class="fit-score-pill-dot"></span>Fit score: 88%</span>
+    </div>
+    <span class="college-tag target">Target</span>
+  </div>
+  <div class="college-ranking">
+    Ranking: Top 60 public · Top 120 national.
+  </div>
+  <div class="college-meta-top">
+    Computer Science · Outdoor-oriented campus · Boulder, CO (West).</div>
+  <div class="college-stat-line"><strong>Admit band:</strong> 3.3–3.7 GPA</div>
+  <div class="college-stat-line"><strong>Middle 50%:</strong> 1200–1370 SAT</div>
+  <div class="college-stat-line"><strong>Acceptance rate:</strong> ~75–80%</div>
+  <div class="college-stat-line"><strong>Total cost:</strong> ≈ $34K–$40K / year (in-state)</div>
+  <div class="college-stat-line"><strong>Deadline:</strong> Jan 15</div>
+  <div class="card-actions">
+    <button class="btn-save">Save to list</button>
+    <a href="#" class="cta-link">View details</a>
+  </div>
+</article>
+
+<article class="college-card">
+  <div class="college-header-row">
+    <h3 class="college-name">San Diego State University</h3>
+    <div class="fit-score-row">
+      <span class="fit-score-pill"><span class="fit-score-pill-dot"></span>Fit score: 91%</span>
+    </div>
+    <span class="college-tag safety">Safety</span>
+  </div>
+  <div class="college-ranking">
+    Ranking: Regional top public in the West.
+  </div>
+  <div class="college-meta-top">
+    Computer Science · Large public · San Diego, CA (West Coast).
+  </div>
+  <div class="college-stat-line"><strong>Admit band:</strong> 3.2–3.7 GPA</div>
+  <div class="college-stat-line"><strong>Middle 50%:</strong> 1120–1300 SAT</div>
+  <div class="college-stat-line"><strong>Acceptance rate:</strong> ~35–45%</div>
+  <div class="college-stat-line"><strong>Total cost:</strong> ≈ $30K–$36K / year (in-state)</div>
+  <div class="college-stat-line"><strong>Deadline:</strong> CSU deadline · Nov 30</div>
+  <div class="card-actions">
+    <button class="btn-save">Save to list</button>
+    <a href="#" class="cta-link">View details</a>
+  </div>
+</article>
+
+<!-- South matches -->
+<article class="college-card">
+  <div class="college-header-row">
+    <h3 class="college-name">Georgia Institute of Technology</h3>
+    <div class="fit-score-row">
+      <span class="fit-score-pill"><span class="fit-score-pill-dot"></span>Fit score: 75%</span>
+    </div>
+    <span class="college-tag">Reach</span>
+  </div>
+  <div class="college-ranking">
+    Ranking: Top 5 public engineering · Top 40 national.
+  </div>
+  <div class="college-meta-top">
+    Computer Science &amp; Engineering · Highly selective · Atlanta, GA (South).
+  </div>
+  <div class="college-stat-line"><strong>Admit band:</strong> 3.8–4.0 GPA</div>
+  <div class="college-stat-line"><strong>Middle 50%:</strong> 1420–1540 SAT</div>
+  <div class="college-stat-line"><strong>Acceptance rate:</strong> ~17–22%</div>
+  <div class="college-stat-line"><strong>Total cost:</strong> ≈ $28K–$32K / year (in-state)</div>
+  <div class="college-stat-line"><strong>Deadline:</strong> Early Action · Oct 15 / Nov 1</div>
+  <div class="card-actions">
+    <button class="btn-save">Save to list</button>
+    <a href="#" class="cta-link">View details</a>
+  </div>
+</article>
+
+<article class="college-card">
+  <div class="college-header-row">
+    <h3 class="college-name">University of North Carolina – Chapel Hill</h3>
+    <div class="fit-score-row">
+      <span class="fit-score-pill"><span class="fit-score-pill-dot"></span>Fit score: 79%</span>
+    </div>
+    <span class="college-tag">Reach</span>
+  </div>
+  <div class="college-ranking">
+    Ranking: Top 5 public · Top 30 national.
+  </div>
+  <div class="college-meta-top">
+    Arts &amp; Sciences · Historic campus · Chapel Hill, NC (South).
+  </div>
+  <div class="college-stat-line"><strong>Admit band:</strong> 3.7–4.0 GPA</div>
+  <div class="college-stat-line"><strong>Middle 50%:</strong> 1350–1490 SAT</div>
+  <div class="college-stat-line"><strong>Acceptance rate:</strong> ~20–25%</div>
+  <div class="college-stat-line"><strong>In-state cost:</strong> ≈ $25K–$30K / year</div>
+  <div class="college-stat-line"><strong>Out-of-state cost:</strong> ≈ $55K+ / year</div>
+  <div class="college-stat-line"><strong>Deadline:</strong> Early Action · Oct 15</div>
+  <div class="card-actions">
+    <button class="btn-save">Save to list</button>
+    <a href="#" class="cta-link">View details</a>
+  </div>
+</article>
+
+<article class="college-card">
+  <div class="college-header-row">
+    <h3 class="college-name">Clemson University</h3>
+    <div class="fit-score-row">
+      <span class="fit-score-pill"><span class="fit-score-pill-dot"></span>Fit score: 88%</span>
+    </div>
+    <span class="college-tag target">Target</span>
+  </div>
+  <div class="college-ranking">
+    Ranking: Top 70 national university.
+  </div>
+  <div class="college-meta-top">
+    Engineering &amp; STEM · College town · Clemson, SC (South).
+  </div>
+  <div class="college-stat-line"><strong>Admit band:</strong> 3.5–3.8 GPA</div>
+  <div class="college-stat-line"><strong>Middle 50%:</strong> 1240–1390 SAT</div>
+  <div class="college-stat-line"><strong>Acceptance rate:</strong> ~45–50%</div>
+  <div class="college-stat-line"><strong>Total cost:</strong> ≈ $30K–$34K / year (in-state)</div>
+  <div class="college-stat-line"><strong>Deadline:</strong> Dec 1 (priority)</div>
+  <div class="card-actions">
+    <button class="btn-save">Save to list</button>
+    <a href="#" class="cta-link">View details</a>
+  </div>
+</article>
+
+<article class="college-card">
+  <div class="college-header-row">
+    <h3 class="college-name">University of Texas at Austin</h3>
+    <div class="fit-score-row">
+      <span class="fit-score-pill"><span class="fit-score-pill-dot"></span>Fit score: 77%</span>
+    </div>
+    <span class="college-tag">Reach</span>
+  </div>
+  <div class="college-ranking">
+    Ranking: Top 10 public · Top 40 national.
+  </div>
+  <div class="college-meta-top">
+    Computer Science · Large flagship public · Austin, TX (South).
+  </div>
+  <div class="college-stat-line"><strong>Admit band:</strong> 3.7–4.0 GPA</div>
+  <div class="college-stat-line"><strong>Middle 50%:</strong> 1340–1480 SAT</div>
+  <div class="college-stat-line"><strong>Acceptance rate:</strong> ~28–35%</div>
+  <div class="college-stat-line"><strong>Total cost:</strong> ≈ $28K–$32K / year (in-state)</div>
+  <div class="college-stat-line"><strong>Deadline:</strong> Dec 1</div>
+  <div class="card-actions">
+    <button class="btn-save">Save to list</button>
+    <a href="#" class="cta-link">View details</a>
+  </div>
+</article>
+
+<article class="college-card">
+  <div class="college-header-row">
+    <h3 class="college-name">Tulane University</h3>
+    <div class="fit-score-row">
+      <span class="fit-score-pill"><span class="fit-score-pill-dot"></span>Fit score: 82%</span>
+    </div>
+    <span class="college-tag target">Target</span>
+  </div>
+  <div class="college-ranking">
+    Ranking: Top 50 national university.
+  </div>
+  <div class="college-meta-top">
+    Interdisciplinary programs · New Orleans, LA (South).
+  </div>
+  <div class="college-stat-line"><strong>Admit band:</strong> 3.6–3.9 GPA</div>
+  <div class="college-stat-line"><strong>Middle 50%:</strong> 1350–1470 SAT</div>
+  <div class="college-stat-line"><strong>Acceptance rate:</strong> ~20–25%</div>
+  <div class="college-stat-line"><strong>Total cost:</strong> ≈ $70K+ / year</div>
+  <div class="college-stat-line"><strong>Deadline:</strong> Early Action · Nov 15</div>
+  <div class="card-actions">
+    <button class="btn-save">Save to list</button>
+    <a href="#" class="cta-link">View details</a>
+  </div>
+</article>
+
+
+<article class="college-card">
+  <div class="college-header-row">
+    <h3 class="college-name">New York University (NYU)</h3>
+    <div class="fit-score-row">
+      <span class="fit-score-pill"><span class="fit-score-pill-dot"></span>Fit score: 79%</span>
+    </div>
+    <span class="college-tag target">Target</span>
+  </div>
+  <div class="college-ranking">
+    Ranking: Top 35–40 national university.
+  </div>
+  <div class="college-meta-top">
+    Computer Science · Urban campus · New York, NY (East Coast).
+  </div>
+  <div class="college-stat-line"><strong>Admit band:</strong> 3.6–3.9 GPA</div>
+  <div class="college-stat-line"><strong>Middle 50%:</strong> 1400–1520 SAT</div>
+  <div class="college-stat-line"><strong>Acceptance rate:</strong> ~12–15%</div>
+  <div class="college-stat-line"><strong>Total cost:</strong> ≈ $75K+ / year</div>
+  <div class="college-stat-line"><strong>Deadline:</strong> Early Decision · Nov 1</div>
+  <div class="card-actions">
+    <button class="btn-save">Save to list</button>
+    <a href="#" class="cta-link">View details</a>
+  </div>
+</article>
+
+<article class="college-card">
+  <div class="college-header-row">
+    <h3 class="college-name">Dartmouth College</h3>
+    <div class="fit-score-row">
+      <span class="fit-score-pill"><span class="fit-score-pill-dot"></span>Fit score: 68%</span>
+    </div>
+    <span class="college-tag">Reach</span>
+  </div>
+  <div class="college-ranking">
+    Ranking: Top 15 national university (Ivy League).
+  </div>
+  <div class="college-meta-top">
+    Computer Science · Rural Ivy · Hanover, NH (East Coast).
+  </div>
+  <div class="college-stat-line"><strong>Admit band:</strong> 3.9–4.0 GPA</div>
+  <div class="college-stat-line"><strong>Middle 50%:</strong> 1460–1560 SAT</div>
+  <div class="college-stat-line"><strong>Acceptance rate:</strong> ~6–7%</div>
+  <div class="college-stat-line"><strong>Total cost:</strong> ≈ $80K+ / year (meets full need)</div>
+  <div class="college-stat-line"><strong>Deadline:</strong> Early Decision · Nov 1</div>
+  <div class="card-actions">
+    <button class="btn-save">Save to list</button>
+    <a href="#" class="cta-link">View details</a>
+  </div>
+</article>
+
+<article class="college-card">
+  <div class="college-header-row">
+    <h3 class="college-name">Cornell University</h3>
+    <div class="fit-score-row">
+      <span class="fit-score-pill"><span class="fit-score-pill-dot"></span>Fit score: 71%</span>
+    </div>
+    <span class="college-tag">Reach</span>
+  </div>
+  <div class="college-ranking">
+    Ranking: Top 20 national university (Ivy League).
+  </div>
+  <div class="college-meta-top">
+    Computer Science · Large Ivy · Ithaca, NY (East Coast).
+  </div>
+  <div class="college-stat-line"><strong>Admit band:</strong> 3.8–4.0 GPA</div>
+  <div class="college-stat-line"><strong>Middle 50%:</strong> 1450–1550 SAT</div>
+  <div class="college-stat-line"><strong>Acceptance rate:</strong> ~8–10%</div>
+  <div class="college-stat-line"><strong>Total cost:</strong> ≈ $80K+ / year</div>
+  <div class="college-stat-line"><strong>Deadline:</strong> Early Decision · Nov 1</div>
+  <div class="card-actions">
+    <button class="btn-save">Save to list</button>
+    <a href="#" class="cta-link">View details</a>
+  </div>
+</article>
+
+<article class="college-card">
+  <div class="college-header-row">
+    <h3 class="college-name">University of Chicago</h3>
+    <div class="fit-score-row">
+      <span class="fit-score-pill"><span class="fit-score-pill-dot"></span>Fit score: 69%</span>
+    </div>
+    <span class="college-tag">Reach</span>
+  </div>
+  <div class="college-ranking">
+    Ranking: Top 10 national university.
+  </div>
+  <div class="college-meta-top">
+    Computer Science · Research intensive · Chicago, IL (Midwest).
+  </div>
+  <div class="college-stat-line"><strong>Admit band:</strong> 3.9–4.0 GPA</div>
+  <div class="college-stat-line"><strong>Middle 50%:</strong> 1500–1560 SAT</div>
+  <div class="college-stat-line"><strong>Acceptance rate:</strong> ~5–7%</div>
+  <div class="college-stat-line"><strong>Total cost:</strong> ≈ $80K+ / year (strong aid)</div>
+  <div class="college-stat-line"><strong>Deadline:</strong> Early Action · Nov 1</div>
+  <div class="card-actions">
+    <button class="btn-save">Save to list</button>
+    <a href="#" class="cta-link">View details</a>
+  </div>
+</article>
+
+
+          
+
+            <article class="college-card">
+              <div class="college-header-row">
+                <h3 class="college-name">Montclair State University</h3>
+                <div class="fit-score-row"><span class="fit-score-pill"><span class="fit-score-pill-dot"></span>Fit score: 86%</span></div>
+                <span class="college-tag safety">Safety</span>
+              </div>
+              <div class="college-ranking">
+                Ranking: #?? regional · public
+              </div>
+              <div class="college-meta-top">
+                Business / Education · Large public · East Coast
+              </div>
+              <div class="college-stat-line"><strong>Admit band:</strong> 3.0–3.4 GPA</div>
+              <div class="college-stat-line"><strong>Middle 50%:</strong> 1000–1180 SAT</div>
+              <div class="college-stat-line"><strong>Acceptance rate:</strong> ~75–85%</div>
+              <div class="college-stat-line"><strong>Total cost:</strong> ≈ $30K–$34K / year (out-of-state)</div>
+              <div class="college-stat-line"><strong>Deadline:</strong> Rolling / priority dates</div>
+              <div class="card-actions">
+                <button class="btn-save">Save to list</button>
+                <a href="#" class="cta-link">View details</a>
+              </div>
+            </article>
+
+            <article class="college-card">
+              <div class="college-header-row">
+                <h3 class="college-name">Rowan University</h3>
+                <div class="fit-score-row"><span class="fit-score-pill"><span class="fit-score-pill-dot"></span>Fit score: 83%</span></div>
+                <span class="college-tag safety">Safety</span>
+              </div>
+              <div class="college-ranking">
+                Ranking: #?? regional · public
+              </div>
+              <div class="college-meta-top">
+                Engineering / Business · Large public · East Coast
+              </div>
+              <div class="college-stat-line"><strong>Admit band:</strong> 3.1–3.5 GPA</div>
+              <div class="college-stat-line"><strong>Middle 50%:</strong> 1030–1230 SAT</div>
+              <div class="college-stat-line"><strong>Acceptance rate:</strong> ~70–80%</div>
+              <div class="college-stat-line"><strong>Total cost:</strong> ≈ $32K–$36K / year (out-of-state)</div>
+              <div class="college-stat-line"><strong>Deadline:</strong> Rolling / early action</div>
+              <div class="card-actions">
+                <button class="btn-save">Save to list</button>
+                <a href="#" class="cta-link">View details</a>
+              </div>
+            </article>
+
+            <article class="college-card">
+              <div class="college-header-row">
+                <h3 class="college-name">University of Massachusetts Boston</h3>
+                <div class="fit-score-row"><span class="fit-score-pill"><span class="fit-score-pill-dot"></span>Fit score: 82%</span></div>
+                <span class="college-tag safety">Safety</span>
+              </div>
+              <div class="college-ranking">
+                Ranking: #?? public · national
+              </div>
+              <div class="college-meta-top">
+                Liberal Arts & Sciences · Large public · East Coast
+              </div>
+              <div class="college-stat-line"><strong>Admit band:</strong> 3.0–3.4 GPA</div>
+              <div class="college-stat-line"><strong>Middle 50%:</strong> 1020–1200 SAT</div>
+              <div class="college-stat-line"><strong>Acceptance rate:</strong> ~75–85%</div>
+              <div class="college-stat-line"><strong>Total cost:</strong> ≈ $34K–$38K / year (out-of-state)</div>
+              <div class="college-stat-line"><strong>Deadline:</strong> Rolling / priority dates</div>
+              <div class="card-actions">
+                <button class="btn-save">Save to list</button>
+                <a href="#" class="cta-link">View details</a>
+              </div>
+            </article>
+
+            <article class="college-card">
+              <div class="college-header-row">
+                <h3 class="college-name">University of New Hampshire</h3>
+                <div class="fit-score-row"><span class="fit-score-pill"><span class="fit-score-pill-dot"></span>Fit score: 80%</span></div>
+                <span class="college-tag target">Target</span>
+              </div>
+              <div class="college-ranking">
+                Ranking: #?? public · national
+              </div>
+              <div class="college-meta-top">
+                Business / STEM · Large public · East Coast
+              </div>
+              <div class="college-stat-line"><strong>Admit band:</strong> 3.1–3.5 GPA</div>
+              <div class="college-stat-line"><strong>Middle 50%:</strong> 1100–1250 SAT</div>
+              <div class="college-stat-line"><strong>Acceptance rate:</strong> ~80–90%</div>
+              <div class="college-stat-line"><strong>Total cost:</strong> ≈ $38K–$43K / year (out-of-state)</div>
+              <div class="college-stat-line"><strong>Deadline:</strong> Jan 15 (typical)</div>
+              <div class="card-actions">
+                <button class="btn-save">Save to list</button>
+                <a href="#" class="cta-link">View details</a>
+              </div>
+            </article>
+
+            <article class="college-card">
+              <div class="college-header-row">
+                <h3 class="college-name">University of Toledo</h3>
+                <div class="fit-score-row"><span class="fit-score-pill"><span class="fit-score-pill-dot"></span>Fit score: 88%</span></div>
+                <span class="college-tag safety">Safety</span>
+              </div>
+              <div class="college-ranking">
+                Ranking: #?? public · national
+              </div>
+              <div class="college-meta-top">
+                Engineering / Health · Large public · Midwest
+              </div>
+              <div class="college-stat-line"><strong>Admit band:</strong> 3.0–3.4 GPA</div>
+              <div class="college-stat-line"><strong>Middle 50%:</strong> 1000–1180 SAT</div>
+              <div class="college-stat-line"><strong>Acceptance rate:</strong> ~85–95%</div>
+              <div class="college-stat-line"><strong>Total cost:</strong> ≈ $28K–$32K / year (out-of-state)</div>
+              <div class="college-stat-line"><strong>Deadline:</strong> Rolling</div>
+              <div class="card-actions">
+                <button class="btn-save">Save to list</button>
+                <a href="#" class="cta-link">View details</a>
+              </div>
+            </article>
+
+            <article class="college-card">
+              <div class="college-header-row">
+                <h3 class="college-name">Bowling Green State University</h3>
+                <div class="fit-score-row"><span class="fit-score-pill"><span class="fit-score-pill-dot"></span>Fit score: 87%</span></div>
+                <span class="college-tag safety">Safety</span>
+              </div>
+              <div class="college-ranking">
+                Ranking: #?? public · national
+              </div>
+              <div class="college-meta-top">
+                Business / Arts · Large public · Midwest
+              </div>
+              <div class="college-stat-line"><strong>Admit band:</strong> 3.0–3.4 GPA</div>
+              <div class="college-stat-line"><strong>Middle 50%:</strong> 1020–1200 SAT</div>
+              <div class="college-stat-line"><strong>Acceptance rate:</strong> ~80–90%</div>
+              <div class="college-stat-line"><strong>Total cost:</strong> ≈ $27K–$31K / year (out-of-state)</div>
+              <div class="college-stat-line"><strong>Deadline:</strong> Rolling</div>
+              <div class="card-actions">
+                <button class="btn-save">Save to list</button>
+                <a href="#" class="cta-link">View details</a>
+              </div>
+            </article>
+
+            <article class="college-card">
+              <div class="college-header-row">
+                <h3 class="college-name">Western Michigan University</h3>
+                <div class="fit-score-row"><span class="fit-score-pill"><span class="fit-score-pill-dot"></span>Fit score: 86%</span></div>
+                <span class="college-tag safety">Safety</span>
+              </div>
+              <div class="college-ranking">
+                Ranking: #?? public · national
+              </div>
+              <div class="college-meta-top">
+                STEM / Aviation · Large public · Midwest
+              </div>
+              <div class="college-stat-line"><strong>Admit band:</strong> 3.0–3.4 GPA</div>
+              <div class="college-stat-line"><strong>Middle 50%:</strong> 1000–1220 SAT</div>
+              <div class="college-stat-line"><strong>Acceptance rate:</strong> ~80–90%</div>
+              <div class="college-stat-line"><strong>Total cost:</strong> ≈ $29K–$33K / year (out-of-state)</div>
+              <div class="college-stat-line"><strong>Deadline:</strong> Rolling</div>
+              <div class="card-actions">
+                <button class="btn-save">Save to list</button>
+                <a href="#" class="cta-link">View details</a>
+              </div>
+            </article>
+
+            <article class="college-card">
+              <div class="college-header-row">
+                <h3 class="college-name">University of Wisconsin–Milwaukee</h3>
+                <div class="fit-score-row"><span class="fit-score-pill"><span class="fit-score-pill-dot"></span>Fit score: 84%</span></div>
+                <span class="college-tag safety">Safety</span>
+              </div>
+              <div class="college-ranking">
+                Ranking: #?? public · national
+              </div>
+              <div class="college-meta-top">
+                Urban public · Large · Midwest
+              </div>
+              <div class="college-stat-line"><strong>Admit band:</strong> 3.0–3.3 GPA</div>
+              <div class="college-stat-line"><strong>Middle 50%:</strong> 1000–1200 SAT</div>
+              <div class="college-stat-line"><strong>Acceptance rate:</strong> ~75–85%</div>
+              <div class="college-stat-line"><strong>Total cost:</strong> ≈ $30K–$34K / year (out-of-state)</div>
+              <div class="college-stat-line"><strong>Deadline:</strong> Rolling</div>
+              <div class="card-actions">
+                <button class="btn-save">Save to list</button>
+                <a href="#" class="cta-link">View details</a>
+              </div>
+            </article>
+
+            <article class="college-card">
+              <div class="college-header-row">
+                <h3 class="college-name">Cal State Fullerton</h3>
+                <div class="fit-score-row"><span class="fit-score-pill"><span class="fit-score-pill-dot"></span>Fit score: 79%</span></div>
+                <span class="college-tag target">Target</span>
+              </div>
+              <div class="college-ranking">
+                Ranking: #?? public · regional
+              </div>
+              <div class="college-meta-top">
+                Business / CS · Large public · West Coast
+              </div>
+              <div class="college-stat-line"><strong>Admit band:</strong> 3.0–3.4 GPA</div>
+              <div class="college-stat-line"><strong>Middle 50%:</strong> 1030–1200 SAT</div>
+              <div class="college-stat-line"><strong>Acceptance rate:</strong> ~55–65%</div>
+              <div class="college-stat-line"><strong>Total cost:</strong> ≈ $29K–$33K / year (out-of-state)</div>
+              <div class="college-stat-line"><strong>Deadline:</strong> Nov 30 (typical)</div>
+              <div class="card-actions">
+                <button class="btn-save">Save to list</button>
+                <a href="#" class="cta-link">View details</a>
+              </div>
+            </article>
+
+            <article class="college-card">
+              <div class="college-header-row">
+                <h3 class="college-name">San José State University</h3>
+                <div class="fit-score-row"><span class="fit-score-pill"><span class="fit-score-pill-dot"></span>Fit score: 77%</span></div>
+                <span class="college-tag target">Target</span>
+              </div>
+              <div class="college-ranking">
+                Ranking: #?? public · regional
+              </div>
+              <div class="college-meta-top">
+                STEM / Business · Large public · West Coast
+              </div>
+              <div class="college-stat-line"><strong>Admit band:</strong> 3.1–3.5 GPA</div>
+              <div class="college-stat-line"><strong>Middle 50%:</strong> 1040–1250 SAT</div>
+              <div class="college-stat-line"><strong>Acceptance rate:</strong> ~55–65%</div>
+              <div class="college-stat-line"><strong>Total cost:</strong> ≈ $30K–$35K / year (out-of-state)</div>
+              <div class="college-stat-line"><strong>Deadline:</strong> Nov 30 (typical)</div>
+              <div class="card-actions">
+                <button class="btn-save">Save to list</button>
+                <a href="#" class="cta-link">View details</a>
+              </div>
+            </article>
+
+            <article class="college-card">
+              <div class="college-header-row">
+                <h3 class="college-name">Cal State Long Beach</h3>
+                <div class="fit-score-row"><span class="fit-score-pill"><span class="fit-score-pill-dot"></span>Fit score: 76%</span></div>
+                <span class="college-tag target">Target</span>
+              </div>
+              <div class="college-ranking">
+                Ranking: #?? public · regional
+              </div>
+              <div class="college-meta-top">
+                Arts / Business · Large public · West Coast
+              </div>
+              <div class="college-stat-line"><strong>Admit band:</strong> 3.1–3.5 GPA</div>
+              <div class="college-stat-line"><strong>Middle 50%:</strong> 1050–1250 SAT</div>
+              <div class="college-stat-line"><strong>Acceptance rate:</strong> ~45–55%</div>
+              <div class="college-stat-line"><strong>Total cost:</strong> ≈ $30K–$35K / year (out-of-state)</div>
+              <div class="college-stat-line"><strong>Deadline:</strong> Nov 30 (typical)</div>
+              <div class="card-actions">
+                <button class="btn-save">Save to list</button>
+                <a href="#" class="cta-link">View details</a>
+              </div>
+            </article>
+
+            <article class="college-card">
+              <div class="college-header-row">
+                <h3 class="college-name">University of Nevada Reno</h3>
+                <div class="fit-score-row"><span class="fit-score-pill"><span class="fit-score-pill-dot"></span>Fit score: 85%</span></div>
+                <span class="college-tag safety">Safety</span>
+              </div>
+              <div class="college-ranking">
+                Ranking: #?? public · national
+              </div>
+              <div class="college-meta-top">
+                STEM / Business · Large public · West Coast
+              </div>
+              <div class="college-stat-line"><strong>Admit band:</strong> 3.0–3.4 GPA</div>
+              <div class="college-stat-line"><strong>Middle 50%:</strong> 1000–1200 SAT</div>
+              <div class="college-stat-line"><strong>Acceptance rate:</strong> ~80–90%</div>
+              <div class="college-stat-line"><strong>Total cost:</strong> ≈ $33K–$38K / year (out-of-state)</div>
+              <div class="college-stat-line"><strong>Deadline:</strong> Rolling</div>
+              <div class="card-actions">
+                <button class="btn-save">Save to list</button>
+                <a href="#" class="cta-link">View details</a>
+              </div>
+            </article>
+
+            <article class="college-card">
+              <div class="college-header-row">
+                <h3 class="college-name">UAB (University of Alabama at Birmingham)</h3>
+                <div class="fit-score-row"><span class="fit-score-pill"><span class="fit-score-pill-dot"></span>Fit score: 82%</span></div>
+                <span class="college-tag safety">Safety</span>
+              </div>
+              <div class="college-ranking">
+                Ranking: #?? public · national
+              </div>
+              <div class="college-meta-top">
+                Health / STEM · Large public · South
+              </div>
+              <div class="college-stat-line"><strong>Admit band:</strong> 3.0–3.4 GPA</div>
+              <div class="college-stat-line"><strong>Middle 50%:</strong> 1020–1240 SAT</div>
+              <div class="college-stat-line"><strong>Acceptance rate:</strong> ~80–90%</div>
+              <div class="college-stat-line"><strong>Total cost:</strong> ≈ $31K–$36K / year (out-of-state)</div>
+              <div class="college-stat-line"><strong>Deadline:</strong> Rolling / priority dates</div>
+              <div class="card-actions">
+                <button class="btn-save">Save to list</button>
+                <a href="#" class="cta-link">View details</a>
+              </div>
+            </article>
+
+            <article class="college-card">
+              <div class="college-header-row">
+                <h3 class="college-name">Georgia State University</h3>
+                <div class="fit-score-row"><span class="fit-score-pill"><span class="fit-score-pill-dot"></span>Fit score: 83%</span></div>
+                <span class="college-tag safety">Safety</span>
+              </div>
+              <div class="college-ranking">
+                Ranking: #?? public · national
+              </div>
+              <div class="college-meta-top">
+                Business · Large public · South
+              </div>
+              <div class="college-stat-line"><strong>Admit band:</strong> 3.0–3.4 GPA</div>
+              <div class="college-stat-line"><strong>Middle 50%:</strong> 1000–1180 SAT</div>
+              <div class="college-stat-line"><strong>Acceptance rate:</strong> ~80–90%</div>
+              <div class="college-stat-line"><strong>Total cost:</strong> ≈ $32K–$36K / year (out-of-state)</div>
+              <div class="college-stat-line"><strong>Deadline:</strong> Rolling / priority dates</div>
+              <div class="card-actions">
+                <button class="btn-save">Save to list</button>
+                <a href="#" class="cta-link">View details</a>
+              </div>
+            </article>
+
+            <article class="college-card">
+              <div class="college-header-row">
+                <h3 class="college-name">University of North Texas</h3>
+                <div class="fit-score-row"><span class="fit-score-pill"><span class="fit-score-pill-dot"></span>Fit score: 86%</span></div>
+                <span class="college-tag safety">Safety</span>
+              </div>
+              <div class="college-ranking">
+                Ranking: #?? public · national
+              </div>
+              <div class="college-meta-top">
+                Business / Arts · Large public · South
+              </div>
+              <div class="college-stat-line"><strong>Admit band:</strong> 3.0–3.4 GPA</div>
+              <div class="college-stat-line"><strong>Middle 50%:</strong> 1000–1200 SAT</div>
+              <div class="college-stat-line"><strong>Acceptance rate:</strong> ~75–85%</div>
+              <div class="college-stat-line"><strong>Total cost:</strong> ≈ $29K–$33K / year (out-of-state)</div>
+              <div class="college-stat-line"><strong>Deadline:</strong> Rolling</div>
+              <div class="card-actions">
+                <button class="btn-save">Save to list</button>
+                <a href="#" class="cta-link">View details</a>
+              </div>
+            </article>
+
+            <article class="college-card">
+              <div class="college-header-row">
+                <h3 class="college-name">Baruch College (CUNY)</h3>
+                <div class="fit-score-row"><span class="fit-score-pill"><span class="fit-score-pill-dot"></span>Fit score: 70%</span></div>
+                <span class="college-tag reach">Reach</span>
+              </div>
+              <div class="college-ranking">
+                Ranking: #?? public · national
+              </div>
+              <div class="college-meta-top">
+                Business · Large public · East Coast
+              </div>
+              <div class="college-stat-line"><strong>Admit band:</strong> 3.2–3.6 GPA</div>
+              <div class="college-stat-line"><strong>Middle 50%:</strong> 1220–1410 SAT</div>
+              <div class="college-stat-line"><strong>Acceptance rate:</strong> ~30–45%</div>
+              <div class="college-stat-line"><strong>Total cost:</strong> ≈ $20K–$30K / year (nonresident)</div>
+              <div class="college-stat-line"><strong>Deadline:</strong> Feb 1 (typical)</div>
+              <div class="card-actions">
+                <button class="btn-save">Save to list</button>
+                <a href="#" class="cta-link">View details</a>
+              </div>
+            </article>
+
+            <article class="college-card">
+              <div class="college-header-row">
+                <h3 class="college-name">Hunter College (CUNY)</h3>
+                <div class="fit-score-row"><span class="fit-score-pill"><span class="fit-score-pill-dot"></span>Fit score: 72%</span></div>
+                <span class="college-tag reach">Reach</span>
+              </div>
+              <div class="college-ranking">
+                Ranking: #?? public · national
+              </div>
+              <div class="college-meta-top">
+                Liberal Arts & Sciences · Large public · East Coast
+              </div>
+              <div class="college-stat-line"><strong>Admit band:</strong> 3.1–3.5 GPA</div>
+              <div class="college-stat-line"><strong>Middle 50%:</strong> 1180–1360 SAT</div>
+              <div class="college-stat-line"><strong>Acceptance rate:</strong> ~35–50%</div>
+              <div class="college-stat-line"><strong>Total cost:</strong> ≈ $20K–$30K / year (nonresident)</div>
+              <div class="college-stat-line"><strong>Deadline:</strong> Feb 1 (typical)</div>
+              <div class="card-actions">
+                <button class="btn-save">Save to list</button>
+                <a href="#" class="cta-link">View details</a>
+              </div>
+            </article>
+
+            <article class="college-card">
+              <div class="college-header-row">
+                <h3 class="college-name">John Jay College (CUNY)</h3>
+                <div class="fit-score-row"><span class="fit-score-pill"><span class="fit-score-pill-dot"></span>Fit score: 78%</span></div>
+                <span class="college-tag target">Target</span>
+              </div>
+              <div class="college-ranking">
+                Ranking: #?? public · national
+              </div>
+              <div class="college-meta-top">
+                Criminal Justice · Large public · East Coast
+              </div>
+              <div class="college-stat-line"><strong>Admit band:</strong> 3.0–3.4 GPA</div>
+              <div class="college-stat-line"><strong>Middle 50%:</strong> 1100–1300 SAT</div>
+              <div class="college-stat-line"><strong>Acceptance rate:</strong> ~40–60%</div>
+              <div class="college-stat-line"><strong>Total cost:</strong> ≈ $20K–$30K / year (nonresident)</div>
+              <div class="college-stat-line"><strong>Deadline:</strong> Feb 1 (typical)</div>
+              <div class="card-actions">
+                <button class="btn-save">Save to list</button>
+                <a href="#" class="cta-link">View details</a>
+              </div>
+            </article>
+
+            <article class="college-card">
+              <div class="college-header-row">
+                <h3 class="college-name">Temple University</h3>
+                <div class="fit-score-row"><span class="fit-score-pill"><span class="fit-score-pill-dot"></span>Fit score: 74%</span></div>
+                <span class="college-tag reach">Reach</span>
+              </div>
+              <div class="college-ranking">
+                Ranking: #?? public · national
+              </div>
+              <div class="college-meta-top">
+                Business / Engineering · Large public · East Coast
+              </div>
+              <div class="college-stat-line"><strong>Admit band:</strong> 3.1–3.5 GPA</div>
+              <div class="college-stat-line"><strong>Middle 50%:</strong> 1180–1350 SAT</div>
+              <div class="college-stat-line"><strong>Acceptance rate:</strong> ~55–70%</div>
+              <div class="college-stat-line"><strong>Total cost:</strong> ≈ $38K–$44K / year (out-of-state)</div>
+              <div class="college-stat-line"><strong>Deadline:</strong> Jan 15 (typical)</div>
+              <div class="card-actions">
+                <button class="btn-save">Save to list</button>
+                <a href="#" class="cta-link">View details</a>
+              </div>
+            </article>
+
+            <article class="college-card">
+              <div class="college-header-row">
+                <h3 class="college-name">Drexel University</h3>
+                <div class="fit-score-row"><span class="fit-score-pill"><span class="fit-score-pill-dot"></span>Fit score: 73%</span></div>
+                <span class="college-tag reach">Reach</span>
+              </div>
+              <div class="college-ranking">
+                Ranking: #?? private · national
+              </div>
+              <div class="college-meta-top">
+                STEM / Business · Private · East Coast
+              </div>
+              <div class="college-stat-line"><strong>Admit band:</strong> 3.2–3.6 GPA</div>
+              <div class="college-stat-line"><strong>Middle 50%:</strong> 1200–1400 SAT</div>
+              <div class="college-stat-line"><strong>Acceptance rate:</strong> ~70–80%</div>
+              <div class="college-stat-line"><strong>Total cost:</strong> ≈ $65K–$75K / year</div>
+              <div class="college-stat-line"><strong>Deadline:</strong> Jan 15 (typical)</div>
+              <div class="card-actions">
+                <button class="btn-save">Save to list</button>
+                <a href="#" class="cta-link">View details</a>
+              </div>
+            </article>
+
+            <article class="college-card">
+              <div class="college-header-row">
+                <h3 class="college-name">University of Connecticut (UConn)</h3>
+                <div class="fit-score-row"><span class="fit-score-pill"><span class="fit-score-pill-dot"></span>Fit score: 71%</span></div>
+                <span class="college-tag reach">Reach</span>
+              </div>
+              <div class="college-ranking">
+                Ranking: #?? public · national
+              </div>
+              <div class="college-meta-top">
+                Business / STEM · Flagship public · East Coast
+              </div>
+              <div class="college-stat-line"><strong>Admit band:</strong> 3.2–3.6 GPA</div>
+              <div class="college-stat-line"><strong>Middle 50%:</strong> 1230–1400 SAT</div>
+              <div class="college-stat-line"><strong>Acceptance rate:</strong> ~50–60%</div>
+              <div class="college-stat-line"><strong>Total cost:</strong> ≈ $45K–$52K / year (out-of-state)</div>
+              <div class="college-stat-line"><strong>Deadline:</strong> Jan 15 (typical)</div>
+              <div class="card-actions">
+                <button class="btn-save">Save to list</button>
+                <a href="#" class="cta-link">View details</a>
+              </div>
+            </article>
+
+            <article class="college-card">
+              <div class="college-header-row">
+                <h3 class="college-name">NC State University</h3>
+                <div class="fit-score-row"><span class="fit-score-pill"><span class="fit-score-pill-dot"></span>Fit score: 69%</span></div>
+                <span class="college-tag reach">Reach</span>
+              </div>
+              <div class="college-ranking">
+                Ranking: #?? public · national
+              </div>
+              <div class="college-meta-top">
+                Engineering / STEM · Flagship public · South
+              </div>
+              <div class="college-stat-line"><strong>Admit band:</strong> 3.3–3.6 GPA</div>
+              <div class="college-stat-line"><strong>Middle 50%:</strong> 1250–1400 SAT</div>
+              <div class="college-stat-line"><strong>Acceptance rate:</strong> ~40–50%</div>
+              <div class="college-stat-line"><strong>Total cost:</strong> ≈ $45K–$52K / year (out-of-state)</div>
+              <div class="college-stat-line"><strong>Deadline:</strong> Jan 15 (typical)</div>
+              <div class="card-actions">
+                <button class="btn-save">Save to list</button>
+                <a href="#" class="cta-link">View details</a>
+              </div>
+            </article>
+
+            <article class="college-card">
+              <div class="college-header-row">
+                <h3 class="college-name">UNC Charlotte</h3>
+                <div class="fit-score-row"><span class="fit-score-pill"><span class="fit-score-pill-dot"></span>Fit score: 80%</span></div>
+                <span class="college-tag target">Target</span>
+              </div>
+              <div class="college-ranking">
+                Ranking: #?? public · national
+              </div>
+              <div class="college-meta-top">
+                STEM / Business · Large public · South
+              </div>
+              <div class="college-stat-line"><strong>Admit band:</strong> 3.1–3.5 GPA</div>
+              <div class="college-stat-line"><strong>Middle 50%:</strong> 1100–1300 SAT</div>
+              <div class="college-stat-line"><strong>Acceptance rate:</strong> ~65–80%</div>
+              <div class="college-stat-line"><strong>Total cost:</strong> ≈ $35K–$41K / year (out-of-state)</div>
+              <div class="college-stat-line"><strong>Deadline:</strong> Feb 1 (typical)</div>
+              <div class="card-actions">
+                <button class="btn-save">Save to list</button>
+                <a href="#" class="cta-link">View details</a>
+              </div>
+            </article>
+
+            <article class="college-card">
+              <div class="college-header-row">
+                <h3 class="college-name">Clemson University</h3>
+                <div class="fit-score-row"><span class="fit-score-pill"><span class="fit-score-pill-dot"></span>Fit score: 68%</span></div>
+                <span class="college-tag reach">Reach</span>
+              </div>
+              <div class="college-ranking">
+                Ranking: #?? public · national
+              </div>
+              <div class="college-meta-top">
+                Engineering / STEM · Flagship public · South
+              </div>
+              <div class="college-stat-line"><strong>Admit band:</strong> 3.4–3.7 GPA</div>
+              <div class="college-stat-line"><strong>Middle 50%:</strong> 1200–1390 SAT</div>
+              <div class="college-stat-line"><strong>Acceptance rate:</strong> ~40–55%</div>
+              <div class="college-stat-line"><strong>Total cost:</strong> ≈ $50K–$57K / year (out-of-state)</div>
+              <div class="college-stat-line"><strong>Deadline:</strong> Jan 15 (typical)</div>
+              <div class="card-actions">
+                <button class="btn-save">Save to list</button>
+                <a href="#" class="cta-link">View details</a>
+              </div>
+            </article>
+
+            <article class="college-card">
+              <div class="college-header-row">
+                <h3 class="college-name">Texas A&M University</h3>
+                <div class="fit-score-row"><span class="fit-score-pill"><span class="fit-score-pill-dot"></span>Fit score: 67%</span></div>
+                <span class="college-tag reach">Reach</span>
+              </div>
+              <div class="college-ranking">
+                Ranking: #?? public · national
+              </div>
+              <div class="college-meta-top">
+                Engineering / Business · Flagship public · South
+              </div>
+              <div class="college-stat-line"><strong>Admit band:</strong> 3.4–3.7 GPA</div>
+              <div class="college-stat-line"><strong>Middle 50%:</strong> 1200–1400 SAT</div>
+              <div class="college-stat-line"><strong>Acceptance rate:</strong> ~55–65%</div>
+              <div class="college-stat-line"><strong>Total cost:</strong> ≈ $50K–$58K / year (out-of-state)</div>
+              <div class="college-stat-line"><strong>Deadline:</strong> Dec 1 (typical)</div>
+              <div class="card-actions">
+                <button class="btn-save">Save to list</button>
+                <a href="#" class="cta-link">View details</a>
+              </div>
+            </article>
+
+            <article class="college-card">
+              <div class="college-header-row">
+                <h3 class="college-name">University of Houston</h3>
+                <div class="fit-score-row"><span class="fit-score-pill"><span class="fit-score-pill-dot"></span>Fit score: 79%</span></div>
+                <span class="college-tag target">Target</span>
+              </div>
+              <div class="college-ranking">
+                Ranking: #?? public · national
+              </div>
+              <div class="college-meta-top">
+                Business / STEM · Large public · South
+              </div>
+              <div class="college-stat-line"><strong>Admit band:</strong> 3.1–3.5 GPA</div>
+              <div class="college-stat-line"><strong>Middle 50%:</strong> 1100–1300 SAT</div>
+              <div class="college-stat-line"><strong>Acceptance rate:</strong> ~60–70%</div>
+              <div class="college-stat-line"><strong>Total cost:</strong> ≈ $38K–$44K / year (out-of-state)</div>
+              <div class="college-stat-line"><strong>Deadline:</strong> Feb 1 (typical)</div>
+              <div class="card-actions">
+                <button class="btn-save">Save to list</button>
+                <a href="#" class="cta-link">View details</a>
+              </div>
+            </article>
+
+            <article class="college-card">
+              <div class="college-header-row">
+                <h3 class="college-name">Ohio State University</h3>
+                <div class="fit-score-row"><span class="fit-score-pill"><span class="fit-score-pill-dot"></span>Fit score: 66%</span></div>
+                <span class="college-tag reach">Reach</span>
+              </div>
+              <div class="college-ranking">
+                Ranking: #?? public · national
+              </div>
+              <div class="college-meta-top">
+                STEM / Business · Flagship public · Midwest
+              </div>
+              <div class="college-stat-line"><strong>Admit band:</strong> 3.4–3.7 GPA</div>
+              <div class="college-stat-line"><strong>Middle 50%:</strong> 1250–1420 SAT</div>
+              <div class="college-stat-line"><strong>Acceptance rate:</strong> ~50–60%</div>
+              <div class="college-stat-line"><strong>Total cost:</strong> ≈ $50K–$58K / year (out-of-state)</div>
+              <div class="college-stat-line"><strong>Deadline:</strong> Feb 1 (typical)</div>
+              <div class="card-actions">
+                <button class="btn-save">Save to list</button>
+                <a href="#" class="cta-link">View details</a>
+              </div>
+            </article>
+
+            <article class="college-card">
+              <div class="college-header-row">
+                <h3 class="college-name">Indiana University Bloomington</h3>
+                <div class="fit-score-row"><span class="fit-score-pill"><span class="fit-score-pill-dot"></span>Fit score: 72%</span></div>
+                <span class="college-tag reach">Reach</span>
+              </div>
+              <div class="college-ranking">
+                Ranking: #?? public · national
+              </div>
+              <div class="college-meta-top">
+                Business / Liberal Arts · Flagship public · Midwest
+              </div>
+              <div class="college-stat-line"><strong>Admit band:</strong> 3.3–3.6 GPA</div>
+              <div class="college-stat-line"><strong>Middle 50%:</strong> 1170–1370 SAT</div>
+              <div class="college-stat-line"><strong>Acceptance rate:</strong> ~75–85%</div>
+              <div class="college-stat-line"><strong>Total cost:</strong> ≈ $47K–$55K / year (out-of-state)</div>
+              <div class="college-stat-line"><strong>Deadline:</strong> Feb 1 (typical)</div>
+              <div class="card-actions">
+                <button class="btn-save">Save to list</button>
+                <a href="#" class="cta-link">View details</a>
+              </div>
+            </article>
+
+            <article class="college-card">
+              <div class="college-header-row">
+                <h3 class="college-name">University of Florida</h3>
+                <div class="fit-score-row"><span class="fit-score-pill"><span class="fit-score-pill-dot"></span>Fit score: 63%</span></div>
+                <span class="college-tag reach">Reach</span>
+              </div>
+              <div class="college-ranking">
+                Ranking: #?? public · national
+              </div>
+              <div class="college-meta-top">
+                STEM / Business · Flagship public · South
+              </div>
+              <div class="college-stat-line"><strong>Admit band:</strong> 3.4–3.7 GPA</div>
+              <div class="college-stat-line"><strong>Middle 50%:</strong> 1300–1450 SAT</div>
+              <div class="college-stat-line"><strong>Acceptance rate:</strong> ~25–35%</div>
+              <div class="college-stat-line"><strong>Total cost:</strong> ≈ $45K–$55K / year (out-of-state)</div>
+              <div class="college-stat-line"><strong>Deadline:</strong> Nov 1 (typical)</div>
+              <div class="card-actions">
+                <button class="btn-save">Save to list</button>
+                <a href="#" class="cta-link">View details</a>
+              </div>
+            </article>
+
+            <article class="college-card">
+              <div class="college-header-row">
+                <h3 class="college-name">University of Central Florida (UCF)</h3>
+                <div class="fit-score-row"><span class="fit-score-pill"><span class="fit-score-pill-dot"></span>Fit score: 75%</span></div>
+                <span class="college-tag target">Target</span>
+              </div>
+              <div class="college-ranking">
+                Ranking: #?? public · national
+              </div>
+              <div class="college-meta-top">
+                STEM / Tech · Large public · South
+              </div>
+              <div class="college-stat-line"><strong>Admit band:</strong> 3.3–3.6 GPA</div>
+              <div class="college-stat-line"><strong>Middle 50%:</strong> 1200–1360 SAT</div>
+              <div class="college-stat-line"><strong>Acceptance rate:</strong> ~40–55%</div>
+              <div class="college-stat-line"><strong>Total cost:</strong> ≈ $40K–$48K / year (out-of-state)</div>
+              <div class="college-stat-line"><strong>Deadline:</strong> May 1 (typical)</div>
+              <div class="card-actions">
+                <button class="btn-save">Save to list</button>
+                <a href="#" class="cta-link">View details</a>
+              </div>
+            </article>
+
+<div class="fit-legend">
+            <span class="fit-legend-label">Fit score formula</span>
+            <span class="fit-legend-text">≈ 40% academic match + 30% major / program fit + 20% location & campus preferences + 10% affordability indicators.</span>
+          </div>
+
+          <div class="note-line">
+            Rankings shown are illustrative pull-ins from recent U.S. News public and national university lists and may
+            differ slightly by year and methodology.
+          </div>
+        </section>
+      </section>
+    </main>
+  </div>
+
+
+
+<script>
+  var lpCurrentTier = 'all';
+  var lpLastCounts = null;
+  var lpCurrentCounts = null;
+  var lpJustRanSearch = false;
+
+  function lpGetTierFromCard(card) {
+    var tagEl = card.querySelector('.college-tag');
+    if (!tagEl) return null;
+    var text = (tagEl.textContent || "").toLowerCase();
+    if (tagEl.classList.contains('safety') || text.indexOf('safety') !== -1) return 'safety';
+    if (tagEl.classList.contains('target') || text.indexOf('target') !== -1) return 'target';
+    if (tagEl.classList.contains('reach') || text.indexOf('reach') !== -1) return 'reach';
+    return null;
+  }
+
+  function lpInitCardData() {
+    var cards = document.querySelectorAll('.college-card');
+    cards.forEach(function(card) {
+      card.dataset.searchVisible = '1';
+
+      var gpaLine = null;
+      var satLine = null;
+      var statLines = card.querySelectorAll('.college-stat-line');
+      statLines.forEach(function(line) {
+        var txt = (line.textContent || '').toLowerCase();
+        if (!gpaLine && txt.indexOf('admit band') !== -1) gpaLine = line;
+        if (!satLine && txt.indexOf('middle 50%') !== -1) satLine = line;
+      });
+
+      if (gpaLine) {
+        var m = gpaLine.textContent.match(/(\d\.\d)\s*[–-]\s*(\d\.\d)/);
+        if (m) {
+          card.dataset.gpaMin = m[1];
+          card.dataset.gpaMax = m[2];
+        }
+      }
+
+      if (satLine) {
+        var m2 = satLine.textContent.match(/(\d{3,4})\s*[–-]\s*(\d{3,4})/);
+        if (m2) {
+          card.dataset.satMin = m2[1];
+          card.dataset.satMax = m2[2];
+        }
+      }
+
+      var meta = card.querySelector('.college-meta-top');
+      var region = 'all';
+      if (meta) {
+        var mt = meta.textContent.toLowerCase();
+        if (mt.indexOf('east coast') !== -1 || mt.indexOf('(east)') !== -1) region = 'east';
+        else if (mt.indexOf('midwest') !== -1) region = 'midwest';
+        else if (mt.indexOf('west coast') !== -1 || mt.indexOf('west.') !== -1) region = 'west';
+        else if (mt.indexOf('south') !== -1 || mt.indexOf('southwest') !== -1 || mt.indexOf('southeast') !== -1) region = 'south';
+      }
+      card.dataset.region = region;
+      card.style.display = '';
+    });
+  }
+
+  function lpRecomputeSummaryCounts() {
+    var counts = { safety: 0, target: 0, reach: 0 };
+    var cards = document.querySelectorAll('.college-card');
+    cards.forEach(function(card) {
+      if (card.dataset.searchVisible === '0') return;
+      var tier = lpGetTierFromCard(card);
+      if (tier && counts.hasOwnProperty(tier)) counts[tier] += 1;
+    });
+
+    var pills = document.querySelectorAll('.summary-pill');
+    pills.forEach(function(pill) {
+      var label = pill.querySelector('.summary-label');
+      if (!label) return;
+      var ring = pill.querySelector('.mini-ring');
+      var tier = null;
+      if (ring) {
+        if (ring.classList.contains('safety')) tier = 'safety';
+        if (ring.classList.contains('target')) tier = 'target';
+        if (ring.classList.contains('reach')) tier = 'reach';
+      }
+      if (!tier) return;
+      var word = tier.charAt(0).toUpperCase() + tier.slice(1);
+      label.textContent = (counts[tier] || 0) + ' ' + word;
+      pill.dataset.tier = tier;
+    });
+
+    if (lpJustRanSearch) {
+      if (lpCurrentCounts) {
+        lpLastCounts = lpCurrentCounts;
+      }
+      lpCurrentCounts = counts;
+      lpUpdateWhatIfDelta();
+      lpJustRanSearch = false;
+    } else {
+      lpCurrentCounts = counts;
+    }
+  }
+
+  function lpUpdateWhatIfDelta() {
+    var el = document.getElementById('lp-whatif-delta');
+    if (!el || !lpCurrentCounts) return;
+    if (!lpLastCounts) {
+      el.textContent = 'Initial results: ' +
+        'Safety ' + (lpCurrentCounts.safety || 0) + ', ' +
+        'Target ' + (lpCurrentCounts.target || 0) + ', ' +
+        'Reach ' + (lpCurrentCounts.reach || 0) + '.';
+      return;
+    }
+    var parts = [];
+    ['safety','target','reach'].forEach(function(tierName) {
+      var oldVal = lpLastCounts[tierName] || 0;
+      var newVal = lpCurrentCounts[tierName] || 0;
+      var diff = newVal - oldVal;
+      if (diff === 0) return;
+      var label = tierName.charAt(0).toUpperCase() + tierName.slice(1);
+      var sign = diff > 0 ? '+' : '–';
+      parts.push(label + ' ' + sign + Math.abs(diff));
+    });
+    if (parts.length === 0) {
+      el.textContent = 'No change vs last scenario.';
+    } else {
+      el.textContent = 'What‑If change vs last scenario: ' + parts.join(', ');
+    }
+  }
+
+  function lpApplyFilter(tier) {
+    if (!tier) tier = 'all';
+    lpCurrentTier = tier;
+
+    var cards = document.querySelectorAll('.college-card');
+    cards.forEach(function(card) {
+      var baseVisible = card.dataset.searchVisible !== '0';
+      if (!baseVisible) {
+        card.style.display = 'none';
+        return;
+      }
+      var cardTier = lpGetTierFromCard(card);
+      if (tier === 'all' || !cardTier) {
+        card.style.display = '';
+      } else {
+        card.style.display = (cardTier === tier) ? '' : 'none';
+      }
+    });
+
+    var pills = document.querySelectorAll('.summary-pill');
+    pills.forEach(function(pill) {
+      var pTier = pill.dataset.tier;
+      if (lpCurrentTier !== 'all' && pTier === lpCurrentTier) {
+        pill.classList.add('active');
+      } else {
+        pill.classList.remove('active');
+      }
+    });
+
+    lpRecomputeSummaryCounts();
+  }
+
+  function lpToggleTier(tier) {
+    if (lpCurrentTier === tier) {
+      lpApplyFilter('all');
+    } else {
+      lpApplyFilter(tier);
+    }
+  }
+
+  function lpRunSearch() {
+    var gpaInput = document.getElementById('lp-gpa-input');
+    var satInput = document.getElementById('lp-sat-input');
+    var geoSelect = document.getElementById('lp-geo-select');
+
+    var gpa = gpaInput ? parseFloat(gpaInput.value) : NaN;
+    var sat = satInput ? parseInt(satInput.value, 10) : NaN;
+    var regionFilter = geoSelect ? (geoSelect.value || 'all') : 'all';
+
+    var cards = document.querySelectorAll('.college-card');
+    cards.forEach(function(card) {
+      var gMin = parseFloat(card.dataset.gpaMin || '0');
+      var gMax = parseFloat(card.dataset.gpaMax || '5');
+      var sMin = parseInt(card.dataset.satMin || '200', 10);
+      var sMax = parseInt(card.dataset.satMax || '1600', 10);
+      var region = card.dataset.region || 'all';
+
+      var gpaOk = isNaN(gpa) || (gpa >= (gMin - 0.15) && gpa <= (gMax + 0.15));
+      var satOk = isNaN(sat) || (sat >= (sMin - 60) && sat <= (sMax + 60));
+      var regionOk = (regionFilter === 'all' || region === 'all' || region === regionFilter);
+
+      var visible = gpaOk && satOk && regionOk;
+      card.dataset.searchVisible = visible ? '1' : '0';
+    });
+
+    lpJustRanSearch = true;
+    lpApplyFilter(lpCurrentTier || 'all');
+  }
+
+  function lpResetWhatIf() {
+    var gpaInput = document.getElementById('lp-gpa-input');
+    var satInput = document.getElementById('lp-sat-input');
+    var geoSelect = document.getElementById('lp-geo-select');
+    if (gpaInput) gpaInput.value = '';
+    if (satInput) satInput.value = '';
+    if (geoSelect) geoSelect.value = 'all';
+
+    var cards = document.querySelectorAll('.college-card');
+    cards.forEach(function(card) {
+      card.dataset.searchVisible = '1';
+      card.style.display = '';
+    });
+
+    lpCurrentTier = 'all';
+    var pills = document.querySelectorAll('.summary-pill');
+    pills.forEach(function(pill) { pill.classList.remove('active'); });
+
+    lpCurrentCounts = { safety: 0, target: 0, reach: 0 };
+    lpLastCounts = null;
+    var el = document.getElementById('lp-whatif-delta');
+    if (el) {
+      el.textContent = 'Run a What‑If scenario to see how your Safety, Target, and Reach mix shifts.';
+    }
+
+    lpRecomputeSummaryCounts();
+  }
+
+  document.addEventListener('DOMContentLoaded', function() {
+    lpInitCardData();
+
+    
+    // Demo start state: no results shown until the student clicks Search
+    var cards = document.querySelectorAll('.college-card');
+    cards.forEach(function(card) {
+      card.dataset.searchVisible = '0';
+      card.style.display = 'none';
+    });
+    lpCurrentTier = 'all';
+    lpCurrentCounts = { safety: 0, target: 0, reach: 0 };
+    lpLastCounts = null;
+    // Ensure summary pills show 0/0/0 on load
+// Attach click handlers to summary pills
+    var pills = document.querySelectorAll('.summary-pill');
+    pills.forEach(function(pill) {
+      var tier = pill.dataset.tier;
+      if (!tier) {
+        var ring = pill.querySelector('.mini-ring');
+        if (ring) {
+          if (ring.classList.contains('safety')) tier = 'safety';
+          if (ring.classList.contains('target')) tier = 'target';
+          if (ring.classList.contains('reach')) tier = 'reach';
+        }
+      }
+      if (tier) {
+        pill.dataset.tier = tier;
+        pill.addEventListener('click', function() {
+          lpToggleTier(tier);
+        });
+      }
+    });
+
+    // Attach +/- controls for What-If GPA/SAT chips
+    var whatIfFields = document.querySelectorAll('.whatif-field');
+    whatIfFields.forEach(function(field) {
+      var input = field.querySelector('.whatif-input');
+      var chips = field.querySelectorAll('.whatif-chip');
+      chips.forEach(function(chip) {
+        chip.addEventListener('click', function() {
+          if (!input) return;
+          var raw = input.value.trim();
+          var isSat = field.textContent.toLowerCase().indexOf('sat') !== -1;
+          var current = isSat ? parseInt(raw, 10) : parseFloat(raw);
+          if (isNaN(current)) return;
+          var label = chip.textContent.trim();
+          if (isSat) {
+            var deltaSat = label.indexOf('+') !== -1 ? 50 : -50;
+            current = current + deltaSat;
+            if (current < 200) current = 200;
+            if (current > 1600) current = 1600;
+            input.value = String(current);
+          } else {
+            var deltaG = label.indexOf('+') !== -1 ? 0.1 : -0.1;
+            current = Math.round((current + deltaG) * 10) / 10;
+            if (current < 0) current = 0;
+            if (current > 4) current = 4;
+            input.value = current.toFixed(1);
+          }
+        });
+      });
+    });
+
+    lpRecomputeSummaryCounts();
+  });
+</script>
+
+
+
+<script id="lpSaveCollege">
+(() => {
+  if(!window.LP_SAVED) return;
+
+  const normalizeFit = (t) => {
+    const s=(t||"").toLowerCase();
+    if(s.includes("safety")) return "Safety";
+    if(s.includes("reach")) return "Reach";
+    if(s.includes("target")) return "Target";
+    return "";
+  };
+
+  const cards = document.querySelectorAll(".college-card, .card, .result-card, .lp-college-card");
+  let n=0;
+
+  cards.forEach(card => {
+    const titleEl = card.querySelector("h3,h2,.title");
+    if(!titleEl) return;
+    if(card.querySelector(".lp-save-btn")) return;
+    n += 1;
+
+    const id = card.getAttribute("data-college-id") || ("c_" + n);
+    const btn = document.createElement("button");
+    btn.className="lp-save-btn";
+    btn.type="button";
+    btn.textContent="Save";
+    btn.style.marginLeft="10px";
+    btn.style.padding="8px 12px";
+    btn.style.borderRadius="999px";
+    btn.style.border="1px solid rgba(56,189,248,.55)";
+    btn.style.background="rgba(15,23,42,.55)";
+    btn.style.color="rgba(224,242,254,.92)";
+    btn.style.cursor="pointer";
+
+    function inferFit(){
+      const pill = card.querySelector(".pill,.tag,.badge");
+      const f = normalizeFit(pill?.textContent || "");
+      if(f) return f;
+      return (n%3===0) ? "Reach" : (n%2===0 ? "Target" : "Safety");
+    }
+
+    function inferDeadline(){
+      const txt = (card.querySelector(".deadline,.meta,.sub")?.textContent || "");
+      const m = txt.match(/(jan|feb|mar|apr|may|jun|jul|aug|sep|oct|nov|dec)\s*\d{1,2}/i);
+      return m ? m[0] : "TBD";
+    }
+
+    btn.addEventListener("click", () => {
+      const name = (titleEl.textContent || "College").trim();
+      const fit = inferFit();
+      const deadline = inferDeadline();
+      const saved = window.LP_SAVED.saveItem({type:"college", id, name, fit, deadline, savedOn:(new Date()).toLocaleDateString("en-US")});
+      btn.textContent = saved ? "Saved ✓" : "Saved";
+      setTimeout(()=>btn.textContent="Save", 1200);
+    });
+
+    const actions = card.querySelector(".actions,.card-actions") || card;
+    actions.appendChild(btn);
+  });
+})();
+</script>
+</body>
+</html>
