@@ -1,0 +1,2176 @@
+<!DOCTYPE html>
+
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<title>LaunchPath AI – Scattergram (C++)</title>
+<style>
+    :root {
+      --bg-body:#020617;
+      --bg-shell:#111827;
+      --bg-card:#111827;
+      --bg-card-soft:#1f2937;
+      --border-subtle:#1f2937;
+      --accent-blue:#22d3ee;
+      --accent-blue2:#3b82f6;
+      --accent-pink:#ec4899;
+      --accent-green:#22c55e;
+      --accent-orange:#fb923c;
+      --text-main:#f9fafb;
+      --text-muted:#cbd5f5;
+      --font-sans:system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+    }
+    *{box-sizing:border-box;}
+    body{
+      margin:0;
+      padding:28px 24px 40px;
+      font-family:var(--font-sans);
+      background:radial-gradient(circle at top,#111827 0,#020617 65%);
+      color:var(--text-main);
+    }
+    .page{max-width:1280px;margin:0 auto;}
+
+    /* HEADER */
+    header{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      margin-bottom:22px;
+    }
+    .brand-lockup{display:flex;align-items:center;gap:12px;}
+    .brand-mark{
+      width:40px;height:40px;border-radius:999px;
+      background:radial-gradient(circle at 30% 0,#22d3ee 0,#0ea5e9 40%,#111827 95%);
+      box-shadow:0 0 0 2px rgba(56,189,248,.6),0 14px 30px rgba(15,23,42,.9);
+    }
+    .brand-text-main{
+      font-size:1.05rem;
+      letter-spacing:.14em;
+      text-transform:uppercase;
+      font-weight:700;
+    }
+    .brand-text-sub{
+      font-size:.86rem;
+      color:var(--text-muted);
+    }
+    nav a{
+      font-size:.86rem;
+      color:var(--text-muted);
+      text-decoration:none;
+      margin-left:14px;
+    }
+    nav a:hover{color:var(--accent-blue);}
+    .theme-pill{
+      padding:6px 14px;
+      border-radius:999px;
+      border:1px solid rgba(148,163,184,.8);
+      background:rgba(15,23,42,.96);
+      font-size:.8rem;
+      color:var(--text-muted);
+      display:flex;
+      align-items:center;
+      gap:6px;
+    }
+    .theme-dot{
+      width:8px;height:8px;border-radius:999px;background:#22c55e;
+      box-shadow:0 0 0 4px rgba(34,197,94,.25);
+    }
+
+    .shell{
+      background:var(--bg-shell);
+      border-radius:26px;
+      border:1px solid var(--border-subtle);
+      box-shadow:0 24px 70px rgba(0,0,0,.9);
+      padding:24px 26px 26px;
+    }
+
+    .section-title{font-size:1.6rem;margin:0 0 6px;}
+    .section-sub{font-size:.95rem;color:var(--text-muted);margin:0 0 18px;max-width:780px;}
+
+    .layout{
+      display:grid;
+      grid-template-columns:minmax(0,0.95fr) minmax(0,1.15fr);
+      gap:20px;
+      align-items:flex-start;
+    }
+
+    .card{
+      background:var(--bg-card-soft);
+      border-radius:20px;
+      border:1px solid var(--border-subtle);
+      padding:16px 18px 18px;
+      box-shadow:0 18px 46px rgba(0,0,0,.9);
+      font-size:.9rem;
+    }
+    .card h2{
+      margin:0 0 8px;
+      font-size:1.05rem;
+    }
+    .card p.helper{
+      margin:0 0 12px;
+      font-size:.86rem;
+      color:var(--text-muted);
+    }
+    label{
+      display:block;
+      font-size:.8rem;
+      color:var(--text-muted);
+      margin-bottom:4px;
+    }
+    select{
+      width:100%;
+      border-radius:10px;
+      border:1px solid #374151;
+      background:#020617;
+      color:var(--text-main);
+      padding:7px 9px;
+      font-size:.86rem;
+      font-family:var(--font-sans);
+    }
+    .summary-grid{
+      display:grid;
+      grid-template-columns:repeat(2,minmax(0,1fr));
+      gap:10px;
+      margin-top:12px;
+    }
+    .summary-pill{
+      border-radius:16px;
+      border:1px solid #374151;
+      background:#020617;
+      padding:8px 10px;
+      font-size:.82rem;
+    }
+    .summary-label{
+      font-size:.75rem;
+      color:var(--text-muted);
+      margin-bottom:2px;
+    }
+    .summary-value{
+      font-weight:600;
+    }
+    .summary-sub{
+      font-size:.75rem;
+      color:var(--text-muted);
+    }
+
+    .legend{
+      margin-top:12px;
+      padding-top:10px;
+      border-top:1px solid #374151;
+      display:flex;
+      flex-wrap:wrap;
+      gap:10px;
+      font-size:.8rem;
+      color:var(--text-muted);
+    }
+    .legend-item{
+      display:flex;
+      align-items:center;
+      gap:6px;
+    }
+    .legend-dot{
+      width:10px;
+      height:10px;
+      border-radius:999px;
+    }
+    .legend-past{background:var(--accent-blue2);}
+    .legend-current{background:var(--accent-pink);}
+    .legend-you{background:var(--accent-orange);}
+
+    /* Scatterplot */
+    
+    .probability-pill{
+      display:inline-flex;
+      align-items:center;
+      gap:8px;
+      margin:8px 0 4px;
+      padding:6px 12px;
+      border-radius:999px;
+      background:rgba(15,23,42,0.96);
+      border:1px solid #38bdf8;
+      font-size:.82rem;
+    }
+    .probability-label{
+      color:var(--text-muted);
+    }
+    .probability-value{
+      font-weight:600;
+    }
+    .probability-band{
+      font-size:.8rem;
+      padding:2px 8px;
+      border-radius:999px;
+      background:rgba(34,197,94,0.18);
+      border:1px solid rgba(34,197,94,0.7);
+    }
+.probability-band.likely{
+      background:rgba(34,197,94,0.18);
+      border-color:rgba(34,197,94,0.7);
+    }
+    .probability-band.target{
+      background:rgba(250,204,21,0.16);
+      border-color:rgba(250,204,21,0.7);
+    }
+    .probability-band.reach{
+      background:rgba(248,113,113,0.18);
+      border-color:rgba(248,113,113,0.7);
+    }
+
+    
+    .probability-row{
+      display:flex;
+      flex-wrap:nowrap;
+      gap:16px;
+      align-items:flex-start;
+      justify-content:space-between;
+      margin:8px 0 4px;
+    }
+    .whatif-inline{
+      display:flex;
+      align-items:center;
+      justify-content:flex-end;
+      gap:8px;
+      font-size:.78rem;
+      color:var(--text-muted);
+      flex:1;
+      min-width:0;
+      flex-wrap:wrap;
+    }
+    
+    .whatif-suffix{
+      font-size:.74rem;
+      color:var(--text-muted);
+      margin-left:4px;
+    }
+.whatif-inline label{
+      font-size:.74rem;
+      color:var(--text-muted);
+      margin-right:4px;
+    }
+    .whatif-inline input{
+      width:64px;
+      padding:4px 8px;
+      border-radius:999px;
+      border:1px solid var(--border-subtle);
+      background:rgba(15,23,42,0.9);
+      color:var(--text-main);
+      font-size:.78rem;
+      outline:none;
+    }
+    .whatif-inline input:focus{
+      border-color:var(--accent);
+      box-shadow:0 0 0 1px rgba(34,211,238,0.35);
+    }
+    .whatif-title{
+      font-size:.8rem;
+      color:var(--text-main);
+      font-weight:600;
+      margin-right:4px;
+    }
+    .whatif-run-btn{
+      font-size:.74rem;
+      padding:4px 10px;
+      border-radius:999px;
+      border:1px solid var(--accent);
+      background:rgba(15,23,42,0.95);
+      color:var(--accent);
+      cursor:pointer;
+      white-space:nowrap;
+      box-shadow:0 0 10px rgba(34,211,238,0.45);
+      transition:all .18s ease-out;
+    }
+    
+    .whatif-reset-btn{
+      font-size:.72rem;
+      padding:4px 10px;
+      border-radius:999px;
+      border:1px solid var(--border-subtle);
+      background:transparent;
+      color:var(--text-muted);
+      cursor:pointer;
+      white-space:nowrap;
+      transition:all .18s ease-out;
+    }
+    .whatif-reset-btn:hover{
+      border-color:var(--accent);
+      color:var(--accent);
+    }
+.whatif-run-btn:hover{
+      box-shadow:0 0 16px rgba(34,211,238,0.7);
+      transform:translateY(-1px);
+    }
+.probability-footnote{
+      font-size:.76rem;
+      color:var(--text-muted);
+      margin:2px 0 10px;
+    }
+.chart-shell{
+      background:#020617;
+      border-radius:18px;
+      border:1px solid #374151;
+      padding:14px 16px 16px;
+    }
+    .chart-title-row{
+      display:flex;
+      justify-content:space-between;
+      align-items:flex-start;
+      gap:10px;
+      margin-bottom:8px;
+      font-size:.86rem;
+    }
+    .chart-title-main{font-weight:600;}
+    .chart-title-sub{color:var(--text-muted);font-size:.8rem;}
+    .chart-viewport{
+      position:relative;
+      height:280px;
+      border-radius:14px;
+      background:radial-gradient(circle at top,#111827 0,#020617 60%);
+      border:1px solid #1f2937;
+      padding:24px 32px 32px 40px;
+      overflow:hidden;
+    }
+    .axis-x-label,.axis-y-label{
+      position:absolute;
+      font-size:.75rem;
+      color:var(--text-muted);
+    }
+    .axis-x-label{bottom:6px;left:50%;transform:translateX(-50%);}
+    .axis-y-label{top:10px;left:6px;writing-mode:vertical-rl;transform:rotate(180deg);}
+    .axis-ticks{
+      position:absolute;
+      inset:24px 32px 32px 40px;
+      pointer-events:none;
+    }
+    .axis-ticks .v-line,
+    .axis-ticks .h-line{
+      position:absolute;
+      background:rgba(148,163,184,.2);
+    }
+    .axis-ticks .v-line{width:1px;top:0;bottom:0;}
+    .axis-ticks .h-line{height:1px;left:0;right:0;}
+    .axis-tick-label{
+      position:absolute;
+      font-size:.7rem;
+      color:var(--text-muted);
+    }
+    .point{
+      position:absolute;
+      width:8px;
+      height:8px;
+      border-radius:999px;
+      box-shadow:0 0 0 3px rgba(15,23,42,.9);
+    }
+    .point.past{background:var(--accent-blue2);}
+    .point.current{background:var(--accent-pink);}
+    .point.you{background:var(--accent-orange);width:11px;height:11px;}
+
+    .data-table{
+      margin-top:14px;
+      font-size:.8rem;
+      color:var(--text-muted);
+      border-top:1px solid #374151;
+      padding-top:10px;
+    }
+    .data-table table{
+      width:100%;
+      border-collapse:collapse;
+    }
+    .data-table th,
+    .data-table td{
+      padding:4px 4px;
+      text-align:left;
+    }
+    .data-table th{
+      font-size:.78rem;
+      color:var(--text-muted);
+      border-bottom:1px solid #374151;
+    }
+    .data-table td{
+      border-bottom:1px solid #111827;
+    }
+
+
+    .students-like-you{
+      margin-top:6px;
+      font-size:.78rem;
+      color:var(--text-muted);
+      display:flex;
+      gap:6px;
+      align-items:center;
+      flex-wrap:wrap;
+    }
+    .students-like-you .sly-label{
+      font-weight:500;
+    }
+    .students-like-you .sly-outcome{
+      padding:2px 8px;
+      border-radius:999px;
+      border:1px solid rgba(148,163,184,0.5);
+      background:rgba(15,23,42,0.9);
+      color:#e5e7eb;
+    }
+    .decision-boundary-box{
+      border:1px solid rgba(148,163,184,0.35);
+      background:rgba(148,163,184,0.05);
+      padding:10px 14px;
+      border-radius:12px;
+      font-size:0.80rem;
+      color:#ffffff;
+      font-weight:600;
+      margin-top:10px;
+      line-height:1.45;
+    }
+    .decision-boundary-label{
+      display:block;
+      font-size:0.70rem;
+      letter-spacing:0.08em;
+      text-transform:uppercase;
+      color:#a5b4fc;
+      margin-bottom:4px;
+    }
+
+
+    @media(max-width:1024px){
+      body{padding:20px 14px 30px;}
+      .shell{padding:20px;}
+      .layout{grid-template-columns:minmax(0,1fr);}
+    }
+  
+  /* Accept / Reject CTA button on scattergram page */
+  .accept-reject-cta-row{
+    display:flex;
+    justify-content:flex-end;
+    margin:4px 0 14px;
+  }
+  .accept-reject-btn{
+    border-radius:999px;
+    border:1px solid #38bdf8;
+    background:linear-gradient(to right,#0ea5e9,#22d3ee);
+    color:#0f172a;
+    font-size:0.7rem;
+    font-weight:600;
+    padding:5px 16px;
+    cursor:pointer;
+    box-shadow:0 0 15px rgba(34,211,238,0.45);
+    white-space:nowrap;
+    display:inline-flex;
+    align-items:center;
+    gap:6px;
+  }
+  .accept-reject-btn:hover{
+    filter:brightness(1.06);
+    transform:translateY(-1px);
+  }
+  .accept-reject-btn span.dot{
+    width:6px;
+    height:6px;
+    border-radius:999px;
+    background:#0f172a;
+  }
+
+  /* Accept / Reject modal styling */
+  .ar-modal-backdrop{
+    position:fixed;
+    inset:0;
+    background:rgba(15,23,42,0.86);
+    display:none;
+    align-items:center;
+    justify-content:center;
+    z-index:60;
+  }
+  .ar-modal-backdrop.open{display:flex;}
+  .ar-modal-dialog{
+    width:100%;
+    max-width:960px;
+    border-radius:18px;
+    border:1px solid rgba(148,163,184,0.45);
+    background:
+      radial-gradient(circle at top,rgba(56,189,248,0.16),transparent 55%),
+      #020617;
+    box-shadow:
+      0 0 0 1px rgba(15,23,42,0.8),
+      0 26px 55px rgba(0,0,0,0.9);
+    padding:12px 14px 14px;
+  }
+  .ar-modal-header{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    gap:8px;
+    margin-bottom:6px;
+  }
+  .ar-modal-title-block{
+    display:flex;
+    flex-direction:column;
+    gap:2px;
+  }
+  .ar-modal-kicker{
+    font-size:0.7rem;
+    letter-spacing:0.14em;
+    text-transform:uppercase;
+    color:#9ca3af;
+  }
+  .ar-modal-title{
+    font-size:0.95rem;
+    font-weight:500;
+    display:flex;
+    gap:8px;
+    align-items:center;
+  }
+  .ar-tag{
+    font-size:0.7rem;
+    padding:1px 7px;
+    border-radius:999px;
+    border:1px solid rgba(148,163,184,0.75);
+    background:rgba(15,23,42,0.98);
+    color:#e5e7eb;
+  }
+  .ar-modal-subtitle{
+    font-size:0.72rem;
+    color:#9ca3af;
+  }
+  .ar-modal-close{
+    border-radius:999px;
+    border:1px solid #4b5563;
+    background:rgba(15,23,42,0.95);
+    color:#e5e7eb;
+    font-size:0.8rem;
+    padding:4px 8px;
+    cursor:pointer;
+  }
+  .ar-modal-close:hover{
+    border-color:rgba(148,163,184,0.9);
+  }
+  .ar-modal-body{margin-top:6px;}
+  .ar-modal-layout{
+    display:grid;
+    grid-template-columns:minmax(0,1.7fr) minmax(0,1.1fr);
+    gap:10px;
+    align-items:stretch;
+  }
+  .ar-toggle-row{
+    display:flex;
+    flex-wrap:wrap;
+    gap:6px;
+    font-size:0.72rem;
+    margin-bottom:4px;
+  }
+  .ar-toggle-label{color:#9ca3af;}
+  .ar-toggle-chip{
+    font-size:0.7rem;
+    padding:2px 8px;
+    border-radius:999px;
+    border:1px solid #4b5563;
+    background:rgba(15,23,42,0.95);
+    cursor:pointer;
+    color:#e5e7eb;
+  }
+  .ar-toggle-chip.active{
+    border-color:rgba(56,189,248,0.9);
+    background:rgba(8,47,73,0.95);
+    color:#e0f2fe;
+  }
+  .ar-modal-scatter-card,
+  .ar-modal-ai-card{
+    margin:0;
+    padding:8px 9px;
+    border-radius:16px;
+    border:1px solid #1f2937;
+    background:#020617;
+  }
+  .ar-scatter-area{
+    position:relative;
+    border-radius:10px;
+    background:#020617;
+    border:1px solid #1f2937;
+    padding:10px;
+    min-height:220px;
+    overflow:hidden;
+  }
+  .ar-grid{
+    position:absolute;
+    inset:10px 10px 24px 24px;
+    background-image:
+      linear-gradient(to right,rgba(31,41,55,0.6) 1px,transparent 1px),
+      linear-gradient(to bottom,rgba(31,41,55,0.6) 1px,transparent 1px);
+    background-size:26px 26px;
+    opacity:0.9;
+  }
+  .ar-axis-x,
+  .ar-axis-y{
+    position:absolute;
+    font-size:0.62rem;
+    color:#9ca3af;
+  }
+  .ar-axis-x{bottom:6px;left:26px;}
+  .ar-axis-y{
+    top:6px;
+    left:6px;
+    writing-mode:vertical-rl;
+    transform:rotate(180deg);
+  }
+  .ar-x-ticks span,
+  .ar-y-ticks span{
+    position:absolute;
+    font-size:0.6rem;
+    color:#6b7280;
+  }
+  .ar-x-ticks span{
+    bottom:4px;
+    transform:translateX(-50%);
+  }
+  .ar-y-ticks span{
+    left:30px;
+    transform:translateY(50%);
+  }
+  .ar-point{
+    position:absolute;
+    width:8px;
+    height:8px;
+    border-radius:999px;
+  }
+  .ar-point.accept{
+    background:#22c55e;
+    box-shadow:0 0 0 2px rgba(34,197,94,0.2);
+  }
+  .ar-point.reject{
+    background:#f97373;
+    box-shadow:0 0 0 2px rgba(248,113,113,0.22);
+    opacity:0.9;
+  }
+  .ar-point.waitlist{
+    background:#facc15;
+    box-shadow:0 0 0 2px rgba(250,204,21,0.18);
+  }
+  .ar-point.you{
+    width:11px;
+    height:11px;
+    border-radius:999px;
+    background:#e5e7eb;
+    box-shadow:0 0 0 2px #0ea5e9,0 0 20px rgba(56,189,248,0.6);
+  }
+  .ar-legend{
+    display:flex;
+    flex-wrap:wrap;
+    gap:8px;
+    margin-top:4px;
+    font-size:0.7rem;
+    color:#9ca3af;
+  }
+  .ar-legend-item{
+    display:inline-flex;
+    align-items:center;
+    gap:4px;
+  }
+  .ar-dot{
+    width:8px;
+    height:8px;
+    border-radius:999px;
+  }
+  .ar-dot.accept{background:#22c55e;box-shadow:0 0 0 1px rgba(34,197,94,0.2);}
+  .ar-dot.reject{background:#f97373;box-shadow:0 0 0 1px rgba(248,113,113,0.22);}
+  .ar-dot.waitlist{background:#facc15;box-shadow:0 0 0 1px rgba(250,204,21,0.18);}
+  .ar-dot.you{background:#e5e7eb;box-shadow:0 0 0 1px #0ea5e9;}
+
+  .ar-commentary{
+    font-size:0.72rem;
+    color:#9ca3af;
+    margin-top:4px;
+  }
+  .ar-ai-panel{
+    border-radius:12px;
+    border:1px solid #374151;
+    background:radial-gradient(circle at top left,rgba(56,189,248,0.14),transparent 55%);
+    padding:8px 9px;
+    font-size:0.72rem;
+  }
+  .ar-ai-label{
+    font-size:0.68rem;
+    letter-spacing:0.14em;
+    text-transform:uppercase;
+    color:#a5b4fc;
+    margin-bottom:3px;
+  }
+  .ar-ai-main{
+    font-weight:500;
+    color:#e5e7eb;
+    margin-bottom:4px;
+  }
+  .ar-ai-detail{
+    color:#9ca3af;
+    margin-bottom:4px;
+  }
+  .ar-ai-chips{
+    display:flex;
+    flex-wrap:wrap;
+    gap:4px;
+  }
+  .ar-ai-chip{
+    font-size:0.68rem;
+    padding:2px 6px;
+    border-radius:999px;
+    border:1px solid #4b5563;
+    background:rgba(15,23,42,0.96);
+    color:#e5e7eb;
+  }
+  .ar-ai-chip.success{
+    border-color:rgba(34,197,94,0.8);
+    background:rgba(5,46,22,0.88);
+    color:#bbf7d0;
+  }
+  .ar-ai-chip.warn{
+    border-color:rgba(250,204,21,0.8);
+    background:rgba(82,59,15,0.92);
+    color:#facc15;
+  }
+  .ar-ai-chip.danger{
+    border-color:rgba(248,113,113,0.8);
+    background:rgba(127,29,29,0.9);
+    color:#fecaca;
+  }
+  .ar-summary-list{
+    list-style:none;
+    margin:8px 0 0;
+    padding:0;
+    font-size:0.72rem;
+    color:#9ca3af;
+  }
+  .ar-summary-list li{
+    padding:2px 0;
+    display:flex;
+    justify-content:space-between;
+    gap:4px;
+  }
+  .ar-summary-list span.value{
+    font-weight:500;
+    color:#e5e7eb;
+  }
+  .ar-modal-footer{
+    margin-top:8px;
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    gap:6px;
+    font-size:0.7rem;
+    color:#9ca3af;
+    flex-wrap:wrap;
+  }
+  @media(max-width:780px){
+    .ar-modal-layout{grid-template-columns:minmax(0,1fr);}
+  }
+
+/* LaunchPath CTA buttons (consistent blue) */
+.primary-btn{
+  background: linear-gradient(135deg,#2563eb,#3b82f6);
+  color:#fff;
+  border:none;
+  border-radius:14px;
+  padding:12px 16px;
+  font-weight:700;
+  cursor:pointer;
+  box-shadow:0 10px 25px rgba(37,99,235,0.35);
+}
+.primary-btn:hover{opacity:0.95}
+.secondary-btn{
+  background: rgba(37,99,235,0.10);
+  color: #dbeafe;
+  border: 1px solid rgba(147,197,253,0.55);
+  border-radius:14px;
+  padding:12px 16px;
+  font-weight:700;
+  cursor:pointer;
+}
+.secondary-btn:hover{background: rgba(37,99,235,0.16);}
+
+/* ===== LaunchPath unified header (scoped) ===== */
+.lp-header{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:16px;
+  margin-bottom:22px;
+}
+.lp-header-right{
+  display:flex;
+  align-items:center;
+  gap:12px;
+}
+.brand-lockup{display:flex;align-items:center;gap:12px;}
+.brand-mark{
+  width:40px;height:40px;border-radius:999px;
+  background:radial-gradient(circle at 30% 0,#22d3ee 0,#0ea5e9 40%,#111827 95%);
+  box-shadow:0 0 0 2px rgba(56,189,248,.6),0 14px 30px rgba(15,23,42,.9);
+}
+.brand-text-main{
+  font-size:1.05rem;
+  letter-spacing:.14em;
+  text-transform:uppercase;
+  font-weight:700;
+}
+.brand-text-sub{
+  font-size:.86rem;
+  color:#cbd5f5;
+}
+.lp-nav{display:flex;align-items:center;gap:12px;}
+.lp-nav-link{
+  padding:10px 16px;
+  border-radius:999px;
+  border:1px solid rgba(56,189,248,.45);
+  background:rgba(15,23,42,.55);
+  color:rgba(224,242,254,.86);
+  text-decoration:none;
+  font-size:.86rem;
+  line-height:1.1;
+  white-space:nowrap;
+}
+.lp-nav-link:hover{border-color:rgba(56,189,248,.75);background:rgba(15,23,42,.75);}
+.lp-actions{display:flex;align-items:center;gap:10px;}
+.lp-action{
+  padding:10px 16px;
+  border-radius:999px;
+  text-decoration:none;
+  font-size:.86rem;
+  white-space:nowrap;
+  border:1px solid rgba(56,189,248,.75);
+  background:rgba(15,23,42,.65);
+  color:rgba(224,242,254,.92);
+}
+.lp-action.lp-school{
+  border-color:rgba(168,85,247,.75);
+}
+.lp-action:hover{filter:brightness(1.05);}
+@media(max-width:840px){
+  .lp-header{flex-direction:column;align-items:flex-start;}
+  .lp-header-right{width:100%;justify-content:space-between;}
+}
+
+/* ===== LaunchPath unified header (2 buttons) ===== */
+.lp-header{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:16px;
+  margin-bottom:22px;
+}
+.lp-header-right{display:flex;align-items:center;gap:12px;margin-left:auto;justify-content:flex-end;}
+.brand-lockup{display:flex;align-items:center;gap:12px;}
+.brand-mark{
+  width:40px;height:40px;border-radius:999px;
+  background:radial-gradient(circle at 30% 0,#22d3ee 0,#0ea5e9 40%,#111827 95%);
+  box-shadow:0 0 0 2px rgba(56,189,248,.6),0 14px 30px rgba(15,23,42,.9);
+}
+.brand-text-main{
+  font-size:1.05rem;
+  letter-spacing:.14em;
+  text-transform:uppercase;
+  font-weight:700;
+}
+.brand-text-sub{font-size:.86rem;color:#cbd5f5;}
+.lp-nav{display:flex;align-items:center;gap:12px;margin-left:auto;justify-content:flex-end;}
+.lp-nav-link{
+  padding:10px 16px;
+  border-radius:999px;
+  border:1px solid rgba(56,189,248,.45);
+  background:rgba(15,23,42,.55);
+  color:rgba(224,242,254,.86);
+  text-decoration:none;
+  font-size:.86rem;
+  line-height:1.1;
+  white-space:nowrap;
+}
+.lp-nav-link:hover{border-color:rgba(56,189,248,.75);background:rgba(15,23,42,.75);}
+.lp-actions{display:flex;align-items:center;gap:10px;}
+.lp-action{
+  padding:10px 16px;
+  border-radius:999px;
+  text-decoration:none;
+  font-size:.86rem;
+  white-space:nowrap;
+  border:1px solid rgba(56,189,248,.75);
+  background:rgba(15,23,42,.65);
+  color:rgba(224,242,254,.92);
+}
+.lp-action.lp-school{border-color:rgba(168,85,247,.75);}
+@media(max-width:840px){
+  .lp-header{flex-direction:column;align-items:flex-start;}
+  .lp-header-right{width:100%;justify-content:space-between;}
+}
+/* ===== End header ===== */
+</style>
+</head>
+<body>
+<div class="page">
+<header class="lp-header">
+  <div class="brand-lockup">
+    <div class="brand-mark"></div>
+    <div class="brand-text">
+      <div class="brand-text-main">LAUNCHPATH AI</div>
+      <div class="brand-text-sub">College Match · Essays · ROI · Social Studio</div>
+    </div>
+  </div>
+  <nav class="lp-nav">
+    <a class="lp-nav-link" href="index.html">Home</a>
+    <a class="lp-nav-link" href="student-workplace.html">Student Workplace</a>
+  </nav>
+</header>
+
+<main class="shell">
+<h1 class="section-title">Scattergram – GPA &amp; SAT vs past LaunchPath students</h1>
+<p class="section-sub">
+        This view plots past and current LaunchPath AI students against GPA and SAT/ACT ranges
+        for a specific college. The orange dot shows <strong>you</strong> in context — no accept / waitlist / deny labels,
+        just where you sit relative to recent applicants.
+      </p>
+<section class="layout">
+<!-- LEFT: CONTROLS + SUMMARY -->
+<section class="card">
+<h2>1. Choose college &amp; cohort</h2>
+<p class="helper">
+            Start with a target school. In a live product, this would filter to real historical data
+            from past LaunchPath users and current seniors at your high school or district.
+          </p>
+<label for="college-select">College</label>
+<select id="college-select">
+<option>Northeastern University</option>
+<option>Boston University</option>
+<option>Rutgers University – New Brunswick</option>
+<option>University of Connecticut</option>
+<option>New York University</option>
+<option>Cornell University</option>
+<option>Dartmouth College</option>
+<option>University of Chicago</option>
+<option>Penn State University</option>
+<option>University of Maryland</option>
+<option>Virginia Tech</option>
+<option>The Ohio State University</option>
+<option>Indiana University Bloomington</option>
+<option>University of Florida</option>
+<option>University of Miami</option>
+<option>University of Southern California</option>
+
+</select>
+<div style="margin-top:10px; display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:10px;">
+  <div>
+    <label for="input-gpa">Your GPA (unweighted)</label>
+    <input id="input-gpa" type="number" step="0.01" min="2.0" max="4.0" value="3.86" />
+  </div>
+  <div>
+    <label for="input-sat">Your SAT</label>
+    <input id="input-sat" type="number" step="10" min="1100" max="1600" value="1450" />
+  </div>
+</div>
+
+<div class="btn-row" style="margin-top:14px; display:flex; gap:12px;">
+  <button id="btn-submit-scatter" class="primary-btn" type="button">Generate Scattergram</button>
+  <button id="btn-reset-scatter" class="secondary-btn" type="button">Reset</button>
+</div>
+
+<div class="summary-grid">
+<div class="summary-pill">
+<div class="summary-label">Median GPA (past admits)</div>
+<div class="summary-value" id="summary-gpa-value">3.8 (unweighted)</div>
+<div class="summary-sub" id="summary-gpa-range">Middle 50%: 3.6 – 3.9</div>
+</div>
+<div class="summary-pill">
+<div class="summary-label">SAT middle 50%</div>
+<div class="summary-value" id="summary-sat-range">1390 – 1510</div>
+<div class="summary-sub" id="summary-sat-sub">ACT approx: 31 – 34</div>
+</div>
+<div class="summary-pill">
+<div class="summary-label">LaunchPath students in view</div>
+<div class="summary-value" id="summary-cohort-count">46 total</div>
+<div class="summary-sub" id="summary-cohort-breakdown">32 past · 14 current seniors</div>
+</div>
+<div class="summary-pill">
+<div class="summary-label">Your profile vs cluster</div>
+<div class="summary-sub" id="summary-profile-note">
+                You sit slightly <strong>above</strong> the GPA median and within the SAT middle band.
+              </div>
+</div>
+</div>
+<div class="legend">
+<div class="legend-item">
+<span class="legend-dot legend-past"></span>
+<span>Past LaunchPath students (last 4 cycles)</span>
+</div>
+<div class="legend-item">
+<span class="legend-dot legend-current"></span>
+<span>Current seniors (this cycle)</span>
+</div>
+<div class="legend-item">
+<span class="legend-dot legend-you"></span>
+<span>You (current student)</span>
+</div>
+</div>
+</section>
+<!-- RIGHT: SCATTERGRAM -->
+<section class="card">
+<h2>2. GPA vs SAT scattergram</h2>
+<p class="helper">
+            Each dot is a LaunchPath student from your high school or district cohort. The orange dot shows you layered on top of the same cloud,
+            so you can see how you compare at a glance.
+          </p>
+<div class="probability-row">
+<div class="probability-pill" id="probability-pill">
+  <span class="probability-label">Estimated admit chance:</span>
+  <span class="probability-value" id="probability-value">–</span>
+  <span class="probability-band" id="probability-band">Select a school</span>
+</div>
+  <div class="whatif-inline">
+    <div class="whatif-title">What-If Analysis</div>
+    <label for="whatif-gpa">GPA</label>
+    <input id="whatif-gpa" type="number" step="0.01" min="3.0" max="4.0" value="3.86" />
+    <input id="whatif-sat" type="number" step="10" min="1150" max="1600" value="1450" />
+    <span class="whatif-suffix">SAT</span>
+    <button class="whatif-run-btn" id="whatif-run-btn" type="button">Run What-If</button>
+    <button class="whatif-reset-btn" id="whatif-reset-btn" type="button">Reset</button>
+  </div>
+</div>
+
+<div class="decision-boundary-box" id="decision-boundary">
+  <!-- AI Insight text will be filled by JavaScript -->
+</div>
+
+
+<div class="accept-reject-cta-row">
+  <button class="accept-reject-btn" id="openAcceptRejectModalBtn">
+    <span class="dot"></span>
+    View Accept / Reject insights
+  </button>
+</div>
+<div class="chart-shell">
+<div class="chart-title-row">
+<div>
+<div class="chart-title-main" id="chart-title-main">Northeastern University · Engineering &amp; CS</div>
+<div class="chart-title-sub">
+                  Sample dataset using realistic GPA/SAT ranges for demo purposes.
+                </div>
+</div>
+<div class="chart-title-sub">
+                GPA on the vertical axis, SAT (1600 scale) on the horizontal.
+              </div>
+</div>
+<div class="chart-viewport">
+<div class="axis-x-label">SAT (1600 scale)</div>
+<div class="axis-y-label">GPA (unweighted)</div>
+<div class="axis-ticks">
+<!-- Vertical tick lines for SAT -->
+<div class="v-line" style="left:10%;"></div>
+<div class="v-line" style="left:30%;"></div>
+<div class="v-line" style="left:50%;"></div>
+<div class="v-line" style="left:70%;"></div>
+<div class="v-line" style="left:90%;"></div>
+<!-- Horizontal tick lines for GPA -->
+<div class="h-line" style="top:10%;"></div>
+<div class="h-line" style="top:35%;"></div>
+<div class="h-line" style="top:60%;"></div>
+<div class="h-line" style="top:85%;"></div>
+<!-- Tick labels -->
+<div class="axis-tick-label" style="bottom:-4px;left:8%;">1200</div>
+<div class="axis-tick-label" style="bottom:-4px;left:28%;">1300</div>
+<div class="axis-tick-label" style="bottom:-4px;left:48%;">1400</div>
+<div class="axis-tick-label" style="bottom:-4px;left:68%;">1500</div>
+<div class="axis-tick-label" style="bottom:-4px;left:88%;">1600</div>
+<div class="axis-tick-label" style="top:-10px;right:0;">4.0</div>
+<div class="axis-tick-label" style="top:20%;right:0;">3.8</div>
+<div class="axis-tick-label" style="top:45%;right:0;">3.6</div>
+<div class="axis-tick-label" style="top:72%;right:0;">3.4</div>
+</div>
+<!-- Sample points: past students -->
+
+
+
+
+
+
+
+
+
+
+
+
+<!-- Sample points: current seniors -->
+
+
+
+
+
+
+
+<!-- You: slightly above median GPA, in the middle SAT band -->
+
+<div id="scatter-points" style="position:absolute; inset:24px 32px 32px 40px;"></div></div>
+</div>
+<div class="data-table">
+<div style="margin-bottom:4px;font-size:.82rem;">
+              Sample data rows for this view (realistic but anonymized):
+            </div>
+<table>
+<thead>
+<tr>
+<th>Student</th>
+<th>Cohort</th>
+<th>GPA</th>
+<th>SAT</th>
+</tr>
+</thead>
+<tbody id="scatter-table-body">
+
+
+
+
+
+
+</tbody>
+</table>
+</div>
+</section>
+</section>
+</main>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  const collegeSelect = document.getElementById('college-select');
+  const chartTitleMain = document.getElementById('chart-title-main');
+  const ptsContainer = document.getElementById('scatter-points');
+  const tableBody = document.getElementById('scatter-table-body');
+  const inputGpa = document.getElementById('input-gpa');
+  const inputSat = document.getElementById('input-sat');
+  const probabilityPill = document.getElementById('probability-pill');
+  const probabilityValue = document.getElementById('probability-value');
+  const probabilityBandEl = document.getElementById('probability-band');
+
+
+  function getUserProfile(defaultYou) {
+    const g = parseFloat(inputGpa && inputGpa.value ? inputGpa.value : (defaultYou && defaultYou.gpa));
+    const s = parseInt(inputSat && inputSat.value ? inputSat.value : (defaultYou && defaultYou.sat), 10);
+    if (!isFinite(g) || !isFinite(s)) {
+      return defaultYou || null;
+    }
+    const gClamped = Math.min(4.0, Math.max(3.0, g));
+    const sClamped = Math.min(1600, Math.max(1150, s));
+    return { gpa: gClamped, sat: sClamped };
+  }
+
+
+  function updateProbabilityUI(info) {
+    if (!probabilityPill || !probabilityValue || !probabilityBandEl) return;
+    probabilityBandEl.classList.remove('likely', 'target', 'reach');
+    if (!info) {
+      probabilityValue.textContent = '–';
+      probabilityBandEl.textContent = 'Not enough data';
+      return;
+    }
+    probabilityValue.textContent = info.rangeText;
+    probabilityBandEl.textContent = info.label;
+    probabilityBandEl.classList.add(info.band);
+  }
+
+  function computeProbability(cfg, userPt) {
+    if (!cfg || !userPt) return null;
+    const g = userPt.gpa;
+    const s = userPt.sat;
+    const gl = cfg.midGpaLow;
+    const gh = cfg.midGpaHigh;
+    const sl = cfg.midSatLow;
+    const sh = cfg.midSatHigh;
+    if (gl == null || gh == null || sl == null || sh == null) return null;
+
+    const gAbove = g >= gh + 0.02;
+    const sAbove = s >= sh + 10;
+    const gMid = g >= gl && g <= gh + 0.02;
+    const sMid = s >= sl && s <= sh + 10;
+    const gBelow = g < gl;
+    const sBelow = s < sl;
+
+    let band, label, rangeText;
+    if ((gAbove && (sAbove || sMid)) || (sAbove && gMid)) {
+      band = 'likely';
+      label = 'Likely band';
+      rangeText = '~65–80%';
+    } else if ((gMid && sMid) || (gAbove && sBelow) || (sAbove && gBelow)) {
+      band = 'target';
+      label = 'Target band';
+      rangeText = '~35–55%';
+    } else {
+      band = 'reach';
+      label = 'Reach band';
+      rangeText = '~15–35%';
+    }
+    return { band, label, rangeText };
+  }
+
+
+  const slyRow = document.getElementById('students-like-you');
+  const slyCountEl = document.getElementById('sly-count');
+  const slyOutcomeEl = document.getElementById('sly-outcome');
+  const decisionBoundaryEl = document.getElementById('decision-boundary');
+
+  function computeStudentsLikeYou(cfg, userPt) {
+    if (!cfg || !userPt || !cfg.rows) return null;
+    const g = userPt.gpa;
+    const s = userPt.sat;
+    const similar = cfg.rows.filter(function(r) {
+      return Math.abs(r.gpa - g) <= 0.10 && Math.abs(r.sat - s) <= 40;
+    });
+    return { count: similar.length };
+  }
+
+  function updateStudentsLikeYou(simInfo, probInfo) {
+    if (!slyRow || !slyCountEl || !slyOutcomeEl) return;
+    if (!simInfo || !probInfo) {
+      slyCountEl.textContent = '–';
+      slyOutcomeEl.textContent = 'Enter GPA & SAT to see peers.';
+      return;
+    }
+    slyCountEl.textContent = simInfo.count + (simInfo.count === 1 ? ' student' : ' students');
+
+    var bandLabel = (probInfo.label || '').toLowerCase();
+    if (simInfo.count === 0) {
+      slyOutcomeEl.textContent = 'No close matches in this demo dataset.';
+    } else if (bandLabel.indexOf('likely') !== -1) {
+      slyOutcomeEl.textContent = 'Most similar profiles here tended to be admitted.';
+    } else if (bandLabel.indexOf('target') !== -1) {
+      slyOutcomeEl.textContent = 'Similar profiles saw a mix of admits and waitlists.';
+    } else if (bandLabel.indexOf('reach') !== -1) {
+      slyOutcomeEl.textContent = 'Similar profiles had fewer admits; treat as a stretch.';
+    } else {
+      slyOutcomeEl.textContent = 'Band is based on the middle 50% GPA/SAT ranges for this school.';
+    }
+  }
+
+  function updateDecisionBoundary(cfg) {
+    if (!decisionBoundaryEl || !cfg) return;
+
+    var gl = cfg.midGpaLow;
+    var gh = cfg.midGpaHigh;
+    var sl = cfg.midSatLow;
+    var sh = cfg.midSatHigh;
+
+    if (gl == null || gh == null || sl == null || sh == null) {
+      decisionBoundaryEl.innerHTML = '';
+      return;
+    }
+
+    var sentence =
+      'Most admitted students from your school cluster around GPA ' +
+      gl.toFixed(2) + '\u2013' + gh.toFixed(2) +
+      ' and SAT ' + sl + '\u2013' + sh +
+      '. Being above this band usually behaves like a \u201cLikely\u201d, ' +
+      'at the edges more like a \u201cTarget\u201d, and below it more like a \u201cReach\u201d.';
+
+    decisionBoundaryEl.innerHTML =
+      '<span class="decision-boundary-label">AI Insight</span>' + sentence;
+  }
+
+  const summary = {
+    gpaValue: document.getElementById('summary-gpa-value'),
+    gpaRange: document.getElementById('summary-gpa-range'),
+    satRange: document.getElementById('summary-sat-range'),
+    satSub: document.getElementById('summary-sat-sub'),
+    cohortCount: document.getElementById('summary-cohort-count'),
+    cohortBreakdown: document.getElementById('summary-cohort-breakdown'),
+    profileNote: document.getElementById('summary-profile-note'),
+  };
+
+  // Synthetic but realistic datasets for demo
+  const collegeData = {
+    "Northeastern University": {
+      title: "Northeastern University · Engineering & CS",
+      gpaValue: "3.8 (unweighted)",
+      gpaRange: "Middle 50%: 3.6 – 3.9",
+      midGpaLow: 3.6,
+      midGpaHigh: 3.9,
+      satRange: "1390 – 1510",
+      midSatLow: 1390,
+      midSatHigh: 1510,
+      satSub: "ACT approx: 31 – 34",
+      cohortCount: "46 total",
+      cohortBreakdown: "32 past · 14 current seniors",
+      profileNote: "You sit slightly above the GPA median and within the SAT middle band.",
+      pointsPast: [
+        { gpa: 3.9, sat: 1520 }, { gpa: 3.82, sat: 1490 }, { gpa: 3.78, sat: 1440 },
+        { gpa: 3.7, sat: 1410 }, { gpa: 3.65, sat: 1370 }, { gpa: 3.72, sat: 1450 },
+        { gpa: 3.8, sat: 1480 }, { gpa: 3.68, sat: 1390 }, { gpa: 3.76, sat: 1430 }
+      ],
+      pointsCurrent: [
+        { gpa: 3.75, sat: 1440 }, { gpa: 3.82, sat: 1460 }, { gpa: 3.69, sat: 1380 },
+        { gpa: 3.6, sat: 1340 }, { gpa: 3.72, sat: 1420 }, { gpa: 3.88, sat: 1500 }
+      ],
+      you: { gpa: 3.86, sat: 1450 },
+      rows: [
+        { id: "NE-01", cohort: "Past", gpa: 3.9, sat: 1520 },
+        { id: "NE-08", cohort: "Past", gpa: 3.78, sat: 1440 },
+        { id: "NE-19", cohort: "Past", gpa: 3.68, sat: 1390 },
+        { id: "NE-22", cohort: "Current", gpa: 3.82, sat: 1460 },
+        { id: "NE-27", cohort: "Current", gpa: 3.75, sat: 1440 },
+        { id: "You", cohort: "Current", gpa: 3.86, sat: 1450 }
+      ]
+    },
+    "Boston University": {
+      title: "Boston University · Computer Science",
+      gpaValue: "3.8 (unweighted)",
+      gpaRange: "Middle 50%: 3.5 – 3.9",
+      midGpaLow: 3.5,
+      midGpaHigh: 3.9,
+      satRange: "1380 – 1500",
+      midSatLow: 1380,
+      midSatHigh: 1500,
+      satSub: "ACT approx: 30 – 34",
+      cohortCount: "42 total",
+      cohortBreakdown: "28 past · 14 current seniors",
+      profileNote: "You are near the upper SAT band and slightly above median GPA.",
+      pointsPast: [
+        { gpa: 3.82, sat: 1480 }, { gpa: 3.76, sat: 1430 }, { gpa: 3.7, sat: 1400 },
+        { gpa: 3.6, sat: 1360 }, { gpa: 3.9, sat: 1500 }, { gpa: 3.55, sat: 1340 }
+      ],
+      pointsCurrent: [
+        { gpa: 3.78, sat: 1440 }, { gpa: 3.72, sat: 1420 }, { gpa: 3.65, sat: 1390 },
+        { gpa: 3.88, sat: 1490 }, { gpa: 3.81, sat: 1470 }
+      ],
+      you: { gpa: 3.86, sat: 1450 },
+      rows: [
+        { id: "BU-03", cohort: "Past", gpa: 3.82, sat: 1480 },
+        { id: "BU-07", cohort: "Past", gpa: 3.7, sat: 1400 },
+        { id: "BU-10", cohort: "Past", gpa: 3.6, sat: 1360 },
+        { id: "BU-18", cohort: "Current", gpa: 3.78, sat: 1440 },
+        { id: "BU-23", cohort: "Current", gpa: 3.72, sat: 1420 },
+        { id: "You", cohort: "Current", gpa: 3.86, sat: 1450 }
+      ]
+    },
+    "Rutgers University – New Brunswick": {
+      title: "Rutgers University – New Brunswick · Computer Science",
+      gpaValue: "3.7 (unweighted)",
+      gpaRange: "Middle 50%: 3.4 – 3.9",
+      midGpaLow: 3.4,
+      midGpaHigh: 3.9,
+      satRange: "1350 – 1490",
+      midSatLow: 1350,
+      midSatHigh: 1490,
+      satSub: "ACT approx: 29 – 33",
+      cohortCount: "54 total",
+      cohortBreakdown: "38 past · 16 current seniors",
+      profileNote: "You are above the median GPA and in the upper SAT band for Rutgers CS.",
+      pointsPast: [
+        { gpa: 3.72, sat: 1400 }, { gpa: 3.65, sat: 1370 }, { gpa: 3.8, sat: 1460 },
+        { gpa: 3.5, sat: 1340 }, { gpa: 3.9, sat: 1490 }, { gpa: 3.58, sat: 1360 }
+      ],
+      pointsCurrent: [
+        { gpa: 3.74, sat: 1420 }, { gpa: 3.68, sat: 1390 }, { gpa: 3.6, sat: 1350 },
+        { gpa: 3.82, sat: 1470 }, { gpa: 3.77, sat: 1440 }
+      ],
+      you: { gpa: 3.86, sat: 1450 },
+      rows: [
+        { id: "RU-04", cohort: "Past", gpa: 3.8, sat: 1460 },
+        { id: "RU-08", cohort: "Past", gpa: 3.65, sat: 1370 },
+        { id: "RU-15", cohort: "Past", gpa: 3.5, sat: 1340 },
+        { id: "RU-21", cohort: "Current", gpa: 3.74, sat: 1420 },
+        { id: "RU-29", cohort: "Current", gpa: 3.68, sat: 1390 },
+        { id: "You", cohort: "Current", gpa: 3.86, sat: 1450 }
+      ]
+    },
+    "University of Connecticut": {
+      title: "University of Connecticut · Computer Science",
+      gpaValue: "3.6 (unweighted)",
+      gpaRange: "Middle 50%: 3.3 – 3.8",
+      midGpaLow: 3.3,
+      midGpaHigh: 3.8,
+      satRange: "1280 – 1410",
+      midSatLow: 1280,
+      midSatHigh: 1410,
+      satSub: "ACT approx: 27 – 31",
+      cohortCount: "37 total",
+      cohortBreakdown: "25 past · 12 current seniors",
+      profileNote: "You are well above the median for both GPA and SAT at UConn CS.",
+      pointsPast: [
+        { gpa: 3.55, sat: 1320 }, { gpa: 3.48, sat: 1300 }, { gpa: 3.62, sat: 1350 },
+        { gpa: 3.7, sat: 1390 }, { gpa: 3.4, sat: 1280 }
+      ],
+      pointsCurrent: [
+        { gpa: 3.68, sat: 1370 }, { gpa: 3.6, sat: 1330 }, { gpa: 3.72, sat: 1390 },
+        { gpa: 3.58, sat: 1310 }
+      ],
+      you: { gpa: 3.86, sat: 1450 },
+      rows: [
+        { id: "UC-01", cohort: "Past", gpa: 3.55, sat: 1320 },
+        { id: "UC-06", cohort: "Past", gpa: 3.62, sat: 1350 },
+        { id: "UC-14", cohort: "Past", gpa: 3.7, sat: 1390 },
+        { id: "UC-19", cohort: "Current", gpa: 3.68, sat: 1370 },
+        { id: "UC-23", cohort: "Current", gpa: 3.6, sat: 1330 },
+        { id: "You", cohort: "Current", gpa: 3.86, sat: 1450 }
+      ]
+    },
+
+    "New York University": {
+      title: "New York University · Arts & Sciences / Business",
+      gpaValue: "3.8 (unweighted)",
+      gpaRange: "Middle 50%: 3.7 – 3.9",
+      midGpaLow: 3.7,
+      midGpaHigh: 3.9,
+      satRange: "1370 – 1510",
+      midSatLow: 1370,
+      midSatHigh: 1510,
+      satSub: "ACT approx: 31 – 34",
+      cohortCount: "16 total",
+      cohortBreakdown: "10 past · 6 current seniors",
+      profileNote: "Competitive private with holistic review; strong essays can matter.",
+      pointsPast: [
+        { gpa: 3.8, sat: 1470 }, { gpa: 3.85, sat: 1320 }, { gpa: 3.67, sat: 1320 }, { gpa: 3.74, sat: 1360 }, { gpa: 3.77, sat: 1480 }, { gpa: 3.83, sat: 1460 }, { gpa: 3.81, sat: 1380 }, { gpa: 3.79, sat: 1430 }, { gpa: 3.93, sat: 1310 }, { gpa: 3.84, sat: 1440 }
+      ],
+      pointsCurrent: [
+        { gpa: 3.64, sat: 1400 }, { gpa: 3.87, sat: 1500 }, { gpa: 3.68, sat: 1460 }, { gpa: 3.96, sat: 1420 }, { gpa: 3.89, sat: 1440 }, { gpa: 3.83, sat: 1370 }
+      ],
+      you: { gpa: 3.8, sat: 1470 },
+      rows: [
+        { id: "NYU-P01", cohort: "Past", gpa: 3.8, sat: 1470 },
+        { id: "NYU-P02", cohort: "Past", gpa: 3.85, sat: 1320 },
+        { id: "NYU-P03", cohort: "Past", gpa: 3.67, sat: 1320 },
+        { id: "NYU-P04", cohort: "Past", gpa: 3.74, sat: 1360 },
+        { id: "NYU-P05", cohort: "Past", gpa: 3.77, sat: 1480 },
+        { id: "NYU-P06", cohort: "Past", gpa: 3.83, sat: 1460 },
+        { id: "NYU-C01", cohort: "Current", gpa: 3.64, sat: 1400 },
+        { id: "NYU-C02", cohort: "Current", gpa: 3.87, sat: 1500 },
+        { id: "NYU-C03", cohort: "Current", gpa: 3.68, sat: 1460 },
+        { id: "NYU-C04", cohort: "Current", gpa: 3.96, sat: 1420 }
+      ]
+    },
+
+    "Cornell University": {
+      title: "Cornell University · Engineering & CS",
+      gpaValue: "3.9 (unweighted)",
+      gpaRange: "Middle 50%: 3.8 – 4.0",
+      midGpaLow: 3.8,
+      midGpaHigh: 4.0,
+      satRange: "1460 – 1560",
+      midSatLow: 1460,
+      midSatHigh: 1560,
+      satSub: "ACT approx: 33 – 35",
+      cohortCount: "16 total",
+      cohortBreakdown: "10 past · 6 current seniors",
+      profileNote: "High reach; academics + strong story are critical.",
+      pointsPast: [
+        { gpa: 3.78, sat: 1480 }, { gpa: 3.74, sat: 1560 }, { gpa: 3.68, sat: 1560 }, { gpa: 3.76, sat: 1580 }, { gpa: 4.0, sat: 1510 }, { gpa: 3.7, sat: 1520 }, { gpa: 3.74, sat: 1460 }, { gpa: 3.65, sat: 1530 }, { gpa: 3.81, sat: 1500 }, { gpa: 3.76, sat: 1540 }
+      ],
+      pointsCurrent: [
+        { gpa: 3.99, sat: 1550 }, { gpa: 3.9, sat: 1460 }, { gpa: 3.81, sat: 1530 }, { gpa: 3.91, sat: 1470 }, { gpa: 3.74, sat: 1570 }, { gpa: 3.85, sat: 1450 }
+      ],
+      you: { gpa: 3.9, sat: 1540 },
+      rows: [
+        { id: "CU-P01", cohort: "Past", gpa: 3.78, sat: 1480 },
+        { id: "CU-P02", cohort: "Past", gpa: 3.74, sat: 1560 },
+        { id: "CU-P03", cohort: "Past", gpa: 3.68, sat: 1560 },
+        { id: "CU-P04", cohort: "Past", gpa: 3.76, sat: 1580 },
+        { id: "CU-P05", cohort: "Past", gpa: 4.0, sat: 1510 },
+        { id: "CU-P06", cohort: "Past", gpa: 3.7, sat: 1520 },
+        { id: "CU-C01", cohort: "Current", gpa: 3.99, sat: 1550 },
+        { id: "CU-C02", cohort: "Current", gpa: 3.9, sat: 1460 },
+        { id: "CU-C03", cohort: "Current", gpa: 3.81, sat: 1530 },
+        { id: "CU-C04", cohort: "Current", gpa: 3.91, sat: 1470 }
+      ]
+    },
+
+    "Dartmouth College": {
+      title: "Dartmouth College · Liberal Arts",
+      gpaValue: "3.9 (unweighted)",
+      gpaRange: "Middle 50%: 3.8 – 4.0",
+      midGpaLow: 3.8,
+      midGpaHigh: 4.0,
+      satRange: "1440 – 1560",
+      midSatLow: 1440,
+      midSatHigh: 1560,
+      satSub: "ACT approx: 33 – 35",
+      cohortCount: "16 total",
+      cohortBreakdown: "10 past · 6 current seniors",
+      profileNote: "Holistic review; fit and narrative carry weight.",
+      pointsPast: [
+        { gpa: 3.79, sat: 1530 }, { gpa: 3.69, sat: 1550 }, { gpa: 3.82, sat: 1380 }, { gpa: 3.83, sat: 1560 }, { gpa: 4.0, sat: 1530 }, { gpa: 3.85, sat: 1550 }, { gpa: 4.0, sat: 1410 }, { gpa: 3.99, sat: 1450 }, { gpa: 3.88, sat: 1530 }, { gpa: 4.0, sat: 1410 }
+      ],
+      pointsCurrent: [
+        { gpa: 3.78, sat: 1520 }, { gpa: 3.84, sat: 1550 }, { gpa: 3.89, sat: 1400 }, { gpa: 3.81, sat: 1550 }, { gpa: 4.0, sat: 1550 }, { gpa: 3.74, sat: 1580 }
+      ],
+      you: { gpa: 3.89, sat: 1490 },
+      rows: [
+        { id: "DART-P01", cohort: "Past", gpa: 3.79, sat: 1530 },
+        { id: "DART-P02", cohort: "Past", gpa: 3.69, sat: 1550 },
+        { id: "DART-P03", cohort: "Past", gpa: 3.82, sat: 1380 },
+        { id: "DART-P04", cohort: "Past", gpa: 3.83, sat: 1560 },
+        { id: "DART-P05", cohort: "Past", gpa: 4.0, sat: 1530 },
+        { id: "DART-P06", cohort: "Past", gpa: 3.85, sat: 1550 },
+        { id: "DART-C01", cohort: "Current", gpa: 3.78, sat: 1520 },
+        { id: "DART-C02", cohort: "Current", gpa: 3.84, sat: 1550 },
+        { id: "DART-C03", cohort: "Current", gpa: 3.89, sat: 1400 },
+        { id: "DART-C04", cohort: "Current", gpa: 3.81, sat: 1550 }
+      ]
+    },
+
+    "University of Chicago": {
+      title: "University of Chicago · Economics / STEM",
+      gpaValue: "3.9 (unweighted)",
+      gpaRange: "Middle 50%: 3.8 – 4.0",
+      midGpaLow: 3.8,
+      midGpaHigh: 4.0,
+      satRange: "1500 – 1560",
+      midSatLow: 1500,
+      midSatHigh: 1560,
+      satSub: "ACT approx: 34 – 35",
+      cohortCount: "16 total",
+      cohortBreakdown: "10 past · 6 current seniors",
+      profileNote: "Very selective; strong writing is a differentiator.",
+      pointsPast: [
+        { gpa: 3.76, sat: 1530 }, { gpa: 3.87, sat: 1540 }, { gpa: 3.75, sat: 1580 }, { gpa: 3.71, sat: 1540 }, { gpa: 3.99, sat: 1450 }, { gpa: 3.74, sat: 1590 }, { gpa: 4.0, sat: 1490 }, { gpa: 3.73, sat: 1560 }, { gpa: 3.79, sat: 1490 }, { gpa: 3.78, sat: 1510 }
+      ],
+      pointsCurrent: [
+        { gpa: 3.71, sat: 1520 }, { gpa: 3.87, sat: 1530 }, { gpa: 4.0, sat: 1520 }, { gpa: 4.0, sat: 1520 }, { gpa: 3.85, sat: 1540 }, { gpa: 3.88, sat: 1550 }
+      ],
+      you: { gpa: 3.95, sat: 1510 },
+      rows: [
+        { id: "UChi-P01", cohort: "Past", gpa: 3.76, sat: 1530 },
+        { id: "UChi-P02", cohort: "Past", gpa: 3.87, sat: 1540 },
+        { id: "UChi-P03", cohort: "Past", gpa: 3.75, sat: 1580 },
+        { id: "UChi-P04", cohort: "Past", gpa: 3.71, sat: 1540 },
+        { id: "UChi-P05", cohort: "Past", gpa: 3.99, sat: 1450 },
+        { id: "UChi-P06", cohort: "Past", gpa: 3.74, sat: 1590 },
+        { id: "UChi-C01", cohort: "Current", gpa: 3.71, sat: 1520 },
+        { id: "UChi-C02", cohort: "Current", gpa: 3.87, sat: 1530 },
+        { id: "UChi-C03", cohort: "Current", gpa: 4.0, sat: 1520 },
+        { id: "UChi-C04", cohort: "Current", gpa: 4.0, sat: 1520 }
+      ]
+    },
+
+    "Penn State University": {
+      title: "Penn State · Engineering / Business",
+      gpaValue: "3.6 (unweighted)",
+      gpaRange: "Middle 50%: 3.4 – 3.8",
+      midGpaLow: 3.4,
+      midGpaHigh: 3.8,
+      satRange: "1210 – 1390",
+      midSatLow: 1210,
+      midSatHigh: 1390,
+      satSub: "ACT approx: 27 – 31",
+      cohortCount: "16 total",
+      cohortBreakdown: "10 past · 6 current seniors",
+      profileNote: "Large flagship; strong target for many majors.",
+      pointsPast: [
+        { gpa: 3.44, sat: 1380 }, { gpa: 3.56, sat: 1280 }, { gpa: 3.87, sat: 1150 }, { gpa: 3.85, sat: 1190 }, { gpa: 3.26, sat: 1410 }, { gpa: 3.88, sat: 1250 }, { gpa: 3.84, sat: 1290 }, { gpa: 3.25, sat: 1360 }, { gpa: 3.59, sat: 1270 }, { gpa: 3.37, sat: 1190 }
+      ],
+      pointsCurrent: [
+        { gpa: 3.65, sat: 1190 }, { gpa: 3.37, sat: 1390 }, { gpa: 3.76, sat: 1290 }, { gpa: 3.84, sat: 1390 }, { gpa: 3.34, sat: 1280 }, { gpa: 3.34, sat: 1190 }
+      ],
+      you: { gpa: 3.61, sat: 1300 },
+      rows: [
+        { id: "PSU-P01", cohort: "Past", gpa: 3.44, sat: 1380 },
+        { id: "PSU-P02", cohort: "Past", gpa: 3.56, sat: 1280 },
+        { id: "PSU-P03", cohort: "Past", gpa: 3.87, sat: 1150 },
+        { id: "PSU-P04", cohort: "Past", gpa: 3.85, sat: 1190 },
+        { id: "PSU-P05", cohort: "Past", gpa: 3.26, sat: 1410 },
+        { id: "PSU-P06", cohort: "Past", gpa: 3.88, sat: 1250 },
+        { id: "PSU-C01", cohort: "Current", gpa: 3.65, sat: 1190 },
+        { id: "PSU-C02", cohort: "Current", gpa: 3.37, sat: 1390 },
+        { id: "PSU-C03", cohort: "Current", gpa: 3.76, sat: 1290 },
+        { id: "PSU-C04", cohort: "Current", gpa: 3.84, sat: 1390 }
+      ]
+    },
+
+    "University of Maryland": {
+      title: "University of Maryland · CS / Engineering",
+      gpaValue: "3.8 (unweighted)",
+      gpaRange: "Middle 50%: 3.6 – 3.9",
+      midGpaLow: 3.6,
+      midGpaHigh: 3.9,
+      satRange: "1330 – 1480",
+      midSatLow: 1330,
+      midSatHigh: 1480,
+      satSub: "ACT approx: 30 – 33",
+      cohortCount: "16 total",
+      cohortBreakdown: "10 past · 6 current seniors",
+      profileNote: "Selective by major; STEM programs can be more competitive.",
+      pointsPast: [
+        { gpa: 3.58, sat: 1270 }, { gpa: 3.49, sat: 1280 }, { gpa: 3.74, sat: 1300 }, { gpa: 3.85, sat: 1480 }, { gpa: 3.58, sat: 1280 }, { gpa: 3.73, sat: 1290 }, { gpa: 3.94, sat: 1340 }, { gpa: 3.65, sat: 1360 }, { gpa: 3.48, sat: 1300 }, { gpa: 3.89, sat: 1420 }
+      ],
+      pointsCurrent: [
+        { gpa: 3.61, sat: 1350 }, { gpa: 3.63, sat: 1310 }, { gpa: 3.87, sat: 1430 }, { gpa: 3.58, sat: 1430 }, { gpa: 3.7, sat: 1480 }, { gpa: 3.85, sat: 1390 }
+      ],
+      you: { gpa: 3.81, sat: 1370 },
+      rows: [
+        { id: "UMD-P01", cohort: "Past", gpa: 3.58, sat: 1270 },
+        { id: "UMD-P02", cohort: "Past", gpa: 3.49, sat: 1280 },
+        { id: "UMD-P03", cohort: "Past", gpa: 3.74, sat: 1300 },
+        { id: "UMD-P04", cohort: "Past", gpa: 3.85, sat: 1480 },
+        { id: "UMD-P05", cohort: "Past", gpa: 3.58, sat: 1280 },
+        { id: "UMD-P06", cohort: "Past", gpa: 3.73, sat: 1290 },
+        { id: "UMD-C01", cohort: "Current", gpa: 3.61, sat: 1350 },
+        { id: "UMD-C02", cohort: "Current", gpa: 3.63, sat: 1310 },
+        { id: "UMD-C03", cohort: "Current", gpa: 3.87, sat: 1430 },
+        { id: "UMD-C04", cohort: "Current", gpa: 3.58, sat: 1430 }
+      ]
+    },
+
+    "Virginia Tech": {
+      title: "Virginia Tech · Engineering / Business",
+      gpaValue: "3.7 (unweighted)",
+      gpaRange: "Middle 50%: 3.5 – 3.9",
+      midGpaLow: 3.5,
+      midGpaHigh: 3.9,
+      satRange: "1210 – 1410",
+      midSatLow: 1210,
+      midSatHigh: 1410,
+      satSub: "ACT approx: 27 – 32",
+      cohortCount: "16 total",
+      cohortBreakdown: "10 past · 6 current seniors",
+      profileNote: "Strong target/reach mix; balance rigor + fit.",
+      pointsPast: [
+        { gpa: 3.4, sat: 1370 }, { gpa: 3.68, sat: 1250 }, { gpa: 3.75, sat: 1410 }, { gpa: 3.71, sat: 1300 }, { gpa: 3.44, sat: 1330 }, { gpa: 3.55, sat: 1330 }, { gpa: 3.78, sat: 1180 }, { gpa: 3.6, sat: 1330 }, { gpa: 3.88, sat: 1240 }, { gpa: 3.86, sat: 1390 }
+      ],
+      pointsCurrent: [
+        { gpa: 3.5, sat: 1420 }, { gpa: 3.53, sat: 1320 }, { gpa: 3.61, sat: 1300 }, { gpa: 3.93, sat: 1350 }, { gpa: 3.85, sat: 1170 }, { gpa: 3.73, sat: 1160 }
+      ],
+      you: { gpa: 3.76, sat: 1340 },
+      rows: [
+        { id: "VT-P01", cohort: "Past", gpa: 3.4, sat: 1370 },
+        { id: "VT-P02", cohort: "Past", gpa: 3.68, sat: 1250 },
+        { id: "VT-P03", cohort: "Past", gpa: 3.75, sat: 1410 },
+        { id: "VT-P04", cohort: "Past", gpa: 3.71, sat: 1300 },
+        { id: "VT-P05", cohort: "Past", gpa: 3.44, sat: 1330 },
+        { id: "VT-P06", cohort: "Past", gpa: 3.55, sat: 1330 },
+        { id: "VT-C01", cohort: "Current", gpa: 3.5, sat: 1420 },
+        { id: "VT-C02", cohort: "Current", gpa: 3.53, sat: 1320 },
+        { id: "VT-C03", cohort: "Current", gpa: 3.61, sat: 1300 },
+        { id: "VT-C04", cohort: "Current", gpa: 3.93, sat: 1350 }
+      ]
+    },
+
+    "The Ohio State University": {
+      title: "Ohio State · Business / STEM",
+      gpaValue: "3.8 (unweighted)",
+      gpaRange: "Middle 50%: 3.6 – 3.9",
+      midGpaLow: 3.6,
+      midGpaHigh: 3.9,
+      satRange: "1250 – 1430",
+      midSatLow: 1250,
+      midSatHigh: 1430,
+      satSub: "ACT approx: 29 – 32",
+      cohortCount: "16 total",
+      cohortBreakdown: "10 past · 6 current seniors",
+      profileNote: "Large flagship; outcomes vary by college/major.",
+      pointsPast: [
+        { gpa: 3.54, sat: 1280 }, { gpa: 3.99, sat: 1350 }, { gpa: 3.67, sat: 1190 }, { gpa: 3.77, sat: 1290 }, { gpa: 3.96, sat: 1320 }, { gpa: 3.98, sat: 1250 }, { gpa: 3.64, sat: 1350 }, { gpa: 3.99, sat: 1420 }, { gpa: 3.49, sat: 1290 }, { gpa: 3.63, sat: 1240 }
+      ],
+      pointsCurrent: [
+        { gpa: 3.62, sat: 1380 }, { gpa: 3.85, sat: 1420 }, { gpa: 3.79, sat: 1440 }, { gpa: 3.97, sat: 1210 }, { gpa: 3.91, sat: 1400 }, { gpa: 3.51, sat: 1260 }
+      ],
+      you: { gpa: 3.8, sat: 1360 },
+      rows: [
+        { id: "OSU-P01", cohort: "Past", gpa: 3.54, sat: 1280 },
+        { id: "OSU-P02", cohort: "Past", gpa: 3.99, sat: 1350 },
+        { id: "OSU-P03", cohort: "Past", gpa: 3.67, sat: 1190 },
+        { id: "OSU-P04", cohort: "Past", gpa: 3.77, sat: 1290 },
+        { id: "OSU-P05", cohort: "Past", gpa: 3.96, sat: 1320 },
+        { id: "OSU-P06", cohort: "Past", gpa: 3.98, sat: 1250 },
+        { id: "OSU-C01", cohort: "Current", gpa: 3.62, sat: 1380 },
+        { id: "OSU-C02", cohort: "Current", gpa: 3.85, sat: 1420 },
+        { id: "OSU-C03", cohort: "Current", gpa: 3.79, sat: 1440 },
+        { id: "OSU-C04", cohort: "Current", gpa: 3.97, sat: 1210 }
+      ]
+    },
+
+    "Indiana University Bloomington": {
+      title: "Indiana University · Kelley / Liberal Arts",
+      gpaValue: "3.6 (unweighted)",
+      gpaRange: "Middle 50%: 3.4 – 3.8",
+      midGpaLow: 3.4,
+      midGpaHigh: 3.8,
+      satRange: "1180 – 1380",
+      midSatLow: 1180,
+      midSatHigh: 1380,
+      satSub: "ACT approx: 26 – 31",
+      cohortCount: "16 total",
+      cohortBreakdown: "10 past · 6 current seniors",
+      profileNote: "Strong target; programs vary in selectivity.",
+      pointsPast: [
+        { gpa: 3.42, sat: 1380 }, { gpa: 3.85, sat: 1140 }, { gpa: 3.61, sat: 1130 }, { gpa: 3.54, sat: 1410 }, { gpa: 3.41, sat: 1250 }, { gpa: 3.72, sat: 1400 }, { gpa: 3.79, sat: 1130 }, { gpa: 3.66, sat: 1140 }, { gpa: 3.33, sat: 1400 }, { gpa: 3.27, sat: 1140 }
+      ],
+      pointsCurrent: [
+        { gpa: 3.84, sat: 1350 }, { gpa: 3.73, sat: 1360 }, { gpa: 3.79, sat: 1320 }, { gpa: 3.64, sat: 1280 }, { gpa: 3.62, sat: 1270 }, { gpa: 3.73, sat: 1270 }
+      ],
+      you: { gpa: 3.62, sat: 1240 },
+      rows: [
+        { id: "IU-P01", cohort: "Past", gpa: 3.42, sat: 1380 },
+        { id: "IU-P02", cohort: "Past", gpa: 3.85, sat: 1140 },
+        { id: "IU-P03", cohort: "Past", gpa: 3.61, sat: 1130 },
+        { id: "IU-P04", cohort: "Past", gpa: 3.54, sat: 1410 },
+        { id: "IU-P05", cohort: "Past", gpa: 3.41, sat: 1250 },
+        { id: "IU-P06", cohort: "Past", gpa: 3.72, sat: 1400 },
+        { id: "IU-C01", cohort: "Current", gpa: 3.84, sat: 1350 },
+        { id: "IU-C02", cohort: "Current", gpa: 3.73, sat: 1360 },
+        { id: "IU-C03", cohort: "Current", gpa: 3.79, sat: 1320 },
+        { id: "IU-C04", cohort: "Current", gpa: 3.64, sat: 1280 }
+      ]
+    },
+
+    "University of Florida": {
+      title: "University of Florida · STEM / Business",
+      gpaValue: "3.9 (unweighted)",
+      gpaRange: "Middle 50%: 3.7 – 4.0",
+      midGpaLow: 3.7,
+      midGpaHigh: 4.0,
+      satRange: "1300 – 1470",
+      midSatLow: 1300,
+      midSatHigh: 1470,
+      satSub: "ACT approx: 30 – 33",
+      cohortCount: "16 total",
+      cohortBreakdown: "10 past · 6 current seniors",
+      profileNote: "Selective public; stats + rigor matter.",
+      pointsPast: [
+        { gpa: 3.97, sat: 1450 }, { gpa: 4.0, sat: 1360 }, { gpa: 3.57, sat: 1330 }, { gpa: 3.72, sat: 1410 }, { gpa: 3.71, sat: 1310 }, { gpa: 4.0, sat: 1500 }, { gpa: 3.79, sat: 1420 }, { gpa: 3.56, sat: 1370 }, { gpa: 3.84, sat: 1270 }, { gpa: 3.71, sat: 1260 }
+      ],
+      pointsCurrent: [
+        { gpa: 3.91, sat: 1310 }, { gpa: 3.92, sat: 1410 }, { gpa: 3.91, sat: 1410 }, { gpa: 4.0, sat: 1250 }, { gpa: 3.67, sat: 1250 }, { gpa: 3.83, sat: 1360 }
+      ],
+      you: { gpa: 3.89, sat: 1390 },
+      rows: [
+        { id: "UF-P01", cohort: "Past", gpa: 3.97, sat: 1450 },
+        { id: "UF-P02", cohort: "Past", gpa: 4.0, sat: 1360 },
+        { id: "UF-P03", cohort: "Past", gpa: 3.57, sat: 1330 },
+        { id: "UF-P04", cohort: "Past", gpa: 3.72, sat: 1410 },
+        { id: "UF-P05", cohort: "Past", gpa: 3.71, sat: 1310 },
+        { id: "UF-P06", cohort: "Past", gpa: 4.0, sat: 1500 },
+        { id: "UF-C01", cohort: "Current", gpa: 3.91, sat: 1310 },
+        { id: "UF-C02", cohort: "Current", gpa: 3.92, sat: 1410 },
+        { id: "UF-C03", cohort: "Current", gpa: 3.91, sat: 1410 },
+        { id: "UF-C04", cohort: "Current", gpa: 4.0, sat: 1250 }
+      ]
+    },
+
+    "University of Miami": {
+      title: "University of Miami · Business / Health",
+      gpaValue: "3.7 (unweighted)",
+      gpaRange: "Middle 50%: 3.5 – 3.9",
+      midGpaLow: 3.5,
+      midGpaHigh: 3.9,
+      satRange: "1290 – 1460",
+      midSatLow: 1290,
+      midSatHigh: 1460,
+      satSub: "ACT approx: 29 – 33",
+      cohortCount: "16 total",
+      cohortBreakdown: "10 past · 6 current seniors",
+      profileNote: "Holistic private; essays and activities can lift chances.",
+      pointsPast: [
+        { gpa: 3.55, sat: 1260 }, { gpa: 3.94, sat: 1310 }, { gpa: 3.41, sat: 1280 }, { gpa: 3.76, sat: 1290 }, { gpa: 3.37, sat: 1420 }, { gpa: 3.63, sat: 1250 }, { gpa: 3.97, sat: 1390 }, { gpa: 3.36, sat: 1300 }, { gpa: 3.64, sat: 1490 }, { gpa: 3.76, sat: 1440 }
+      ],
+      pointsCurrent: [
+        { gpa: 3.57, sat: 1280 }, { gpa: 3.65, sat: 1420 }, { gpa: 3.68, sat: 1290 }, { gpa: 3.64, sat: 1420 }, { gpa: 3.87, sat: 1260 }, { gpa: 3.46, sat: 1410 }
+      ],
+      you: { gpa: 3.74, sat: 1370 },
+      rows: [
+        { id: "UM-P01", cohort: "Past", gpa: 3.55, sat: 1260 },
+        { id: "UM-P02", cohort: "Past", gpa: 3.94, sat: 1310 },
+        { id: "UM-P03", cohort: "Past", gpa: 3.41, sat: 1280 },
+        { id: "UM-P04", cohort: "Past", gpa: 3.76, sat: 1290 },
+        { id: "UM-P05", cohort: "Past", gpa: 3.37, sat: 1420 },
+        { id: "UM-P06", cohort: "Past", gpa: 3.63, sat: 1250 },
+        { id: "UM-C01", cohort: "Current", gpa: 3.57, sat: 1280 },
+        { id: "UM-C02", cohort: "Current", gpa: 3.65, sat: 1420 },
+        { id: "UM-C03", cohort: "Current", gpa: 3.68, sat: 1290 },
+        { id: "UM-C04", cohort: "Current", gpa: 3.64, sat: 1420 }
+      ]
+    },
+
+    "University of Southern California": {
+      title: "USC · Business / Arts & Sciences",
+      gpaValue: "3.9 (unweighted)",
+      gpaRange: "Middle 50%: 3.7 – 4.0",
+      midGpaLow: 3.7,
+      midGpaHigh: 4.0,
+      satRange: "1450 – 1540",
+      midSatLow: 1450,
+      midSatHigh: 1540,
+      satSub: "ACT approx: 33 – 35",
+      cohortCount: "16 total",
+      cohortBreakdown: "10 past · 6 current seniors",
+      profileNote: "Reach; strong narrative + impact help.",
+      pointsPast: [
+        { gpa: 4.0, sat: 1450 }, { gpa: 3.98, sat: 1510 }, { gpa: 3.8, sat: 1450 }, { gpa: 3.56, sat: 1400 }, { gpa: 3.9, sat: 1420 }, { gpa: 3.87, sat: 1570 }, { gpa: 4.0, sat: 1390 }, { gpa: 3.93, sat: 1500 }, { gpa: 3.93, sat: 1420 }, { gpa: 3.9, sat: 1510 }
+      ],
+      pointsCurrent: [
+        { gpa: 3.7, sat: 1530 }, { gpa: 3.86, sat: 1400 }, { gpa: 3.65, sat: 1410 }, { gpa: 3.91, sat: 1560 }, { gpa: 3.93, sat: 1540 }, { gpa: 3.73, sat: 1510 }
+      ],
+      you: { gpa: 3.9, sat: 1480 },
+      rows: [
+        { id: "USC-P01", cohort: "Past", gpa: 4.0, sat: 1450 },
+        { id: "USC-P02", cohort: "Past", gpa: 3.98, sat: 1510 },
+        { id: "USC-P03", cohort: "Past", gpa: 3.8, sat: 1450 },
+        { id: "USC-P04", cohort: "Past", gpa: 3.56, sat: 1400 },
+        { id: "USC-P05", cohort: "Past", gpa: 3.9, sat: 1420 },
+        { id: "USC-P06", cohort: "Past", gpa: 3.87, sat: 1570 },
+        { id: "USC-C01", cohort: "Current", gpa: 3.7, sat: 1530 },
+        { id: "USC-C02", cohort: "Current", gpa: 3.86, sat: 1400 },
+        { id: "USC-C03", cohort: "Current", gpa: 3.65, sat: 1410 },
+        { id: "USC-C04", cohort: "Current", gpa: 3.91, sat: 1560 }
+      ]
+    }
+
+  };
+
+  const satMin = 1200, satMax = 1600;
+  const gpaMin = 3.4, gpaMax = 4.0;
+
+  function percentX(sat) {
+    const clamped = Math.min(Math.max(sat, satMin), satMax);
+    const frac = (clamped - satMin) / (satMax - satMin);
+    return 0 + frac * 100;
+  }
+  function percentY(gpa) {
+    const clamped = Math.min(Math.max(gpa, gpaMin), gpaMax);
+    const frac = (clamped - gpaMin) / (gpaMax - gpaMin);
+    return 0 + frac * 100;
+  }
+
+  function clearChildren(el) {
+    while (el.firstChild) el.removeChild(el.firstChild);
+  }
+
+  function renderCollege(name) {
+    const cfg = collegeData[name];
+    if (!cfg) return;
+
+    chartTitleMain.textContent = cfg.title;
+
+    summary.gpaValue.textContent = cfg.gpaValue;
+    summary.gpaRange.textContent = cfg.gpaRange;
+    summary.satRange.textContent = cfg.satRange;
+    summary.satSub.textContent = cfg.satSub;
+    summary.cohortCount.textContent = cfg.cohortCount;
+    summary.cohortBreakdown.textContent = cfg.cohortBreakdown;
+    summary.profileNote.textContent = cfg.profileNote;
+
+    // points
+    clearChildren(ptsContainer);
+    const makePoint = (pt, cls, sizePx) => {
+      const dot = document.createElement('div');
+      dot.className = 'point ' + cls;
+      const x = percentX(pt.sat);
+      const y = percentY(pt.gpa);
+      dot.style.left = x + '%';
+      dot.style.bottom = y + '%';
+      if (sizePx) {
+        dot.style.width = sizePx + 'px';
+        dot.style.height = sizePx + 'px';
+      }
+      ptsContainer.appendChild(dot);
+    };
+
+    (cfg.pointsPast || []).forEach(p => makePoint(p, 'past'));
+    (cfg.pointsCurrent || []).forEach(p => makePoint(p, 'current'));
+    const userPt = getUserProfile(cfg.you);
+    if (userPt) makePoint(userPt, 'you', 11);
+    const probInfo = computeProbability(cfg, userPt);
+    updateProbabilityUI(probInfo);
+
+    const simInfo = computeStudentsLikeYou(cfg, userPt);
+    updateStudentsLikeYou(simInfo, probInfo);
+    updateDecisionBoundary(cfg);
+
+
+    // table
+    clearChildren(tableBody);
+    (cfg.rows || []).forEach(r => {
+      const tr = document.createElement('tr');
+      tr.innerHTML = '<td>' + r.id + '</td><td>' + r.cohort +
+                     '</td><td>' + r.gpa.toFixed(2) + '</td><td>' +
+                     r.sat + '</td>';
+      if (r.id === 'You') {
+        tr.style.fontWeight = '700';
+        tr.style.color = '#ffffff';
+      }
+      tableBody.appendChild(tr);
+    });
+  }
+
+  if (collegeSelect) {
+    collegeSelect.addEventListener('change', function() {
+      renderCollege(collegeSelect.value);
+    });
+  }
+
+  const triggerRender = () => {
+    if (collegeSelect) {
+      renderCollege(collegeSelect.value);
+    }
+  };
+
+  if (inputGpa) {
+    inputGpa.addEventListener('change', triggerRender);
+    inputGpa.addEventListener('blur', triggerRender);
+  }
+  if (inputSat) {
+    inputSat.addEventListener('change', triggerRender);
+    inputSat.addEventListener('blur', triggerRender);
+  }
+
+
+  const whatIfGpa = document.getElementById('whatif-gpa');
+  const whatIfSat = document.getElementById('whatif-sat');
+  const whatIfBtn = document.getElementById('whatif-run-btn');
+  const whatIfReset = document.getElementById('whatif-reset-btn');
+
+  if (whatIfBtn && whatIfGpa && whatIfSat && inputGpa && inputSat) {
+    whatIfBtn.addEventListener('click', () => {
+      if (whatIfGpa.value) inputGpa.value = whatIfGpa.value;
+      if (whatIfSat.value) inputSat.value = whatIfSat.value;
+      triggerRender();
+    });
+  }
+
+  if (whatIfReset && whatIfGpa && whatIfSat && inputGpa && inputSat) {
+    whatIfReset.addEventListener('click', () => {
+      // Reset the what-if fields back to the current main profile values
+      whatIfGpa.value = inputGpa.value || '';
+      whatIfSat.value = inputSat.value || '';
+      triggerRender();
+    });
+  }
+
+  // initial render
+  triggerRender();
+});
+</script>
+  <!-- Accept / Reject AI insights modal -->
+  <div class="ar-modal-backdrop" id="acceptRejectModal">
+    <div class="ar-modal-dialog">
+      <div class="ar-modal-header">
+        <div class="ar-modal-title-block">
+          <div class="ar-modal-kicker">Accept / reject pattern</div>
+          <div class="ar-modal-title">
+            Sample University · Last 4 years
+            <span class="ar-tag">From your high school only</span>
+          </div>
+          <div class="ar-modal-subtitle">
+            Each dot is a past applicant from your school. Green = admitted, red = not admitted, yellow = waitlist. “You” is plotted based on your current GPA and SAT.
+          </div>
+        </div>
+        <button class="ar-modal-close" id="acceptRejectCloseBtn">Close</button>
+      </div>
+
+      <div class="ar-modal-body">
+        <div class="ar-toggle-row">
+          <span class="ar-toggle-label">Show:</span>
+          <button class="ar-toggle-chip active" data-layer="all">All outcomes</button>
+          <button class="ar-toggle-chip" data-layer="accept">Accepted only</button>
+          <button class="ar-toggle-chip" data-layer="reject">Rejected only</button>
+          <button class="ar-toggle-chip" data-layer="waitlist">Waitlist only</button>
+        </div>
+
+        <div class="ar-modal-layout">
+          <div class="ar-modal-scatter-card">
+            <div class="ar-scatter-area">
+              <div class="ar-grid"></div>
+              <div class="ar-axis-x">SAT / ACT</div>
+              <div class="ar-axis-y">GPA</div>
+
+              <!-- Axis tick labels -->
+              <div class="ar-x-ticks">
+                <span style="left:22%;">1300</span>
+                <span style="left:40%;">1350</span>
+                <span style="left:58%;">1400</span>
+                <span style="left:76%;">1450</span>
+                <span style="left:90%;">1500</span>
+              </div>
+              <div class="ar-y-ticks">
+                <span style="top:72%;">3.4</span>
+                <span style="top:58%;">3.5</span>
+                <span style="top:44%;">3.6</span>
+                <span style="top:30%;">3.7</span>
+                <span style="top:16%;">3.8</span>
+              </div>
+
+              <!-- Accepted cluster (dummy data) -->
+              <div class="ar-point accept" data-outcome="accept" style="left:56%;top:36%;"></div>
+              <div class="ar-point accept" data-outcome="accept" style="left:60%;top:40%;"></div>
+              <div class="ar-point accept" data-outcome="accept" style="left:64%;top:35%;"></div>
+              <div class="ar-point accept" data-outcome="accept" style="left:58%;top:32%;"></div>
+              <div class="ar-point accept" data-outcome="accept" style="left:62%;top:38%;"></div>
+              <div class="ar-point accept" data-outcome="accept" style="left:67%;top:34%;"></div>
+              <div class="ar-point accept" data-outcome="accept" style="left:53%;top:42%;"></div>
+
+              <!-- Accepted slightly above band -->
+              <div class="ar-point accept" data-outcome="accept" style="left:70%;top:28%;"></div>
+              <div class="ar-point accept" data-outcome="accept" style="left:73%;top:30%;"></div>
+
+              <!-- Rejected cluster (dummy data) -->
+              <div class="ar-point reject" data-outcome="reject" style="left:38%;top:52%;"></div>
+              <div class="ar-point reject" data-outcome="reject" style="left:42%;top:56%;"></div>
+              <div class="ar-point reject" data-outcome="reject" style="left:45%;top:50%;"></div>
+              <div class="ar-point reject" data-outcome="reject" style="left:36%;top:58%;"></div>
+              <div class="ar-point reject" data-outcome="reject" style="left:40%;top:60%;"></div>
+              <div class="ar-point reject" data-outcome="reject" style="left:34%;top:55%;"></div>
+
+              <!-- Rejected far below band -->
+              <div class="ar-point reject" data-outcome="reject" style="left:28%;top:68%;"></div>
+              <div class="ar-point reject" data-outcome="reject" style="left:30%;top:64%;"></div>
+
+              <!-- Waitlist cluster (dummy data) -->
+              <div class="ar-point waitlist" data-outcome="waitlist" style="left:54%;top:46%;"></div>
+              <div class="ar-point waitlist" data-outcome="waitlist" style="left:57%;top:48%;"></div>
+              <div class="ar-point waitlist" data-outcome="waitlist" style="left:60%;top:44%;"></div>
+
+              <!-- You -->
+              <div class="ar-point you" data-outcome="you" style="left:61%;top:34%;"></div>
+            </div>
+
+            <div class="ar-legend">
+              <span class="ar-legend-item">
+                <span class="ar-dot accept"></span> Accept
+              </span>
+              <span class="ar-legend-item">
+                <span class="ar-dot reject"></span> Not admitted
+              </span>
+              <span class="ar-legend-item">
+                <span class="ar-dot waitlist"></span> Waitlist / deferred
+              </span>
+              <span class="ar-legend-item">
+                <span class="ar-dot you"></span> You
+              </span>
+            </div>
+
+            <div class="ar-commentary">
+              Dummy points for design only. In a real LaunchPath deployment, each dot would be a real, anonymized historical applicant from your high school.
+            </div>
+          </div>
+
+          <div class="ar-modal-ai-card">
+            <div class="ar-ai-panel">
+              <div class="ar-ai-label">AI insight – what this cloud means</div>
+              <div class="ar-ai-main">
+                Most admitted students cluster around GPA 3.70–3.90 and SAT 1380–1510. Your current profile (3.86, 1450) sits slightly above the center of that cluster.
+              </div>
+              <div class="ar-ai-detail">
+                For students from your school over the last 4 cycles, profiles like yours behaved more like a <strong>Target / Likely</strong> combination: strong odds if you keep grades steady and submit on time.
+              </div>
+              <div class="ar-ai-chips">
+                <span class="ar-ai-chip success">You’re in the historical “admit cloud”</span>
+                <span class="ar-ai-chip warn">Still add 1–2 safer Likely options</span>
+                <span class="ar-ai-chip danger">Avoid building a list of only schools harder than this one</span>
+              </div>
+            </div>
+            <ul class="ar-summary-list">
+              <li>
+                <span>Applicants from your school (last 4 years):</span>
+                <span class="value">68 students</span>
+              </li>
+              <li>
+                <span>Admits in this GPA/SAT band:</span>
+                <span class="value">41 admits (≈ 60%)</span>
+              </li>
+              <li>
+                <span>Students below this band:</span>
+                <span class="value">20 students · lower admit rate</span>
+              </li>
+              <li>
+                <span>Students above this band:</span>
+                <span class="value">7 students · very strong odds</span>
+              </li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <div class="ar-modal-footer">
+        <span>Use this view as one input, not the only factor. Essays, major choice, recommendations, and context still matter.</span>
+        <span>In a real LaunchPath deployment, this runs on anonymized, school-specific historical data.</span>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      const openBtn = document.getElementById('openAcceptRejectModalBtn');
+      const closeBtn = document.getElementById('acceptRejectCloseBtn');
+      const modal = document.getElementById('acceptRejectModal');
+      const layerButtons = document.querySelectorAll('.ar-toggle-chip');
+      const points = document.querySelectorAll('.ar-point');
+
+      if (!openBtn || !closeBtn || !modal) return;
+
+      function openModal() {
+        modal.classList.add('open');
+      }
+
+      function closeModal() {
+        modal.classList.remove('open');
+      }
+
+      function applyLayer(layer) {
+        points.forEach(function(pt) {
+          const outcome = pt.getAttribute('data-outcome');
+          if (outcome === 'you') {
+            pt.style.display = '';
+            return;
+          }
+          if (layer === 'all') {
+            pt.style.display = '';
+          } else {
+            pt.style.display = (outcome === layer) ? '' : 'none';
+          }
+        });
+      }
+
+      openBtn.addEventListener('click', openModal);
+      closeBtn.addEventListener('click', closeModal);
+      modal.addEventListener('click', function(e) {
+        if (e.target === modal) closeModal();
+      });
+
+      layerButtons.forEach(function(btn) {
+        btn.addEventListener('click', function() {
+          layerButtons.forEach(function(b) { b.classList.remove('active'); });
+          btn.classList.add('active');
+          applyLayer(btn.getAttribute('data-layer') || 'all');
+        });
+      });
+
+      applyLayer('all');
+    });
+  </script>
+
+
+<script>
+document.addEventListener('DOMContentLoaded', function(){
+  const submitBtn = document.getElementById('btn-submit-scatter');
+  const resetBtn  = document.getElementById('btn-reset-scatter');
+  const collegeSelect = document.getElementById('college-select');
+  const inputGpa = document.getElementById('input-gpa');
+  const inputSat = document.getElementById('input-sat');
+
+  const defaultGpa = inputGpa ? inputGpa.getAttribute('value') : '';
+  const defaultSat = inputSat ? inputSat.getAttribute('value') : '';
+
+  function run(){
+    if (typeof renderCollege === 'function' && collegeSelect) {
+      renderCollege(collegeSelect.value);
+    }
+  }
+
+  if (submitBtn) submitBtn.addEventListener('click', run);
+
+  if (resetBtn) resetBtn.addEventListener('click', function(){
+    if (inputGpa) inputGpa.value = '';
+    if (inputSat) inputSat.value = '';
+    // Clear generated outputs
+    const pts = document.getElementById('scatter-points');
+    if (pts) pts.innerHTML = '';
+    const tb = document.getElementById('scatter-table-body');
+    if (tb) tb.innerHTML = '';
+    const pv = document.getElementById('probability-value');
+    const pb = document.getElementById('probability-band');
+    const sly = document.getElementById('students-like-you');
+    if (pv) pv.textContent = '—';
+    if (pb) pb.textContent = '—';
+    if (sly) sly.textContent = '—';
+  });
+
+});
+</script>
+
+</body>
+</html>
